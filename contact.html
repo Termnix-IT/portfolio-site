@@ -91,12 +91,12 @@
                         お気軽に<span class="cdoc-hero-title-mark">ご連絡</span>ください
                     </h1>
                     <p class="cdoc-hero-lead">
-                        Qiita・GitHub からのコメントや DM、または下記の問い合わせフォーム（準備中）よりご連絡いただけます。技術的な相談や案件のお話など歓迎しています。
+                        Qiita・GitHub からのコメントや DM、または下記の問い合わせフォームよりご連絡いただけます。技術的な相談や案件のお話など歓迎しています。
                     </p>
                     <div class="cdoc-hero-chips">
                         <span class="cdoc-chip cdoc-chip--solid"><i class="fab fa-github"></i>GitHub</span>
                         <span class="cdoc-chip cdoc-chip--solid"><i class="fas fa-pen-nib"></i>Qiita</span>
-                        <span class="cdoc-chip"><i class="fas fa-envelope"></i>Form (準備中)</span>
+                        <span class="cdoc-chip"><i class="fas fa-envelope"></i>External Form</span>
                     </div>
                 </section>
 
@@ -133,11 +133,50 @@
                             <p class="cdoc-section-kicker">contact-form</p>
                             <h2 class="cdoc-section-title">問い合わせフォーム</h2>
                         </div>
-                        <span class="cdoc-status-pill cdoc-status-pill--planned"><i class="fas fa-tools"></i> 準備中</span>
+                        <span class="cdoc-status-pill cdoc-status-pill--done"><i class="fas fa-paper-plane"></i> Static POST</span>
                     </header>
-                    <p class="cdoc-project-body">
-                        問い合わせフォームは現在準備中です。実装が完了次第、こちらからメッセージを送信できるようになります。それまでは Qiita / GitHub からご連絡ください。
-                    </p>
+                    <div class="cdoc-contact-intro">
+                        <p class="cdoc-project-body">
+                            フォーム送信は外部フォームサービスへ委譲し、このサイト自体は静的ページのまま運用します。返信が必要な場合は、連絡可能なメールアドレスを入力してください。
+                        </p>
+                        <p class="cdoc-contact-note"><i class="fas fa-shield-alt"></i> パスワード、秘密鍵、業務固有の機密情報は送信しないでください。</p>
+                    </div>
+                    <form class="cdoc-contact-form" action="https://formspree.io/f/FORM_ID" method="POST">
+                        <input type="text" name="_gotcha" class="cdoc-form-hidden" tabindex="-1" autocomplete="off">
+                        <input type="hidden" name="_subject" value="Portfolio site contact">
+
+                        <div class="cdoc-form-grid">
+                            <label class="cdoc-form-field">
+                                <span>お名前</span>
+                                <input type="text" name="name" autocomplete="name" maxlength="80" required>
+                            </label>
+                            <label class="cdoc-form-field">
+                                <span>返信先メールアドレス</span>
+                                <input type="email" name="email" autocomplete="email" maxlength="120" required>
+                            </label>
+                        </div>
+
+                        <label class="cdoc-form-field">
+                            <span>用件</span>
+                            <select name="topic" required>
+                                <option value="">選択してください</option>
+                                <option value="technical-question">技術的な相談</option>
+                                <option value="project-inquiry">案件・協業の相談</option>
+                                <option value="portfolio-feedback">ポートフォリオへのフィードバック</option>
+                                <option value="other">その他</option>
+                            </select>
+                        </label>
+
+                        <label class="cdoc-form-field">
+                            <span>メッセージ</span>
+                            <textarea name="message" rows="7" minlength="10" maxlength="2000" required></textarea>
+                        </label>
+
+                        <div class="cdoc-form-actions">
+                            <button class="cdoc-btn cdoc-btn--primary" type="submit"><i class="fas fa-paper-plane"></i> 送信する</button>
+                            <p>送信先の Formspree ID は公開前に差し替えてください。</p>
+                        </div>
+                    </form>
                 </section>
             </div>
         </div>

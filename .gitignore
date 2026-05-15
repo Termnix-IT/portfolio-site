@@ -5,6 +5,7 @@
 !.github/workflows/
 !.github/workflows/deploy.yml
 !README.md
+!MAINTENANCE.md
 !*.html
 !static/
 !static/*.css

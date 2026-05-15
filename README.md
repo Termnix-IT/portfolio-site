@@ -20,7 +20,7 @@ Linux・Network・Python を軸にした実務経験と個人プロジェクト�
 | `portfolio.html` | 個人プロジェクトの詳細（自宅サーバ公開、Zabbix 監視導入など） |
 | `ToolBox.html` | 自作ツール・スクリプト一覧 |
 | `Diagram.html` | システム構成図ギャラリー |
-| `contact.html` | 連絡チャンネル（Qiita / GitHub） |
+| `contact.html` | 連絡チャンネル（Qiita / GitHub / 外部フォーム） |
 
 各ページは共通のサイドパネル（Profile / Current Status / Links / Sections）と、
 ページ固有の本文セクション（A, B, C... の連番バッジ付き）で構成されています。
@@ -73,6 +73,13 @@ python -m http.server 8000
 
 - `master` ブランチへの push を契機に GitHub Actions が起動
 - GitHub Pages と AWS S3 + CloudFront に同時にデプロイ
+
+## Contact Form
+
+`contact.html` の問い合わせフォームは、静的サイト運用を維持するため外部フォームサービスへの HTML POST を前提にしています。
+公開前に `<form action="https://formspree.io/f/FORM_ID">` の `FORM_ID` を利用するフォームサービスの送信先 ID に差し替えてください。
+
+将来的に AWS 側へ寄せる場合は、`MAINTENANCE.md` の問い合わせフォーム運用方針を参照してください。
 
 ## Purpose
 
