@@ -133,17 +133,16 @@
                             <p class="cdoc-section-kicker">contact-form</p>
                             <h2 class="cdoc-section-title">問い合わせフォーム</h2>
                         </div>
-                        <span class="cdoc-status-pill cdoc-status-pill--done"><i class="fas fa-paper-plane"></i> Static POST</span>
+                        <span class="cdoc-status-pill cdoc-status-pill--done"><i class="fas fa-paper-plane"></i> Lambda POST</span>
                     </header>
                     <div class="cdoc-contact-intro">
                         <p class="cdoc-project-body">
-                            フォーム送信は外部フォームサービスへ委譲し、このサイト自体は静的ページのまま運用します。返信が必要な場合は、連絡可能なメールアドレスを入力してください。
+                            フォーム送信は AWS Lambda Function URL へ JSON 形式で送信し、このサイト自体は静的ページのまま運用します。返信が必要な場合は、連絡可能なメールアドレスを入力してください。
                         </p>
                         <p class="cdoc-contact-note"><i class="fas fa-shield-alt"></i> パスワード、秘密鍵、業務固有の機密情報は送信しないでください。</p>
                     </div>
-                    <form class="cdoc-contact-form" action="https://formspree.io/f/FORM_ID" method="POST">
+                    <form class="cdoc-contact-form" data-contact-form data-endpoint="https://74lhuwdzmjjv6rfhk6auutx5gq0okeyl.lambda-url.ap-northeast-1.on.aws/">
                         <input type="text" name="_gotcha" class="cdoc-form-hidden" tabindex="-1" autocomplete="off">
-                        <input type="hidden" name="_subject" value="Portfolio site contact">
 
                         <div class="cdoc-form-grid">
                             <label class="cdoc-form-field">
@@ -174,8 +173,9 @@
 
                         <div class="cdoc-form-actions">
                             <button class="cdoc-btn cdoc-btn--primary" type="submit"><i class="fas fa-paper-plane"></i> 送信する</button>
-                            <p>送信先の Formspree ID は公開前に差し替えてください。</p>
+                            <p>送信内容は確認後、必要に応じて返信します。</p>
                         </div>
+                        <p class="cdoc-form-status" data-contact-status role="status" aria-live="polite"></p>
                     </form>
                 </section>
             </div>

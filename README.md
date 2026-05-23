@@ -76,10 +76,10 @@ python -m http.server 8000
 
 ## Contact Form
 
-`contact.html` の問い合わせフォームは、静的サイト運用を維持するため外部フォームサービスへの HTML POST を前提にしています。
-公開前に `<form action="https://formspree.io/f/FORM_ID">` の `FORM_ID` を利用するフォームサービスの送信先 ID に差し替えてください。
+`contact.html` の問い合わせフォームは、静的サイト運用を維持するため AWS Lambda Function URL への JSON POST を前提にしています。
+送信処理は `static/main.js` で行い、`name`, `email`, `topic`, `message`, `_gotcha` を JSON として送信します。
 
-将来的に AWS 側へ寄せる場合は、`MAINTENANCE.md` の問い合わせフォーム運用方針を参照してください。
+Lambda / SES 側の運用方針は、`MAINTENANCE.md` の問い合わせフォーム運用方針を参照してください。
 
 ## Purpose
 

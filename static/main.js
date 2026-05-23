@@ -8,6 +8,7 @@ const ANIMATION_SELECTOR = '.fade-up, .hero-headline-motion, .hero-proof-motion'
 const QIITA_USER = 'Termnix-IT';
 const QIITA_API_URL = `https://qiita.com/api/v2/users/${QIITA_USER}/items?page=1&per_page=5`;
 const QIITA_REQUEST_TIMEOUT_MS = 5000;
+const CONTACT_REQUEST_TIMEOUT_MS = 10000;
 
 let isScrollTicking = false;
 let qiitaCache = null;
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   observeAnimatedElements();
   loadQiitaArticles();
   initLightbox();
+  initContactForm();
 });
 
 function handleWindowScroll() {
@@ -114,6 +116,101 @@ function initLightbox() {
       setLightboxState(false);
     }
   });
+}
+
+function initContactForm() {
+  const form = document.querySelector('[data-contact-form]');
+  if (!form) {
+    return;
+  }
+
+  const status = form.querySelector('[data-contact-status]');
+  const submitButton = form.querySelector('button[type="submit"]');
+  const endpoint = form.dataset.endpoint;
+
+  if (!endpoint) {
+    renderContactStatus(status, '問い合わせフォームの送信先が設定されていません。', 'error');
+    return;
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const formData = new FormData(form);
+    const payload = {
+      name: String(formData.get('name') || '').trim(),
+      email: String(formData.get('email') || '').trim(),
+      topic: String(formData.get('topic') || '').trim(),
+      message: String(formData.get('message') || '').trim(),
+      _gotcha: String(formData.get('_gotcha') || '').trim(),
+    };
+
+    if (payload._gotcha) {
+      renderContactStatus(status, '送信を受け付けました。', 'success');
+      form.reset();
+      return;
+    }
+
+    const controller = typeof AbortController === 'function' ? new AbortController() : null;
+    const timeoutId = window.setTimeout(() => {
+      if (controller) {
+        controller.abort();
+      }
+    }, CONTACT_REQUEST_TIMEOUT_MS);
+
+    setContactSubmitting(form, submitButton, true);
+    renderContactStatus(status, '送信しています...', 'pending');
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        signal: controller ? controller.signal : undefined,
+      });
+
+      if (!response.ok) {
+        throw new Error('Contact form request failed');
+      }
+
+      form.reset();
+      renderContactStatus(status, '送信しました。内容を確認後、必要に応じて返信します。', 'success');
+    } catch (error) {
+      renderContactStatus(status, '送信できませんでした。時間をおいて再度お試しください。', 'error');
+    } finally {
+      window.clearTimeout(timeoutId);
+      setContactSubmitting(form, submitButton, false);
+    }
+  });
+}
+
+function setContactSubmitting(form, submitButton, isSubmitting) {
+  form.classList.toggle('is-submitting', isSubmitting);
+
+  if (!submitButton) {
+    return;
+  }
+
+  submitButton.disabled = isSubmitting;
+  submitButton.innerHTML = isSubmitting
+    ? '<i class="fas fa-spinner fa-spin"></i> 送信中'
+    : '<i class="fas fa-paper-plane"></i> 送信する';
+}
+
+function renderContactStatus(status, message, state) {
+  if (!status) {
+    return;
+  }
+
+  status.textContent = message;
+  status.dataset.state = state;
 }
 
 async function loadQiitaArticles() {

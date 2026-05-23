@@ -195,10 +195,10 @@
 ### 現在の方針
 
 - `contact.html` は静的 HTML のまま運用する
-- フォーム送信処理は Formspree などの外部フォームサービスに委譲する
-- サイト側には送信処理、メール送信処理、問い合わせ内容の保存処理を持たせない
+- フォーム送信処理は `static/main.js` から AWS Lambda Function URL へ JSON POST する
+- サイト側にはメール送信処理、問い合わせ内容の保存処理を持たせない
 - フォームには honeypot 用の `_gotcha` フィールドを置き、最低限の bot 対策を行う
-- 公開前に `<form action="https://formspree.io/f/FORM_ID">` の `FORM_ID` を実際の送信先 ID に差し替える
+- Lambda 側では `Content-Type: application/json` のリクエストを受け取る
 
 ### 送信フォームで扱う情報
 
@@ -209,19 +209,32 @@
 
 機密情報、パスワード、秘密鍵、業務固有情報は送信対象にしない。フォーム文言にもその注意を残す。
 
-### 将来の AWS 実装案
+### 現在の AWS 実装案
 
-外部フォームサービスから AWS 管理へ移行する場合は、以下の構成を候補にする。
+問い合わせフォームは以下の構成を基本にする。
 
-- Frontend: `contact.html` から `fetch()` または HTML form POST で送信
+- Frontend: `contact.html` から `fetch()` で JSON 送信
 - Endpoint: AWS Lambda Function URL
 - Mail: Amazon SES
 - Notification: 問い合わせ内容を管理者メールへ送信
 - Storage: 原則なし。必要になった場合のみ S3 または DynamoDB を検討する
 
+送信 payload は以下の形式にする。
+
+```json
+{
+  "name": "Your Name",
+  "email": "user@example.com",
+  "topic": "technical-question",
+  "message": "お問い合わせ本文",
+  "_gotcha": ""
+}
+```
+
 ### AWS 実装時に必ず設計すること
 
 - CORS は公開ドメインだけを許可する
+- `OPTIONS` と `POST` に対して必要な CORS header を返す
 - 入力値は Lambda 側で必ず検証する
 - 送信頻度制限を入れる
 - honeypot または Turnstile / reCAPTCHA などの spam 対策を入れる
