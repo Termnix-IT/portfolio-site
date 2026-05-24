@@ -1,11 +1,11 @@
 # Maintenance Guide
 
 このドキュメントは、このポートフォリオサイトを継続的に育てるときの保守メモです。
-公開向けの説明は `README.md`、デプロイ方法は `DEPLOYMENT.md`、このファイルは編集運用の基準として使います。
+公開向けの説明は `../README.md`、デプロイ方法は `DEPLOYMENT.md`、このファイルは編集運用の基準として使います。
 
 ## 対象範囲
 
-- HTML: `index.html`, `portfolio.html`, `ToolBox.html`, `Diagram.html`, `contact.html`
+- HTML: `index.html`, `portfolio.html`, `toolbox.html`, `diagram.html`, `contact.html`
 - CSS: `static/style.css`
 - JavaScript: `static/main.js`
 - 画像: `static/img/`

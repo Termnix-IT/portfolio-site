@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>作成ツール一覧 | Termnix-ITのページ</title>
+    <title>構成図ギャラリー | Termnix-ITのページ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,8 +27,8 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-home me-1"></i>ホーム</a></li>
                     <li class="nav-item"><a class="nav-link" href="portfolio.html"><i class="fas fa-briefcase me-1"></i>ポートフォリオ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="ToolBox.html"><i class="fas fa-toolbox me-1"></i>作成ツール一覧</a></li>
-                    <li class="nav-item"><a class="nav-link" href="Diagram.html"><i class="fas fa-project-diagram me-1"></i>構成図ギャラリー</a></li>
+                    <li class="nav-item"><a class="nav-link" href="toolbox.html"><i class="fas fa-toolbox me-1"></i>作成ツール一覧</a></li>
+                    <li class="nav-item"><a class="nav-link" href="diagram.html"><i class="fas fa-project-diagram me-1"></i>構成図ギャラリー</a></li>
                     <li class="nav-item"><a class="nav-link" href="contact.html"><i class="fas fa-envelope me-1"></i>問い合わせ</a></li>
                 </ul>
                 <ul class="navbar-nav navbar-social">
@@ -42,7 +42,7 @@
 
     <main class="cdoc">
         <div class="cdoc-pathbar" aria-hidden="true">
-            <div class="cdoc-pathbar-inner">~/ termnix-it / toolbox</div>
+            <div class="cdoc-pathbar-inner">~/ termnix-it / diagram</div>
         </div>
         <div class="cdoc-shell">
             <aside class="cdoc-side" aria-label="プロフィール">
@@ -70,15 +70,15 @@
                         <li><a href="https://github.com/Termnix-IT" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><i class="fab fa-github"></i><span>GitHub</span></a></li>
                         <li><a href="https://qiita.com/Termnix-IT" target="_blank" rel="noopener noreferrer" aria-label="Qiita" title="Qiita"><i class="fas fa-pen-nib"></i><span>Qiita</span></a></li>
                         <li><a href="index.html" aria-label="Home" title="Home"><i class="fas fa-home"></i><span>Home</span></a></li>
-                        <li><a href="contact.html" aria-label="Contact" title="Contact"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
+                        <li><a href="portfolio.html" aria-label="Portfolio" title="Portfolio"><i class="fas fa-briefcase"></i><span>Portfolio</span></a></li>
                     </ul>
                 </div>
 
                 <nav class="cdoc-card cdoc-toc" aria-label="ページ内目次">
                     <p class="cdoc-card-label">Sections</p>
                     <ul class="cdoc-toc-list">
-                        <li><a href="#tool-1"><span class="cdoc-toc-mark">A</span>準備中ツール</a></li>
-                        <li><a href="#roadmap"><span class="cdoc-toc-mark">B</span>今後の展開</a></li>
+                        <li><a href="#diagram-1"><span class="cdoc-toc-mark">A</span>自宅サーバ構成図</a></li>
+                        <li><a href="#upcoming"><span class="cdoc-toc-mark">B</span>今後の追加</a></li>
                     </ul>
                 </nav>
               </div>
@@ -86,44 +86,55 @@
 
             <div class="cdoc-main">
                 <section class="cdoc-hero" aria-labelledby="hero-title">
-                    <p class="cdoc-hero-eyebrow">Termnix-IT Toolbox</p>
+                    <p class="cdoc-hero-eyebrow">Termnix-IT Diagram Gallery</p>
                     <h1 id="hero-title" class="cdoc-hero-title">
-                        運用と検証を支える<span class="cdoc-hero-title-mark">自作ツール</span>
+                        構築の<span class="cdoc-hero-title-mark">設計</span>を図で残す
                     </h1>
                     <p class="cdoc-hero-lead">
-                        日々の運用や個人プロジェクトで使うために自作したツール、スクリプト、アプリケーションをまとめていく予定です。
+                        個人プロジェクトや学習の中で作成したシステム構成図をまとめています。あとから自分でも見返せるよう、構成・経路・制御点を整理しています。
                     </p>
                     <div class="cdoc-hero-chips">
-                        <span class="cdoc-chip cdoc-chip--solid"><i class="fab fa-python"></i>Python</span>
-                        <span class="cdoc-chip cdoc-chip--solid"><i class="fas fa-terminal"></i>Shell</span>
-                        <span class="cdoc-chip"><i class="fas fa-cogs"></i>Automation</span>
+                        <span class="cdoc-chip cdoc-chip--solid"><i class="fas fa-network-wired"></i>Network</span>
+                        <span class="cdoc-chip cdoc-chip--solid"><i class="fab fa-linux"></i>Linux</span>
+                        <span class="cdoc-chip"><i class="fas fa-shield-halved"></i>Security</span>
                     </div>
                 </section>
 
-                <section id="tool-1" class="cdoc-section">
+                <section id="diagram-1" class="cdoc-section">
                     <header class="cdoc-section-head">
                         <span class="cdoc-section-badge" aria-hidden="true">A</span>
                         <div class="cdoc-section-titles">
-                            <p class="cdoc-section-kicker">tool-01</p>
-                            <h2 class="cdoc-section-title">準備中</h2>
+                            <p class="cdoc-section-kicker">diagram-01 / self-hosting</p>
+                            <h2 class="cdoc-section-title">自宅サーバ公開構成図</h2>
                         </div>
-                        <span class="cdoc-status-pill cdoc-status-pill--planned"><i class="fas fa-calendar-alt"></i> 準備中</span>
+                        <span class="cdoc-status-pill cdoc-status-pill--done"><i class="fas fa-check"></i> 完成</span>
                     </header>
                     <p class="cdoc-project-body">
-                        ツールの詳細情報が追加される予定です。完成し次第、概要・使い方・リポジトリへのリンクをここに掲載します。
+                        Flask + Linux で Web ページを外部公開するための構成。UFW によるアクセス制限、DDNS による外部公開を実施。
                     </p>
+                    <div class="cdoc-tags">
+                        <span class="cdoc-tag cdoc-tag--accent">Flask</span>
+                        <span class="cdoc-tag cdoc-tag--accent">Nginx</span>
+                        <span class="cdoc-tag cdoc-tag--accent">Linux</span>
+                        <span class="cdoc-tag cdoc-tag--accent">UFW</span>
+                        <span class="cdoc-tag cdoc-tag--accent">DDNS</span>
+                    </div>
+                    <figure class="cdoc-figure">
+                        <img src="static/img/server-diagram.png" alt="自宅サーバ構成図" class="diagram-zoomable" loading="lazy">
+                        <figcaption><i class="fas fa-calendar-alt"></i> 2025年6月 / <i class="fas fa-search-plus"></i> クリックで拡大</figcaption>
+                    </figure>
                 </section>
 
-                <section id="roadmap" class="cdoc-section">
+                <section id="upcoming" class="cdoc-section">
                     <header class="cdoc-section-head">
                         <span class="cdoc-section-badge" aria-hidden="true">B</span>
                         <div class="cdoc-section-titles">
-                            <p class="cdoc-section-kicker">roadmap</p>
-                            <h2 class="cdoc-section-title">今後の展開</h2>
+                            <p class="cdoc-section-kicker">upcoming</p>
+                            <h2 class="cdoc-section-title">今後の追加予定</h2>
                         </div>
                     </header>
                     <p class="cdoc-project-body">
-                        運用効率化スクリプト、構成検証用ツールなど、今後ツールを開発次第、順次掲載していきます。
+                        Zabbix 監視構成図、ネットワーク検証構成図など、今後作成する構成図をここに追加していきます。
                     </p>
                 </section>
             </div>

@@ -18,8 +18,8 @@ Linux・Network・Python を軸にした実務経験と個人プロジェクト�
 |---|---|
 | `index.html` | Career Profile：Overview / Career Timeline / Skills / Certifications / Projects / Publishing |
 | `portfolio.html` | 個人プロジェクトの詳細（自宅サーバ公開、Zabbix 監視導入など） |
-| `ToolBox.html` | 自作ツール・スクリプト一覧 |
-| `Diagram.html` | システム構成図ギャラリー |
+| `toolbox.html` | 自作ツール・スクリプト一覧 |
+| `diagram.html` | システム構成図ギャラリー |
 | `contact.html` | 連絡チャンネル（Qiita / GitHub / 外部フォーム） |
 
 各ページは共通のサイドパネル（Profile / Current Status / Links / Sections）と、
@@ -38,8 +38,8 @@ Linux・Network・Python を軸にした実務経験と個人プロジェクト�
 Portfolio_Web/
 ├─ index.html
 ├─ portfolio.html
-├─ ToolBox.html
-├─ Diagram.html
+├─ toolbox.html
+├─ diagram.html
 ├─ contact.html
 ├─ static/
 │  ├─ style.css        # 共通スタイル + Career Document Layout（.cdoc-*）
@@ -47,6 +47,7 @@ Portfolio_Web/
 │  └─ img/
 │     ├─ main-icon.png
 │     └─ server-diagram.png
+├─ docs/               # 運用・保守・セキュリティ関連ドキュメント
 ├─ .github/workflows/  # GitHub Actions による自動デプロイ
 └─ README.md
 ```
@@ -79,7 +80,7 @@ python -m http.server 8000
 `contact.html` の問い合わせフォームは、静的サイト運用を維持するため AWS Lambda Function URL への JSON POST を前提にしています。
 送信処理は `static/main.js` で行い、`name`, `email`, `topic`, `message`, `_gotcha` を JSON として送信します。
 
-Lambda / SES 側の運用方針は、`MAINTENANCE.md` の問い合わせフォーム運用方針を参照してください。
+Lambda / SES 側の運用方針は、`docs/MAINTENANCE.md` の問い合わせフォーム運用方針を参照してください。
 
 ## Purpose
 
