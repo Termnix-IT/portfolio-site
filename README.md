@@ -10,7 +10,7 @@ Linux・Network・Python を軸にした実務経験と個人プロジェクト�
 - 全ページ共通の Career Document Layout（左サイドパネル＋右メイン2カラム）
 - 濃紺＋シアン＋グリーンを基調とした技術ドキュメント風デザイン
 - レスポンシブ対応（PC / タブレット / モバイル）
-- GitHub Pages および AWS S3 + CloudFront へのデプロイを想定
+- AWS S3 + CloudFront へのデプロイを想定
 
 ## Pages
 
@@ -73,7 +73,7 @@ python -m http.server 8000
 ## Deployment
 
 - `master` ブランチへの push を契機に GitHub Actions が起動
-- GitHub Pages と AWS S3 + CloudFront に同時にデプロイ
+- AWS S3 + CloudFront にデプロイ
 
 ## Contact Form
 

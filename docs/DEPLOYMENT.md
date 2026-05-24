@@ -1,25 +1,16 @@
 # Deployment
 
-このリポジトリは GitHub Actions により、`master` ブランチへの `push` を契機に以下へ自動デプロイできます。
+このリポジトリは GitHub Actions により、`master` ブランチへの `push` を契機に AWS S3 + CloudFront へ自動デプロイできます。
 
-- GitHub Pages
 - AWS S3 + CloudFront
 
-対象ワークフローは [`.github/workflows/deploy.yml`](/C:/Users/lugep/デスクトップ/Google Drive/ProjectFolder/Portfolio_Web/.github/workflows/deploy.yml) です。
+対象ワークフローは `.github/workflows/deploy.yml` です。
 
 ## 前提
 
 - サイトはビルド不要の静的ファイル構成です
-- 配布対象はリポジトリ直下の HTML と `static/` 配下です
-- `CLAUDE.md` や `.github/` など公開不要ファイルはデプロイ対象から除外しています
-
-## GitHub Pages 設定
-
-1. GitHub リポジトリの `Settings` を開く
-2. `Pages` を開く
-3. `Build and deployment` の `Source` を `GitHub Actions` に変更する
-
-これで `master` に push すると Actions から Pages へ反映されます。
+- 配布対象はリポジトリ直下の `*.html` と `static/` 配下です
+- `docs/`, `.github/`, `.gitignore`, `README.md` などの公開不要ファイルは bundle に含めません
 
 ## AWS 設定
 
@@ -55,14 +46,12 @@ OIDC の信頼ポリシーでは、このリポジトリの `master` ブラン�
 
 ## デプロイ内容
 
-ワークフローは最初に `_site/` を作成し、公開対象ファイルだけをまとめます。その後、同じアーティファクトを使って以下を並列実行します。
+ワークフローは最初に `_site/` を作成し、公開対象ファイルだけをまとめます。その後、同じアーティファクトを使って以下を実行します。
 
-- GitHub Pages へデプロイ
 - S3 へ同期
 - CloudFront の全体 invalidation
 
 ## 注意点
 
-- GitHub Pages 側で独自ドメインを使う場合は、必要に応じて `CNAME` ファイルをリポジトリ直下に置いてください
 - CloudFront の invalidation は毎回 `/*` を削除するため、更新頻度が高い場合は運用コストを見直してください
 - `master` 以外のブランチでも試したい場合は、`workflow_dispatch` で手動実行できます
