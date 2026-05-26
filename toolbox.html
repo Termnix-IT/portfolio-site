@@ -77,7 +77,7 @@
                 <nav class="cdoc-card cdoc-toc" aria-label="ページ内目次">
                     <p class="cdoc-card-label">Sections</p>
                     <ul class="cdoc-toc-list">
-                        <li><a href="#tool-1"><span class="cdoc-toc-mark">A</span>準備中ツール</a></li>
+                        <li><a href="#tool-1"><span class="cdoc-toc-mark">A</span>CIPHER VAULT</a></li>
                         <li><a href="#roadmap"><span class="cdoc-toc-mark">B</span>今後の展開</a></li>
                     </ul>
                 </nav>
@@ -104,14 +104,28 @@
                     <header class="cdoc-section-head">
                         <span class="cdoc-section-badge" aria-hidden="true">A</span>
                         <div class="cdoc-section-titles">
-                            <p class="cdoc-section-kicker">tool-01</p>
-                            <h2 class="cdoc-section-title">準備中</h2>
+                            <p class="cdoc-section-kicker">tool-01 / password manager</p>
+                            <h2 class="cdoc-section-title">CIPHER VAULT</h2>
                         </div>
-                        <span class="cdoc-status-pill cdoc-status-pill--planned"><i class="fas fa-calendar-alt"></i> 準備中</span>
+                        <span class="cdoc-section-link"><i class="fas fa-check-circle"></i> 公開中</span>
                     </header>
                     <p class="cdoc-project-body">
-                        ツールの詳細情報が追加される予定です。完成し次第、概要・使い方・リポジトリへのリンクをここに掲載します。
+                        ローカル動作を前提にしたパスワード管理アプリです。データは自端末の SQLite に保存し、外部サーバーへ送信しない構成で、保管庫のロック・解錠、エントリ管理、パスワード生成、クリップボードコピー、自動ロックに対応しています。
                     </p>
+                    <p class="cdoc-project-body">
+                        Electron 版として Windows 向けの setup / portable 配布にも対応し、GitHub Releases から起動用ファイルを取得できるようにしています。
+                    </p>
+                    <div class="cdoc-tags">
+                        <span class="cdoc-tag cdoc-tag--accent">Electron</span>
+                        <span class="cdoc-tag cdoc-tag--accent">React</span>
+                        <span class="cdoc-tag cdoc-tag--accent">Node.js</span>
+                        <span class="cdoc-tag cdoc-tag--accent">SQLite</span>
+                        <span class="cdoc-tag cdoc-tag--accent">TypeScript</span>
+                    </div>
+                    <div class="cdoc-project-actions">
+                        <a href="https://github.com/Termnix-IT/CIPHER-VAULT" target="_blank" rel="noopener noreferrer" class="cdoc-btn cdoc-btn--primary"><i class="fab fa-github"></i> GitHubを見る</a>
+                        <a href="https://github.com/Termnix-IT/CIPHER-VAULT/releases/tag/v0.1.0" target="_blank" rel="noopener noreferrer" class="cdoc-btn"><i class="fas fa-download"></i> Releaseを見る</a>
+                    </div>
                 </section>
 
                 <section id="roadmap" class="cdoc-section">
