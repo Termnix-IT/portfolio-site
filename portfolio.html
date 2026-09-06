@@ -77,8 +77,8 @@
                 <nav class="cdoc-card cdoc-toc" aria-label="ページ内目次">
                     <p class="cdoc-card-label">Sections</p>
                     <ul class="cdoc-toc-list">
-                        <li><a href="#project-1"><span class="cdoc-toc-mark">A</span>自宅サーバ公開</a></li>
-                        <li><a href="#project-2"><span class="cdoc-toc-mark">B</span>Zabbix監視導入</a></li>
+                        <li><a href="#project-1"><span class="cdoc-toc-mark">A</span>オンプレNW構築</a></li>
+                        <li><a href="#project-2"><span class="cdoc-toc-mark">B</span>Zabbix監視基盤</a></li>
                     </ul>
                 </nav>
               </div>
@@ -91,7 +91,7 @@
                         個人で<span class="cdoc-hero-title-mark">構築・検証</span>したプロジェクトの記録
                     </h1>
                     <p class="cdoc-hero-lead">
-                        自宅サーバ公開や監視基盤の整備など、運用視点を持って手を動かしたプロジェクトをまとめています。構成図と手順を残し、あとから見返せる形で公開しています。
+                        オンプレネットワークの設計や監視基盤の整備など、運用視点を持って手を動かしたプロジェクトをまとめています。構成図と手順を残し、あとから見返せる形で公開しています。
                     </p>
                     <div class="cdoc-hero-chips">
                         <span class="cdoc-chip cdoc-chip--solid"><i class="fab fa-linux"></i>Linux</span>
@@ -106,38 +106,42 @@
                     <header class="cdoc-section-head">
                         <span class="cdoc-section-badge" aria-hidden="true">A</span>
                         <div class="cdoc-section-titles">
-                            <p class="cdoc-section-kicker">project-01 / self-hosting</p>
-                            <h2 class="cdoc-section-title">自宅サーバ公開プロジェクト</h2>
+                            <p class="cdoc-section-kicker">project-01 / on-premises</p>
+                            <h2 class="cdoc-section-title">オンプレネットワーク構築</h2>
                         </div>
                         <span class="cdoc-section-link"><i class="fas fa-check-circle"></i> 完成</span>
                     </header>
                     <p class="cdoc-project-body">
-                        Flask + Linux 構成で Web ページを外部公開。UFW によるセキュリティ制御、DDNS による外部公開、運用を見据えた構成整理まで実施しました。
+                        当初は自宅の Flask + Nginx でこの Web ページを公開していましたが、配信を AWS S3 + CloudFront へ移行したことに伴い、オンプレ側をネットワークから設計し直しました。上位ルータ AX1800 の配下に DMZ（192.168.5.x）を切って外部公開ホストを隔離し、内部は ER605 を境界に VLAN10（クライアント）／20（サーバ）／30（Wi-Fi・IoT）／40（テスト）へセグメント分割、ACL でゾーン間の通信を制御しています。
+                    </p>
+                    <p class="cdoc-project-body">
+                        DMZ の Ubuntu では Minecraft サーバを運用しており、ポートフォワーディングで必要なポートのみを開放し、サーバ自体も使用するときだけ起動する運用にすることで、常時外部にさらす面を最小限に抑えています。テスト用の VLAN40 も同様に、検証時のみ立ち上げる構成としました。
                     </p>
                     <div class="cdoc-tags">
-                        <span class="cdoc-tag cdoc-tag--accent">Flask</span>
-                        <span class="cdoc-tag cdoc-tag--accent">Nginx</span>
                         <span class="cdoc-tag cdoc-tag--accent">Linux</span>
+                        <span class="cdoc-tag cdoc-tag--accent">DMZ</span>
+                        <span class="cdoc-tag cdoc-tag--accent">VLAN</span>
+                        <span class="cdoc-tag cdoc-tag--accent">ACL</span>
                         <span class="cdoc-tag cdoc-tag--accent">UFW</span>
-                        <span class="cdoc-tag cdoc-tag--accent">DDNS</span>
+                        <span class="cdoc-tag cdoc-tag--accent">ポートフォワーディング</span>
                     </div>
 
                     <div class="cdoc-publish">
                         <article class="cdoc-pub-card">
                             <h3><i class="fas fa-pen-nib"></i> Qiita 記事</h3>
-                            <p>UFW 設定とサーバ公開についてまとめた記事</p>
+                            <p>DMZ 分離と VLAN セグメント設計についてまとめた記事</p>
                             <p class="cdoc-status-pill cdoc-status-pill--wip"><i class="fas fa-clock"></i> 公開準備中</p>
                         </article>
                         <article class="cdoc-pub-card">
                             <h3><i class="fab fa-github"></i> GitHub リポジトリ</h3>
-                            <p>Flask を用いた Web サーバの構成コード</p>
+                            <p>ネットワーク構成と公開サーバの設定ファイル</p>
                             <p class="cdoc-status-pill cdoc-status-pill--wip"><i class="fas fa-clock"></i> 公開準備中</p>
                         </article>
                     </div>
 
                     <h3 class="cdoc-subtitle"><i class="fas fa-project-diagram"></i> 構成図</h3>
                     <figure class="cdoc-figure">
-                        <img src="static/img/server-diagram.png" alt="自宅サーバ公開プロジェクト 構成図" class="diagram-zoomable" loading="lazy">
+                        <img src="static/img/on-premises-mynetwork.png" alt="オンプレネットワーク構成図" class="diagram-zoomable" loading="lazy">
                         <figcaption><i class="fas fa-search-plus"></i> クリックで拡大</figcaption>
                     </figure>
                 </section>
@@ -147,35 +151,38 @@
                         <span class="cdoc-section-badge" aria-hidden="true">B</span>
                         <div class="cdoc-section-titles">
                             <p class="cdoc-section-kicker">project-02 / monitoring</p>
-                            <h2 class="cdoc-section-title">Zabbix 監視導入</h2>
+                            <h2 class="cdoc-section-title">Zabbix 監視基盤</h2>
                         </div>
-                        <span class="cdoc-section-link"><i class="fas fa-calendar-alt"></i> 実装予定</span>
+                        <span class="cdoc-section-link"><i class="fas fa-check-circle"></i> 完成</span>
                     </header>
                     <p class="cdoc-project-body">
-                        Raspberry Pi 上に Zabbix Server を構築し、自宅環境の監視基盤を整備します。エージェント設定、UFW 制御、メール通知までを一通り組む計画です。
+                        VLAN20（サーバセグメント）の Raspberry Pi 上に Zabbix Server を構築し、自宅環境の監視基盤として稼働させています。ER605 は SNMP で、DMZ の公開サーバはエージェント経由で監視し、セグメントをまたいだ死活・リソース状況を 1 か所で確認できるようにしました。同じ Raspberry Pi では SMB によるファイル共有も併用しています。
                     </p>
                     <div class="cdoc-tags">
                         <span class="cdoc-tag cdoc-tag--accent">Zabbix</span>
                         <span class="cdoc-tag cdoc-tag--accent">Raspberry Pi</span>
+                        <span class="cdoc-tag cdoc-tag--accent">SNMP</span>
+                        <span class="cdoc-tag cdoc-tag--accent">SMB</span>
                         <span class="cdoc-tag cdoc-tag--accent">UFW</span>
-                        <span class="cdoc-tag cdoc-tag--accent">メール通知</span>
                     </div>
 
                     <div class="cdoc-publish">
                         <article class="cdoc-pub-card">
                             <h3><i class="fas fa-pen-nib"></i> Qiita 記事</h3>
-                            <p>エージェント設定・UFW・通知の構築まとめ</p>
-                            <p class="cdoc-status-pill cdoc-status-pill--planned"><i class="fas fa-calendar-alt"></i> 実装予定</p>
+                            <p>エージェント設定・SNMP 監視・通知の構築まとめ</p>
+                            <p class="cdoc-status-pill cdoc-status-pill--wip"><i class="fas fa-clock"></i> 公開準備中</p>
                         </article>
                         <article class="cdoc-pub-card">
                             <h3><i class="fab fa-github"></i> GitHub リポジトリ</h3>
                             <p>Zabbix 構成の設定ファイル・手順</p>
-                            <p class="cdoc-status-pill cdoc-status-pill--planned"><i class="fas fa-calendar-alt"></i> 実装予定</p>
+                            <p class="cdoc-status-pill cdoc-status-pill--wip"><i class="fas fa-clock"></i> 公開準備中</p>
                         </article>
                     </div>
 
-                    <h3 class="cdoc-subtitle"><i class="fas fa-camera"></i> スクリーンショット</h3>
-                    <p class="cdoc-project-body">実装後に掲載予定。</p>
+                    <h3 class="cdoc-subtitle"><i class="fas fa-desktop"></i> 監視対象</h3>
+                    <p class="cdoc-project-body">
+                        ER605（SNMP）／DMZ 公開サーバ（Zabbix Agent）／Raspberry Pi 自身を監視対象としています。ダッシュボードのスクリーンショットは追って掲載予定です。
+                    </p>
                 </section>
             </div>
         </div>

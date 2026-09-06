@@ -137,7 +137,7 @@
                         <article class="cdoc-overview-item">
                             <span class="cdoc-overview-index">02 / Build</span>
                             <h3>自分でも構築して確かめる</h3>
-                            <p>Linux、UFW、DDNSに加え、AWSやTerraformを使ったIaC環境構築にも取り組み、個人プロジェクトとして継続しています。</p>
+                            <p>自宅にDMZとVLANを分けたオンプレ環境を構築し、Zabbixによる監視まで運用しています。並行してAWSやTerraformを使ったIaC環境構築にも取り組み、個人プロジェクトとして継続しています。</p>
                         </article>
                         <article class="cdoc-overview-item">
                             <span class="cdoc-overview-index">03 / Publish</span>
@@ -210,12 +210,14 @@
                                 <h3 class="cdoc-skill-title">Infrastructure</h3>
                                 <span class="cdoc-skill-cat">/ network</span>
                             </div>
-                            <p>公開、監視、通信、基本的なセキュリティ制御まで含めて、構成全体を見ながら扱っています。</p>
+                            <p>ゾーン分離とセグメント設計を起点に、公開・監視・通信制御までを構成全体として組み立てています。</p>
                             <div class="cdoc-tags">
                                 <span class="cdoc-tag cdoc-tag--green"><i class="fab fa-linux"></i> Linux</span>
                                 <span class="cdoc-tag cdoc-tag--green">Cisco</span>
                                 <span class="cdoc-tag cdoc-tag--green">AWS</span>
                                 <span class="cdoc-tag cdoc-tag--green">VLAN</span>
+                                <span class="cdoc-tag cdoc-tag--green">DMZ</span>
+                                <span class="cdoc-tag cdoc-tag--green">Zabbix</span>
                                 <span class="cdoc-tag cdoc-tag--green">UFW</span>
                             </div>
                         </article>
@@ -292,20 +294,20 @@
                     <div class="cdoc-projects">
                         <article class="cdoc-project">
                             <div class="cdoc-project-media">
-                                <img src="static/img/server-diagram.png" alt="自宅サーバ公開プロジェクト構成図" class="diagram-zoomable" loading="lazy">
+                                <img src="static/img/on-premises-mynetwork.png" alt="オンプレネットワーク構成図" class="diagram-zoomable" loading="lazy">
                             </div>
                             <div>
-                                <p class="cdoc-project-label">Project 01 / self-hosting</p>
-                                <h3 class="cdoc-project-title">自宅サーバ公開プロジェクト</h3>
+                                <p class="cdoc-project-label">Project 01 / on-premises</p>
+                                <h3 class="cdoc-project-title">オンプレネットワーク構築</h3>
                                 <p class="cdoc-project-body">
-                                    Flask と Linux を使った公開環境を構築し、UFW によるセキュリティ制御、DDNS による外部公開、運用を見据えた構成整理まで一通り実施しました。図解と手順を残し、あとから見返せる形でプロジェクト化しています。
+                                    上位ルータ配下に DMZ を切って外部公開ホストを隔離し、内部は ER605 で VLAN10/20/30/40 にセグメント分割して ACL でゾーン間を制御しています。当初この Web ページ自体を自宅の Flask + Nginx で公開していましたが、現在は AWS へ移行し、オンプレは公開サーバの運用と検証の基盤として再設計しました。
                                 </p>
                                 <div class="cdoc-tags">
-                                    <span class="cdoc-tag cdoc-tag--accent">Flask</span>
                                     <span class="cdoc-tag cdoc-tag--accent">Linux</span>
-                                    <span class="cdoc-tag cdoc-tag--accent">Nginx</span>
+                                    <span class="cdoc-tag cdoc-tag--accent">DMZ</span>
+                                    <span class="cdoc-tag cdoc-tag--accent">VLAN</span>
+                                    <span class="cdoc-tag cdoc-tag--accent">ACL</span>
                                     <span class="cdoc-tag cdoc-tag--accent">UFW</span>
-                                    <span class="cdoc-tag cdoc-tag--accent">DDNS</span>
                                 </div>
                                 <div class="cdoc-project-actions">
                                     <a href="portfolio.html#project-1" class="cdoc-btn cdoc-btn--primary">詳細を見る →</a>

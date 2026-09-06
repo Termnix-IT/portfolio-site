@@ -17,7 +17,7 @@ Linux・Network・Python を軸にした実務経験と個人プロジェクト�
 | ファイル | 役割 |
 |---|---|
 | `index.html` | Career Profile：Overview / Career Timeline / Skills / Certifications / Projects / Publishing |
-| `portfolio.html` | 個人プロジェクトの詳細（自宅サーバ公開、Zabbix 監視導入など） |
+| `portfolio.html` | 個人プロジェクトの詳細（オンプレネットワーク構築、Zabbix 監視基盤など） |
 | `toolbox.html` | 自作ツール・スクリプト一覧 |
 | `diagram.html` | システム構成図ギャラリー |
 | `contact.html` | 連絡チャンネル（Qiita / GitHub / 外部フォーム） |
@@ -46,7 +46,7 @@ Portfolio_Web/
 │  ├─ main.js          # ナビアクティブ表示、Qiita 記事取得
 │  └─ img/
 │     ├─ main-icon.png
-│     └─ server-diagram.png
+│     └─ on-premises-mynetwork.png
 ├─ docs/               # 運用・保守・セキュリティ関連ドキュメント
 ├─ .github/workflows/  # GitHub Actions による自動デプロイ
 └─ README.md
