@@ -78,7 +78,8 @@
                     <p class="cdoc-card-label">Sections</p>
                     <ul class="cdoc-toc-list">
                         <li><a href="#tool-1"><span class="cdoc-toc-mark">A</span>CIPHER VAULT</a></li>
-                        <li><a href="#roadmap"><span class="cdoc-toc-mark">B</span>今後の展開</a></li>
+                        <li><a href="#tool-2"><span class="cdoc-toc-mark">B</span>HashChecker</a></li>
+                        <li><a href="#roadmap"><span class="cdoc-toc-mark">C</span>今後の展開</a></li>
                     </ul>
                 </nav>
               </div>
@@ -91,11 +92,12 @@
                         運用と検証を支える<span class="cdoc-hero-title-mark">自作ツール</span>
                     </h1>
                     <p class="cdoc-hero-lead">
-                        日々の運用や個人プロジェクトで使うために自作したツール、スクリプト、アプリケーションをまとめていく予定です。
+                        日々の運用や個人プロジェクトで使うために自作したツール、スクリプト、アプリケーションをまとめています。
                     </p>
                     <div class="cdoc-hero-chips">
                         <span class="cdoc-chip cdoc-chip--solid"><i class="fab fa-python"></i>Python</span>
                         <span class="cdoc-chip cdoc-chip--solid"><i class="fas fa-terminal"></i>Shell</span>
+                        <span class="cdoc-chip cdoc-chip--solid"><i class="fas fa-code"></i>Go / Rust</span>
                         <span class="cdoc-chip"><i class="fas fa-cogs"></i>Automation</span>
                     </div>
                 </section>
@@ -128,9 +130,41 @@
                     </div>
                 </section>
 
-                <section id="roadmap" class="cdoc-section">
+                <section id="tool-2" class="cdoc-section">
                     <header class="cdoc-section-head">
                         <span class="cdoc-section-badge" aria-hidden="true">B</span>
+                        <div class="cdoc-section-titles">
+                            <p class="cdoc-section-kicker">tool-02 / hash verification</p>
+                            <h2 class="cdoc-section-title">HashChecker</h2>
+                        </div>
+                        <span class="cdoc-section-link"><i class="fas fa-check-circle"></i> 公開中</span>
+                    </header>
+                    <p class="cdoc-project-body">
+                        ベンダーから提供されたハッシュ値と、確認対象ファイルから算出したハッシュ値を比較するためのツールです。MD5 と SHA256 に対応し、ハッシュ値を記載したテキストファイルと対象ファイルを指定するだけで照合できます。空行の無視、複数行検出、16進数形式と文字数の検証、大文字・小文字を区別しない比較まで仕様として定めています。
+                    </p>
+                    <p class="cdoc-project-body">
+                        もとは業務想定の制約下で必要になった確認作業がきっかけで、外部ツールを導入せず Windows 標準機能だけで完結させる前提から PowerShell 版を設計しました。それとは別に、自宅環境で改めて共通仕様書を起こし、同じ仕様を Python / Go / C#/.NET / Rust の 4 言語で CLI として実装し直しています。
+                    </p>
+                    <p class="cdoc-project-body">
+                        主眼は「同じ仕様を言語を変えて実装したときに何が変わるか」を確かめることに置きました。入力検証・エラー表示・終了コードを言語間で揃えた上で、横断確認スクリプトと GitHub Actions で全実装が同一のテストデータに対して同じ終了コードを返すかを push のたびに検証し、仕様差が出たら検出できるようにしています。
+                    </p>
+                    <div class="cdoc-tags">
+                        <span class="cdoc-tag cdoc-tag--accent">PowerShell</span>
+                        <span class="cdoc-tag cdoc-tag--accent">Python</span>
+                        <span class="cdoc-tag cdoc-tag--accent">Go</span>
+                        <span class="cdoc-tag cdoc-tag--accent">C#/.NET</span>
+                        <span class="cdoc-tag cdoc-tag--accent">Rust</span>
+                        <span class="cdoc-tag cdoc-tag--accent">GitHub Actions</span>
+                    </div>
+                    <div class="cdoc-project-actions">
+                        <a href="https://github.com/Termnix-IT/HashChecker" target="_blank" rel="noopener noreferrer" class="cdoc-btn cdoc-btn--primary"><i class="fab fa-github"></i> GitHubを見る</a>
+                        <a href="https://github.com/Termnix-IT/HashChecker/blob/main/%E5%85%B1%E9%80%9A%E4%BB%95%E6%A7%98.md" target="_blank" rel="noopener noreferrer" class="cdoc-btn"><i class="fas fa-file-lines"></i> 共通仕様を見る</a>
+                    </div>
+                </section>
+
+                <section id="roadmap" class="cdoc-section">
+                    <header class="cdoc-section-head">
+                        <span class="cdoc-section-badge" aria-hidden="true">C</span>
                         <div class="cdoc-section-titles">
                             <p class="cdoc-section-kicker">roadmap</p>
                             <h2 class="cdoc-section-title">今後の展開</h2>
