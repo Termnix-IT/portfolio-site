@@ -47,7 +47,6 @@ Portfolio_Web/
 │  └─ img/
 │     ├─ main-icon.png
 │     └─ on-premises-mynetwork.png
-├─ docs/               # 運用・保守・セキュリティ関連ドキュメント
 ├─ .github/workflows/  # GitHub Actions による自動デプロイ
 └─ README.md
 ```
@@ -80,7 +79,7 @@ python -m http.server 8000
 `contact.html` の問い合わせフォームは、静的サイト運用を維持するため AWS Lambda Function URL への JSON POST を前提にしています。
 送信処理は `static/main.js` で行い、`name`, `email`, `topic`, `message`, `_gotcha` を JSON として送信します。
 
-Lambda / SES 側の運用方針は、`docs/MAINTENANCE.md` の問い合わせフォーム運用方針を参照してください。
+Lambda / SES 側の設定と運用方針は、このリポジトリ外でローカルに管理しています。
 
 ## Purpose
 
