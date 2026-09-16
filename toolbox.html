@@ -79,7 +79,8 @@
                     <ul class="cdoc-toc-list">
                         <li><a href="#tool-1"><span class="cdoc-toc-mark">A</span>CIPHER VAULT</a></li>
                         <li><a href="#tool-2"><span class="cdoc-toc-mark">B</span>HashChecker</a></li>
-                        <li><a href="#roadmap"><span class="cdoc-toc-mark">C</span>今後の展開</a></li>
+                        <li><a href="#tool-3"><span class="cdoc-toc-mark">C</span>Port Manager Tool</a></li>
+                        <li><a href="#roadmap"><span class="cdoc-toc-mark">D</span>今後の展開</a></li>
                     </ul>
                 </nav>
               </div>
@@ -115,7 +116,10 @@
                         ローカル動作を前提にしたパスワード管理アプリです。データは自端末の SQLite に保存し、外部サーバーへ送信しない構成で、保管庫のロック・解錠、エントリ管理、パスワード生成、クリップボードコピー、自動ロックに対応しています。
                     </p>
                     <p class="cdoc-project-body">
-                        Electron 版として Windows 向けの setup / portable 配布にも対応し、GitHub Releases から起動用ファイルを取得できるようにしています。
+                        v0.2.2 では、専用パスフレーズで保護する暗号化バックアップ（.cvault 形式）と空の保管庫への復元、弱い・重複・古いパスワードを端末内で点検するセキュリティ監査と SECURITY SCORE を追加しました。監査は外部へのパスワード送信や漏えい情報の照会を行わず、復元は全件を検証してから一括保存し、誤パスフレーズや改ざん、書き込み失敗時にはデータを追加しない設計にしています。
+                    </p>
+                    <p class="cdoc-project-body">
+                        Electron 版として Windows 向けの setup / portable 配布にも対応し、GitHub Releases から起動用ファイルを取得できるようにしています。setup 版はアプリ情報から手動更新できます。
                     </p>
                     <div class="cdoc-tags">
                         <span class="cdoc-tag cdoc-tag--accent">Electron</span>
@@ -126,7 +130,7 @@
                     </div>
                     <div class="cdoc-project-actions">
                         <a href="https://github.com/Termnix-IT/CIPHER-VAULT" target="_blank" rel="noopener noreferrer" class="cdoc-btn cdoc-btn--primary"><i class="fab fa-github"></i> GitHubを見る</a>
-                        <a href="https://github.com/Termnix-IT/CIPHER-VAULT/releases/tag/v0.1.0" target="_blank" rel="noopener noreferrer" class="cdoc-btn"><i class="fas fa-download"></i> Releaseを見る</a>
+                        <a href="https://github.com/Termnix-IT/CIPHER-VAULT/releases/tag/v0.2.2" target="_blank" rel="noopener noreferrer" class="cdoc-btn"><i class="fas fa-download"></i> Releaseを見る</a>
                     </div>
                 </section>
 
@@ -162,9 +166,40 @@
                     </div>
                 </section>
 
-                <section id="roadmap" class="cdoc-section">
+                <section id="tool-3" class="cdoc-section">
                     <header class="cdoc-section-head">
                         <span class="cdoc-section-badge" aria-hidden="true">C</span>
+                        <div class="cdoc-section-titles">
+                            <p class="cdoc-section-kicker">tool-03 / port management</p>
+                            <h2 class="cdoc-section-title">Port Manager Tool</h2>
+                        </div>
+                        <span class="cdoc-section-link"><i class="fas fa-check-circle"></i> 公開中</span>
+                    </header>
+                    <p class="cdoc-project-body">
+                        Windows 向けのポート管理デスクトップアプリです。開発環境で起動したまま残っているサーバーや DB のポートを見つけ、確認・停止・登録・監視をひとつの画面で行えます。TCP / UDP の使用中ポートをプロセス名・PID・状態とともに一覧表示し、「すべて / 開発 / DB」の切替で Vite・Django・PostgreSQL などのポートだけに絞り込めます。
+                    </p>
+                    <p class="cdoc-project-body">
+                        プロセス停止は誤操作を防ぐ設計を重視しました。通常停止 / 強制停止と子プロセスの一括停止を選べる一方、OS の重要プロセスやアプリ自身は停止不可とし、サービスや別ユーザーのプロセスは追加で確認します。停止直前にはプロセスとポートの状態を再確認し、表示が古ければ中止します。
+                    </p>
+                    <p class="cdoc-project-body">
+                        あわせて、同じポートを別プロセスが待ち受ける競合や Hyper-V / WSL / Docker による予約ポート範囲の診断、ポートの使用開始・解放の履歴記録、お気に入りポートの監視とデスクトップ通知に対応しています。PowerShell 実行部分は依存注入で差し替え、Electron を起動せずにロジックをテストできる構成とし、CI で Lint とテスト、タグ push でビルドとリリースを自動化しています。v1.0.0 ではインストーラー版（自動アップデート対応）とポータブル版を配布しています。
+                    </p>
+                    <div class="cdoc-tags">
+                        <span class="cdoc-tag cdoc-tag--accent">Electron</span>
+                        <span class="cdoc-tag cdoc-tag--accent">JavaScript</span>
+                        <span class="cdoc-tag cdoc-tag--accent">PowerShell</span>
+                        <span class="cdoc-tag cdoc-tag--accent">electron-builder</span>
+                        <span class="cdoc-tag cdoc-tag--accent">GitHub Actions</span>
+                    </div>
+                    <div class="cdoc-project-actions">
+                        <a href="https://github.com/Termnix-IT/PortManagerTool" target="_blank" rel="noopener noreferrer" class="cdoc-btn cdoc-btn--primary"><i class="fab fa-github"></i> GitHubを見る</a>
+                        <a href="https://github.com/Termnix-IT/PortManagerTool/releases/tag/v1.0.0" target="_blank" rel="noopener noreferrer" class="cdoc-btn"><i class="fas fa-download"></i> Releaseを見る</a>
+                    </div>
+                </section>
+
+                <section id="roadmap" class="cdoc-section">
+                    <header class="cdoc-section-head">
+                        <span class="cdoc-section-badge" aria-hidden="true">D</span>
                         <div class="cdoc-section-titles">
                             <p class="cdoc-section-kicker">roadmap</p>
                             <h2 class="cdoc-section-title">今後の展開</h2>
