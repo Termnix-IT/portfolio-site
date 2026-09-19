@@ -71,7 +71,7 @@ python -m http.server 8000
 
 ## Deployment
 
-- `master` ブランチへの push を契機に GitHub Actions が起動
+- `main` ブランチへの push を契機に GitHub Actions が起動
 - AWS S3 + CloudFront にデプロイ
 
 ## Contact Form
