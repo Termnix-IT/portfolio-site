@@ -80,7 +80,9 @@
                         <li><a href="#tool-1"><span class="cdoc-toc-mark">A</span>CIPHER VAULT</a></li>
                         <li><a href="#tool-2"><span class="cdoc-toc-mark">B</span>HashChecker</a></li>
                         <li><a href="#tool-3"><span class="cdoc-toc-mark">C</span>Port Manager Tool</a></li>
-                        <li><a href="#roadmap"><span class="cdoc-toc-mark">D</span>今後の展開</a></li>
+                        <li><a href="#tool-4"><span class="cdoc-toc-mark">D</span>LimitView</a></li>
+                        <li><a href="#tool-5"><span class="cdoc-toc-mark">E</span>oterm</a></li>
+                        <li><a href="#roadmap"><span class="cdoc-toc-mark">F</span>今後の展開</a></li>
                     </ul>
                 </nav>
               </div>
@@ -197,9 +199,72 @@
                     </div>
                 </section>
 
-                <section id="roadmap" class="cdoc-section">
+                <section id="tool-4" class="cdoc-section">
                     <header class="cdoc-section-head">
                         <span class="cdoc-section-badge" aria-hidden="true">D</span>
+                        <div class="cdoc-section-titles">
+                            <p class="cdoc-section-kicker">tool-04 / ai usage monitor</p>
+                            <h2 class="cdoc-section-title">LimitView</h2>
+                        </div>
+                        <span class="cdoc-section-link"><i class="fas fa-check-circle"></i> 公開中</span>
+                    </header>
+                    <p class="cdoc-project-body">
+                        Codex と Claude Code のサブスクリプション利用枠を自動で取得し、5時間枠と週間枠の残り割合をひとつの小さな画面で確認できる Windows 向けデスクトップアプリです。2つの AI コーディングツールを併用していると、どちらの枠があとどれだけ残っているかを確かめるたびに別々の画面を開く必要があったため、常駐させて一目で判断できるダッシュボードとして作りました。
+                    </p>
+                    <p class="cdoc-project-body">
+                        Codex は青、Claude Code はオレンジの二重リングで残量を表示し、中央のアイコンのクリックやホイールで表示するサービスを、中央の数値や枠のラベルのクリックで5時間枠と週間枠を切り替えられます。リセットまでの残り時間も表示し、透明・非装飾のウィンドウと 200×200 のミニマル表示で作業の邪魔にならないようにしています。
+                    </p>
+                    <p class="cdoc-project-body">
+                        残量は Codex CLI の app-server と、アプリに同梱した OpenUsage から読み取り、サービスごとに60秒間隔で更新します。取得できない場合は「要認証」「CLI未検出」「時間超過」「取得失敗」に分類して原因と復旧手順を示し、タイムアウトやアプリ終了時には起動した取得用プロセスを子孫まで停止します。同梱する OpenUsage はビルド時にバージョンを固定してチェックサムを検証し、取得結果はメモリ上だけに保持してディスクへ保存しない設計です。v0.1.10 では Windows x64 向けインストーラーと SHA-256 チェックサムを配布しています。
+                    </p>
+                    <div class="cdoc-tags">
+                        <span class="cdoc-tag cdoc-tag--accent">Tauri v2</span>
+                        <span class="cdoc-tag cdoc-tag--accent">Rust</span>
+                        <span class="cdoc-tag cdoc-tag--accent">React</span>
+                        <span class="cdoc-tag cdoc-tag--accent">TypeScript</span>
+                        <span class="cdoc-tag cdoc-tag--accent">Vite</span>
+                    </div>
+                    <div class="cdoc-project-actions">
+                        <a href="https://github.com/Termnix-IT/ai-limit-view" target="_blank" rel="noopener noreferrer" class="cdoc-btn cdoc-btn--primary"><i class="fab fa-github"></i> GitHubを見る</a>
+                        <a href="https://github.com/Termnix-IT/ai-limit-view/releases/tag/v0.1.10" target="_blank" rel="noopener noreferrer" class="cdoc-btn"><i class="fas fa-download"></i> Releaseを見る</a>
+                    </div>
+                </section>
+
+                <section id="tool-5" class="cdoc-section">
+                    <header class="cdoc-section-head">
+                        <span class="cdoc-section-badge" aria-hidden="true">E</span>
+                        <div class="cdoc-section-titles">
+                            <p class="cdoc-section-kicker">tool-05 / terminal multiplexer</p>
+                            <h2 class="cdoc-section-title">oterm</h2>
+                        </div>
+                        <span class="cdoc-section-link"><i class="fas fa-check-circle"></i> 公開中</span>
+                    </header>
+                    <p class="cdoc-project-body">
+                        Rust で作ったオリジナルのターミナルソフトです。ratatui と portable-pty を土台に、vt100 で解析した画面を自作のレンダラで描画し、tmux のようなタブと左右・上下に何段でも分割できるペインをひとつの TUI で扱えます。ローカルシェルと SSH の接続先は TOML のプロファイルで管理し、SSH は OS 標準の ssh を呼び出すため、鍵やエージェントによる認証は通常の SSH と同じ仕組みで動きます。
+                    </p>
+                    <p class="cdoc-project-body">
+                        Ctrl+Space で開くモーダルに「1MB 以上のファイルを大きい順に列挙」のような自然言語を入力すると、AI がコマンドを提案してアクティブなペインに挿入します。挿入時には改行を付けず、内容を確認してから自分で実行する流れにしています。AI はクラウドの Anthropic Claude とローカルの Ollama をモーダル内で切り替えられ、API キーは設定本体とは別の secrets.toml に分離して、設定ファイルを共有してもキーが混ざらないようにしました。
+                    </p>
+                    <p class="cdoc-project-body">
+                        v0.5.0 では、過去に実行したコマンドを自然言語で探せるコマンド履歴の AI 検索を追加しました。LLM には質問文だけを送り、返ってきた検索語を使って手元の PowerShell / bash の履歴と照合するため、履歴そのものは外部に送信しません。CI でビルドとテストを行い、Windows / macOS / Linux 向けのバイナリをリリースで配布しています（動作確認は Windows のみ）。
+                    </p>
+                    <div class="cdoc-tags">
+                        <span class="cdoc-tag cdoc-tag--accent">Rust</span>
+                        <span class="cdoc-tag cdoc-tag--accent">ratatui</span>
+                        <span class="cdoc-tag cdoc-tag--accent">portable-pty</span>
+                        <span class="cdoc-tag cdoc-tag--accent">Claude API</span>
+                        <span class="cdoc-tag cdoc-tag--accent">Ollama</span>
+                        <span class="cdoc-tag cdoc-tag--accent">GitHub Actions</span>
+                    </div>
+                    <div class="cdoc-project-actions">
+                        <a href="https://github.com/Termnix-IT/oterm" target="_blank" rel="noopener noreferrer" class="cdoc-btn cdoc-btn--primary"><i class="fab fa-github"></i> GitHubを見る</a>
+                        <a href="https://github.com/Termnix-IT/oterm/releases/tag/v0.5.0" target="_blank" rel="noopener noreferrer" class="cdoc-btn"><i class="fas fa-download"></i> Releaseを見る</a>
+                    </div>
+                </section>
+
+                <section id="roadmap" class="cdoc-section">
+                    <header class="cdoc-section-head">
+                        <span class="cdoc-section-badge" aria-hidden="true">F</span>
                         <div class="cdoc-section-titles">
                             <p class="cdoc-section-kicker">roadmap</p>
                             <h2 class="cdoc-section-title">今後の展開</h2>
