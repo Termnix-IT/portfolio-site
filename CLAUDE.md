@@ -22,6 +22,8 @@ python -m http.server 8000
 
 `index.html`・`portfolio.html`・`toolbox.html`・`diagram.html`・`contact.html` の5ページは、テンプレートやインクルードの仕組みを使わず、ヘッダーのナビゲーション、左のサイドパネル、フッターをそれぞれのファイルに複製して持っています。そのため共通部分を変えるときは5ファイルすべてを同じように直す必要があります。特にサイドパネルの「Current Status」カード（現職・領域・学習中）は全ページで同一の内容でなければならず、過去に `index.html` だけ更新されて他ページが古いまま残ったことがあります。一方で「Links」カードと「Sections」カード（ページ内目次）はページごとに中身が異なります。
 
+各ページの `<head>` には、検索結果と SNS 共有用の `meta description`・`canonical`・OGP（`og:*`）があり、説明文はそのページのヒーローの説明文（`cdoc-hero-lead`）から作っています。ヒーローの文言やページの目的を変えたら説明文も直し、ページを増やしたときは同じ一式を、本番 URL `https://www.termnix-it.jp/` を基点にした絶対 URL で入れてください。フッターの著作権表記の年（`© 2025–2026`）は5ページに直書きしているので、年が変わったら揃えて更新します。
+
 各ページの本文は `.cdoc-section` を並べた構成で、セクション見出しの `cdoc-section-badge` に A, B, C… の連番を振り、サイドパネル目次の `cdoc-toc-mark` と `href="#id"` をそれに一致させています。途中にセクションを挿入したら、後ろのセクションのバッジと目次の文字も繰り下げてください。
 
 スタイルは `static/style.css` 末尾の「Career Document Layout」ブロックにある `.cdoc-*` クラスで組まれ、色や余白は CSS カスタムプロパティ（`--accent`、`--cdoc-green` など）で管理しています。新しいセクションは既存セクションの HTML を複製して中身を差し替える形で作り、インライン style は増やしません。ページ遷移・セクションの表示・状態表示の波紋・見出しマーカーの動きは、同ファイル末尾の「Motion」ブロックに CSS だけでまとめてあり、`prefers-reduced-motion` で動きを減らす設定の閲覧者や未対応ブラウザでは静止表示になります。Current Status カードの波紋は「現職」行の `cdoc-status-live` と「学習中」行の `cdoc-status-progress` に付くので、行を書き換えるときもこのクラスを残してください。`static/main.js` はナビのアクティブ表示、構成図のライトボックス（`.diagram-zoomable`）、`index.html` の Qiita 最新記事取得、`contact.html` のフォーム送信を扱い、どの処理も対象要素が存在するページでだけ動く作りです。問い合わせフォームは `data-endpoint` の AWS Lambda Function URL へ JSON を POST する前提で、Lambda / SES 側はこのリポジトリの外で管理しています。
@@ -49,6 +51,8 @@ python -m http.server 8000
 ### 画像を追加する
 
 `static/img/` に内容が分かる英語のファイル名で置き、HTML から相対パスで参照して、`alt` には内容が分かる日本語を書きます。構成図としてクリック拡大させたい画像には `diagram-zoomable` クラスを付けます。
+
+プロフィールのアイコンは、画面表示とファビコンには192px に縮小した `main-icon-192.png` を使い、元の1024px の `main-icon.png` は `og:image` 専用に残しています。元画像は約770KB あり、小さな表示に使うとページが重くなるため、アイコンを差し替えるときは縮小版も作り直してください。
 
 ## git 管理とデプロイ
 

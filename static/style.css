@@ -1592,6 +1592,8 @@ body.cdoc-page .navbar-toggler-icon {
     position: static;
     padding: 1.25rem 1.25rem;
   }
+  /* 横幅いっぱいに広げると正方形の枠が巨大化するため、2カラム時と同じ大きさに固定する */
+  .cdoc-link-list { grid-template-columns: repeat(4, 2.75rem); }
   .cdoc-main {
     padding: 0.75rem 1.25rem 3rem;
   }
