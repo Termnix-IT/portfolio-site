@@ -16,6 +16,7 @@ window.addEventListener('scroll', handleWindowScroll, { passive: true });
 
 document.addEventListener('DOMContentLoaded', () => {
   updateNavbarState();
+  initNavToggle();
   markActiveNavLink();
   loadQiitaArticles();
   initLightbox();
@@ -41,6 +42,22 @@ function updateNavbarState() {
   }
 
   nav.classList.toggle('scrolled', window.scrollY > NAV_SCROLLED_THRESHOLD);
+}
+
+// 狭い画面のナビメニュー開閉。Bootstrap の collapse と同じく、
+// メニューに .show、ボタンに aria-expanded と .collapsed を付け外しする。
+function initNavToggle() {
+  const toggler = document.querySelector('.navbar-toggler[aria-controls]');
+  const menu = toggler && document.getElementById(toggler.getAttribute('aria-controls'));
+  if (!menu) {
+    return;
+  }
+
+  toggler.addEventListener('click', () => {
+    const isOpen = menu.classList.toggle('show');
+    toggler.setAttribute('aria-expanded', String(isOpen));
+    toggler.classList.toggle('collapsed', !isOpen);
+  });
 }
 
 function initLightbox() {
