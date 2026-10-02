@@ -1106,7 +1106,7 @@ body.cdoc-page .navbar-toggler-icon {
 .cdoc-overview-index {
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  color: var(--accent);
+  color: var(--accent-dark);
   letter-spacing: 0.08em;
   display: block;
   margin-bottom: 0.35rem;
@@ -1175,7 +1175,7 @@ body.cdoc-page .navbar-toggler-icon {
 }
 .cdoc-timeline-now {
   font-size: 0.65rem;
-  background: #10b981;
+  background: var(--cdoc-green-dark);
   color: #fff;
   padding: 0.1rem 0.45rem;
   border-radius: 999px;
@@ -1739,6 +1739,29 @@ body.cdoc-page .footer-copy {
   font-family: var(--font-mono);
   letter-spacing: 0.04em;
   margin-top: 0.25rem;
+}
+
+/* --- Skip link（キーボード操作で本文へ直接移動する。フォーカスしたときだけ表示） --- */
+.cdoc-skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.75rem;
+  z-index: 1100;
+  padding: 0.55rem 0.9rem;
+  border-radius: 6px;
+  background: #0b1d4d;
+  color: #f8fafc;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  text-decoration: none;
+  transform: translateY(-160%);
+}
+.cdoc-skip-link:focus,
+.cdoc-skip-link:focus-visible {
+  transform: none;
+  outline: 2px solid #67e8f9;
+  outline-offset: 2px;
+  color: #f8fafc;
 }
 
 /* --- Motion (view transitions / scroll reveal / pulse / marker) ---

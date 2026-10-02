@@ -19,6 +19,7 @@ BASE_URL = "https://www.termnix-it.jp/"
 
 # 全ページで同一でなければならない部分
 SHARED_PARTS = {
+    "スキップリンク": r'<a class="cdoc-skip-link"[^>]*>.*?</a>',
     "ナビゲーション": r'<nav class="navbar[^"]*".*?</nav>',
     "サイドパネルのプロフィールと Current Status": (
         r'<div class="cdoc-card cdoc-profile">.*?<p class="cdoc-card-label">Current Status</p>.*?</ul>\s*</div>'
@@ -77,6 +78,14 @@ def check_current_page_mark(page: str, text: str) -> list[str]:
     if marked != [page] or stray:
         return [f'{page}: ナビの現在ページの印が {marked or "なし"} に付いています'
                 f'（{page} へのリンクだけに class="nav-link active" と aria-current="page" を付けてください）']
+    return []
+
+
+def check_skip_target(page: str, text: str) -> list[str]:
+    """スキップリンクの移動先（id="content"）が1つだけあるか。"""
+    count = len(re.findall(r'\sid="content"', text))
+    if count != 1:
+        return [f'{page}: スキップリンクの移動先 id="content" が {count} 個あります（1個にしてください）']
     return []
 
 
@@ -139,6 +148,7 @@ def main() -> int:
     for page in PAGES:
         errors.extend(check_current_page_mark(page, texts[page]))
         errors.extend(check_pathbar(page, texts[page]))
+        errors.extend(check_skip_target(page, texts[page]))
         errors.extend(check_page_meta(page, texts[page]))
 
     if errors:
