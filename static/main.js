@@ -277,6 +277,14 @@ function renderContactStatus(status, message, state) {
 
   status.textContent = message;
   status.dataset.state = state;
+
+  // 送信成功時は、線で描かれるチェックマークを文の前に添える（style.css の .cdoc-form-check）
+  if (state === 'success') {
+    status.insertAdjacentHTML(
+      'afterbegin',
+      '<svg class="cdoc-form-check" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    );
+  }
 }
 
 async function loadQiitaArticles() {

@@ -80,6 +80,17 @@ def check_current_page_mark(page: str, text: str) -> list[str]:
     return []
 
 
+def check_pathbar(page: str, text: str) -> list[str]:
+    """パス表示のタイプ入力が文字数を data-chars から読むので、実際の文字数と一致しているか。"""
+    match = re.search(r'<div class="cdoc-pathbar-inner" data-chars="(\d+)"><span class="cdoc-pathbar-text">([^<]*)</span></div>', text)
+    if not match:
+        return [f'{page}: パス表示（cdoc-pathbar-inner と data-chars、cdoc-pathbar-text）が見つかりません']
+    chars, label = int(match.group(1)), html.unescape(match.group(2))
+    if chars != len(label):
+        return [f'{page}: パス表示の data-chars が {chars} になっています（「{label}」は {len(label)} 文字）']
+    return []
+
+
 def check_page_meta(page: str, text: str) -> list[str]:
     errors = []
     expected_url = BASE_URL if page == "index.html" else BASE_URL + page
@@ -127,6 +138,7 @@ def main() -> int:
 
     for page in PAGES:
         errors.extend(check_current_page_mark(page, texts[page]))
+        errors.extend(check_pathbar(page, texts[page]))
         errors.extend(check_page_meta(page, texts[page]))
 
     if errors:
