@@ -66,20 +66,36 @@ function initLightbox() {
   overlay.append(closeButton, lightboxImage);
   document.body.appendChild(overlay);
 
-  const setLightboxState = (isOpen, src = '', alt = '') => {
+  // 閉じたときに、開く操作をした画像へフォーカスを戻す
+  let openerImage = null;
+
+  const setLightboxState = (isOpen, image = null) => {
     overlay.classList.toggle('is-open', isOpen);
-    lightboxImage.src = src;
-    lightboxImage.alt = alt;
+    lightboxImage.src = image ? image.src : '';
+    lightboxImage.alt = image ? image.alt || '' : '';
     document.body.style.overflow = isOpen ? 'hidden' : '';
 
     if (isOpen) {
+      openerImage = image;
       closeButton.focus();
+    } else if (openerImage) {
+      openerImage.focus();
+      openerImage = null;
     }
   };
 
   zoomableImages.forEach((image) => {
-    image.addEventListener('click', () => {
-      setLightboxState(true, image.src, image.alt || '');
+    // キーボードでも開けるよう、画像をボタンとして扱う
+    image.tabIndex = 0;
+    image.setAttribute('role', 'button');
+    image.setAttribute('aria-label', `${image.alt || '画像'}を拡大表示`);
+
+    image.addEventListener('click', () => setLightboxState(true, image));
+    image.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        setLightboxState(true, image);
+      }
     });
   });
 
@@ -90,8 +106,16 @@ function initLightbox() {
     }
   });
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && overlay.classList.contains('is-open')) {
+    if (!overlay.classList.contains('is-open')) {
+      return;
+    }
+
+    if (event.key === 'Escape') {
       setLightboxState(false);
+    } else if (event.key === 'Tab') {
+      // ダイアログ内で操作できるのは閉じるボタンだけなので、フォーカスを外に出さない
+      event.preventDefault();
+      closeButton.focus();
     }
   });
 }
@@ -178,8 +202,8 @@ function setContactSubmitting(form, submitButton, isSubmitting) {
 
   submitButton.disabled = isSubmitting;
   submitButton.innerHTML = isSubmitting
-    ? '<i class="fas fa-spinner fa-spin"></i> 送信中'
-    : '<i class="fas fa-paper-plane"></i> 送信する';
+    ? '<i class="fas fa-spinner fa-spin"></i aria-hidden="true"> 送信中'
+    : '<i class="fas fa-paper-plane"></i aria-hidden="true"> 送信する';
 }
 
 function renderContactStatus(status, message, state) {
