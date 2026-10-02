@@ -1887,6 +1887,127 @@ body.cdoc-page .footer-copy {
   to { transform: scaleX(1); }
 }
 
+/* --- Motion: content (timeline / stagger / lightbox / hover lift / skeleton) --- */
+/* 画面読み上げソフトにだけ伝える文字 */
+.cdoc-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Qiita 記事一覧の読み込み中に、記事の行の形をした帯を出す（main.js が取得後に置き換える） */
+.qiita-list .qiita-skeleton::before {
+  content: '';
+  display: block;
+  height: 0.8rem;
+  margin: 0.26rem 0;
+  width: 88%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #e2e8f0 0%, #f1f5f9 45%, #e2e8f0 90%);
+  background-size: 220% 100%;
+}
+.qiita-list .qiita-skeleton:nth-child(3)::before { width: 72%; }
+.qiita-list .qiita-skeleton:nth-child(4)::before { width: 80%; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .qiita-list .qiita-skeleton::before {
+    animation: cdocSkeletonShimmer 1.4s ease-in-out infinite;
+  }
+
+  /* 構成図の拡大表示を、背景のフェードと画像の拡大で開閉する */
+  .lightbox-overlay {
+    opacity: 0;
+    transition: opacity 0.25s ease, display 0.25s allow-discrete;
+  }
+  .lightbox-overlay.is-open { opacity: 1; }
+  .lightbox-overlay img {
+    transform: scale(0.96);
+    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .lightbox-overlay.is-open img { transform: none; }
+  @starting-style {
+    .lightbox-overlay.is-open { opacity: 0; }
+    .lightbox-overlay.is-open img { transform: scale(0.96); }
+  }
+}
+
+/* 押せる要素（ボタン・Links のアイコン・拡大できる構成図）だけを、ホバーで少し浮かせる */
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  .cdoc-btn:hover,
+  .cdoc-btn:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px -8px rgba(14, 26, 43, 0.45);
+  }
+  .cdoc-link-list a:hover,
+  .cdoc-link-list a:focus-visible { transform: translateY(-2px); }
+  .cdoc-btn:active,
+  .cdoc-link-list a:active { transform: none; box-shadow: none; }
+  img.diagram-zoomable {
+    transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.25s ease;
+  }
+  img.diagram-zoomable:hover,
+  img.diagram-zoomable:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -12px rgba(14, 26, 43, 0.45);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* 経歴タイムライン: 縦線を上から伸ばし、線が届いた項目の点を灯す */
+    .cdoc-timeline { view-timeline-name: --cdoc-timeline; }
+    .cdoc-timeline::before {
+      transform-origin: top center;
+      animation: cdocTimelineDraw linear both;
+      animation-timeline: --cdoc-timeline;
+      animation-range: entry 0% entry 100%;
+    }
+    .cdoc-timeline-item { view-timeline-name: --cdoc-timeline-item; }
+    .cdoc-timeline-item::before {
+      animation: cdocTimelineDot linear both;
+      animation-timeline: --cdoc-timeline-item;
+      animation-range: entry 60% entry 100%;
+    }
+
+    /* セクション内の部品を、並び順に少しずつ遅らせて表示する */
+    .cdoc-overview-item,
+    .cdoc-skill,
+    .cdoc-cert,
+    .cdoc-tags .cdoc-tag {
+      animation: cdocItemIn linear both;
+      animation-timeline: view();
+      animation-range: entry calc(var(--cdoc-stagger, 0) * 24px) entry calc(80% + var(--cdoc-stagger, 0) * 24px);
+    }
+    :is(.cdoc-overview-item, .cdoc-skill, .cdoc-cert, .cdoc-tag):nth-child(2) { --cdoc-stagger: 1; }
+    :is(.cdoc-overview-item, .cdoc-skill, .cdoc-cert, .cdoc-tag):nth-child(3) { --cdoc-stagger: 2; }
+    :is(.cdoc-overview-item, .cdoc-skill, .cdoc-cert, .cdoc-tag):nth-child(4) { --cdoc-stagger: 3; }
+    :is(.cdoc-overview-item, .cdoc-skill, .cdoc-cert, .cdoc-tag):nth-child(n+5) { --cdoc-stagger: 4; }
+  }
+}
+
+@keyframes cdocSkeletonShimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -120% 0; }
+}
+@keyframes cdocTimelineDraw {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+@keyframes cdocTimelineDot {
+  from { opacity: 0.25; transform: scale(0.5); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes cdocItemIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+
 /* --- Scrollbar ---
    ページとサイドパネルのスクロールバーを、サイドパネルの背景色とナビ・フッターの紺系に合わせる。
    標準の scrollbar-color に対応するブラウザはそちらを使い、未対応のブラウザだけ

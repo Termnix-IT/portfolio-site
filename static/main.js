@@ -131,9 +131,12 @@ function initLightbox() {
   let openerImage = null;
 
   const setLightboxState = (isOpen, image = null) => {
+    // 閉じるアニメーションの間も画像を見せるため、画像は開くときにだけ差し替える
+    if (image) {
+      lightboxImage.src = image.src;
+      lightboxImage.alt = image.alt || '';
+    }
     overlay.classList.toggle('is-open', isOpen);
-    lightboxImage.src = image ? image.src : '';
-    lightboxImage.alt = image ? image.alt || '' : '';
     document.body.style.overflow = isOpen ? 'hidden' : '';
 
     if (isOpen) {
@@ -322,6 +325,7 @@ async function loadQiitaArticles() {
 
 function renderQiitaArticles(list, articles) {
   list.innerHTML = '';
+  list.removeAttribute('aria-busy');
 
   if (!articles.length) {
     renderQiitaMessage(list, '記事がまだありません');
@@ -344,6 +348,7 @@ function renderQiitaArticles(list, articles) {
 
 function renderQiitaMessage(list, message) {
   list.innerHTML = '';
+  list.removeAttribute('aria-busy');
 
   const listItem = document.createElement('li');
   listItem.className = 'qiita-status';

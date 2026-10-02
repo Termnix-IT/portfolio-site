@@ -342,8 +342,11 @@
                         <article class="cdoc-pub-card">
                             <h3><i class="fas fa-pen-nib" aria-hidden="true"></i> Qiita 最新記事</h3>
                             <p>構築手順や学習内容を短く整理して、あとから見返せる形で継続的に発信しています。</p>
-                            <ul id="qiita-articles" class="qiita-list">
-                                <li class="qiita-status">Loading...</li>
+                            <ul id="qiita-articles" class="qiita-list" aria-busy="true">
+                                <li class="cdoc-sr-only">記事を読み込み中</li>
+                                <li class="qiita-skeleton" aria-hidden="true"></li>
+                                <li class="qiita-skeleton" aria-hidden="true"></li>
+                                <li class="qiita-skeleton" aria-hidden="true"></li>
                             </ul>
                         </article>
                         <article class="cdoc-pub-card">
