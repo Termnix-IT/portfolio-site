@@ -4,7 +4,6 @@
  */
 
 const NAV_SCROLLED_THRESHOLD = 50;
-const ANIMATION_SELECTOR = '.fade-up, .hero-headline-motion, .hero-proof-motion';
 const QIITA_USER = 'Termnix-IT';
 const QIITA_API_URL = `https://qiita.com/api/v2/users/${QIITA_USER}/items?page=1&per_page=5`;
 const QIITA_REQUEST_TIMEOUT_MS = 5000;
@@ -13,26 +12,11 @@ const CONTACT_REQUEST_TIMEOUT_MS = 10000;
 let isScrollTicking = false;
 let qiitaCache = null;
 
-const animationObserver = new IntersectionObserver((entries, observer) => {
-  entries.forEach((entry) => {
-    if (!entry.isIntersecting) {
-      return;
-    }
-
-    entry.target.classList.add('animate-in');
-    observer.unobserve(entry.target);
-  });
-}, {
-  threshold: 0.1,
-  rootMargin: '0px 0px -50px 0px',
-});
-
 window.addEventListener('scroll', handleWindowScroll, { passive: true });
 
 document.addEventListener('DOMContentLoaded', () => {
   updateNavbarState();
   markActiveNavLink();
-  observeAnimatedElements();
   loadQiitaArticles();
   initLightbox();
   initContactForm();
@@ -57,12 +41,6 @@ function updateNavbarState() {
   }
 
   nav.classList.toggle('scrolled', window.scrollY > NAV_SCROLLED_THRESHOLD);
-}
-
-function observeAnimatedElements() {
-  document.querySelectorAll(ANIMATION_SELECTOR).forEach((element) => {
-    animationObserver.observe(element);
-  });
 }
 
 function initLightbox() {
