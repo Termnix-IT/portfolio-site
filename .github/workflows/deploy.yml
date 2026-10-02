@@ -26,6 +26,14 @@ jobs:
           mkdir -p _site
           rsync -av ./*.html _site/
           rsync -av ./static/ _site/static/
+          # HTML から参照する static/ のファイルにコミットごとのバージョンを付ける。
+          # static/ は長期キャッシュにするので、デプロイのたびに URL を変えて確実に最新を読ませる。
+          version="${GITHUB_SHA::8}"
+          sed -i -E "s#(href|src)=\"static/([^\"?]+)\"#\1=\"static/\2?v=${version}\"#g" _site/*.html
+          if grep -nE '(href|src)="static/[^"?]+"' _site/*.html; then
+            echo "::error::バージョンが付いていない static/ への参照があります"
+            exit 1
+          fi
 
       - name: Upload deployment bundle
         uses: actions/upload-artifact@v7
@@ -57,7 +65,14 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
 
       - name: Sync files to S3
-        run: aws s3 sync ./_site "s3://${S3_BUCKET_NAME}" --delete
+        run: |
+          # HTML は毎回更新を確認させ、バージョン付き URL で参照する static/ は 1 年キャッシュさせる
+          aws s3 sync ./_site "s3://${S3_BUCKET_NAME}" --delete \
+            --exclude "*" --include "*.html" \
+            --cache-control "no-cache"
+          aws s3 sync ./_site "s3://${S3_BUCKET_NAME}" --delete \
+            --exclude "*.html" \
+            --cache-control "public, max-age=31536000, immutable"
 
       - name: Invalidate CloudFront cache
         run: aws cloudfront create-invalidation --distribution-id "${CLOUDFRONT_DISTRIBUTION_ID}" --paths "/*"
