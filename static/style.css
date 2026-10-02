@@ -1823,6 +1823,70 @@ body.cdoc-page .footer-copy {
   to { opacity: 1; transform: none; }
 }
 
+/* --- Motion: navigation (menu / nav indicator / reading progress / TOC) --- */
+@media (prefers-reduced-motion: no-preference) {
+  /* 狭い画面のメニューを、高さを伸ばしながら開閉する。
+     interpolate-size 未対応のブラウザでは高さは瞬時に変わり、フェードだけが付く */
+  @media (max-width: 991.98px) {
+    .navbar-collapse {
+      interpolate-size: allow-keywords;
+      overflow: clip;
+      overflow-clip-margin: 6px;
+      transition: height 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.25s ease,
+        display 0.3s allow-discrete;
+    }
+    .navbar-collapse.show { height: auto; opacity: 1; }
+    .navbar-collapse:not(.show) { height: 0; opacity: 0; }
+    @starting-style {
+      .navbar-collapse.show { height: 0; opacity: 0; }
+    }
+  }
+
+  /* ページ遷移のとき、現在ページの下線を次のページのナビ項目まで滑らせる。
+     現在ページの印は HTML に直接書いた .active なので、遷移先の最初の描画から存在する */
+  @media (min-width: 992px) {
+    .navbar-nav .nav-link.active::after { view-transition-name: cdoc-nav-indicator; }
+  }
+  ::view-transition-group(cdoc-nav-indicator) {
+    animation-duration: 0.45s;
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  /* サイドパネル目次の現在地（main.js の updateScrollSpy が .is-current を付ける） */
+  .cdoc-toc-list .cdoc-toc-mark {
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+}
+.cdoc-toc-list a.is-current { color: var(--accent-dark); }
+.cdoc-toc-list a.is-current .cdoc-toc-mark {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* ナビバー下端の読了プログレスバー。ページ全体のスクロール量に合わせて伸びる */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    body.cdoc-page .navbar::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
+      background: #67e8f9;
+      transform: scaleX(0);
+      transform-origin: left center;
+      pointer-events: none;
+      animation: cdocReadProgress linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+@keyframes cdocReadProgress {
+  to { transform: scaleX(1); }
+}
+
 /* --- Scrollbar ---
    ページとサイドパネルのスクロールバーを、サイドパネルの背景色とナビ・フッターの紺系に合わせる。
    標準の scrollbar-color に対応するブラウザはそちらを使い、未対応のブラウザだけ

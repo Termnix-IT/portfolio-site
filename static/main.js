@@ -4,6 +4,8 @@
  */
 
 const NAV_SCROLLED_THRESHOLD = 50;
+// 目次の現在地を決める基準線（画面上端からの割合）
+const SCROLL_SPY_LINE_RATIO = 0.35;
 const QIITA_USER = 'Termnix-IT';
 const QIITA_API_URL = `https://qiita.com/api/v2/users/${QIITA_USER}/items?page=1&per_page=5`;
 const QIITA_REQUEST_TIMEOUT_MS = 5000;
@@ -11,13 +13,15 @@ const CONTACT_REQUEST_TIMEOUT_MS = 10000;
 
 let isScrollTicking = false;
 let qiitaCache = null;
+let tocEntries = [];
 
 window.addEventListener('scroll', handleWindowScroll, { passive: true });
+window.addEventListener('resize', handleWindowScroll, { passive: true });
 
 document.addEventListener('DOMContentLoaded', () => {
   updateNavbarState();
   initNavToggle();
-  markActiveNavLink();
+  initScrollSpy();
   loadQiitaArticles();
   initLightbox();
   initContactForm();
@@ -31,6 +35,7 @@ function handleWindowScroll() {
   isScrollTicking = true;
   requestAnimationFrame(() => {
     updateNavbarState();
+    updateScrollSpy();
     isScrollTicking = false;
   });
 }
@@ -42,6 +47,45 @@ function updateNavbarState() {
   }
 
   nav.classList.toggle('scrolled', window.scrollY > NAV_SCROLLED_THRESHOLD);
+}
+
+// サイドパネル目次（Sections）の現在地表示。見出しが基準線を越えた最後のセクションを現在地とし、
+// ページ末尾まで来たら最後のセクションにする。最初のセクションより上（ヒーロー）では何も選ばない。
+function initScrollSpy() {
+  tocEntries = Array.from(document.querySelectorAll('.cdoc-toc-list a[href^="#"]'))
+    .map((link) => ({ link, section: document.getElementById(link.getAttribute('href').slice(1)) }))
+    .filter((entry) => entry.section);
+  updateScrollSpy();
+}
+
+function updateScrollSpy() {
+  if (!tocEntries.length) {
+    return;
+  }
+
+  const line = window.innerHeight * SCROLL_SPY_LINE_RATIO;
+  const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+  let current = null;
+
+  if (atBottom) {
+    current = tocEntries[tocEntries.length - 1];
+  } else {
+    tocEntries.forEach((entry) => {
+      if (entry.section.getBoundingClientRect().top <= line) {
+        current = entry;
+      }
+    });
+  }
+
+  tocEntries.forEach((entry) => {
+    const isCurrent = entry === current;
+    entry.link.classList.toggle('is-current', isCurrent);
+    if (isCurrent) {
+      entry.link.setAttribute('aria-current', 'true');
+    } else {
+      entry.link.removeAttribute('aria-current');
+    }
+  });
 }
 
 // 狭い画面のナビメニュー開閉。Bootstrap の collapse と同じく、
@@ -306,18 +350,4 @@ function renderQiitaMessage(list, message) {
   listItem.textContent = message;
 
   list.appendChild(listItem);
-}
-
-function markActiveNavLink() {
-  const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-
-  document.querySelectorAll('#navbarNav .nav-link').forEach((link) => {
-    const href = link.getAttribute('href');
-    if (href !== currentPath) {
-      return;
-    }
-
-    link.classList.add('active');
-    link.setAttribute('aria-current', 'page');
-  });
 }

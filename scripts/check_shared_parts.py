@@ -25,6 +25,8 @@ SHARED_PARTS = {
     ),
     "フッター": r'<footer class="site-footer">.*?</footer>',
 }
+# ナビで現在ページを示す印。ページごとに付く位置が違うので、共通部分の比較からは外し、別途検査する
+CURRENT_PAGE_MARK = re.compile(r'(?<=class="nav-link) active(?=")| aria-current="page"')
 # <head> のうち、ページごとに値が変わるタグ（共通部分の比較から外し、別途検査する）
 PAGE_SPECIFIC_HEAD = re.compile(
     r'<title>|name="description"|rel="canonical"|property="og:(title|description|url)"'
@@ -54,7 +56,7 @@ def extract_shared(text: str) -> dict[str, str | None]:
     parts = {}
     for name, pattern in SHARED_PARTS.items():
         match = re.search(pattern, text, re.S)
-        parts[name] = match.group(0) if match else None
+        parts[name] = CURRENT_PAGE_MARK.sub("", match.group(0)) if match else None
     parts["<head> の共通部分（読み込むCSS・フォント・アイコンなど）"] = head_common(text)
     parts["ページ末尾のスクリプト"] = body_scripts(text)
     return parts
@@ -63,6 +65,19 @@ def extract_shared(text: str) -> dict[str, str | None]:
 def meta(text: str, attr: str, name: str) -> str | None:
     match = re.search(rf'<meta {attr}="{re.escape(name)}" content="([^"]*)"', text)
     return html.unescape(match.group(1)) if match else None
+
+
+def check_current_page_mark(page: str, text: str) -> list[str]:
+    """ナビで自分自身へのリンクだけに class="nav-link active" と aria-current="page" が付いているか。"""
+    nav = re.search(SHARED_PARTS["ナビゲーション"], text, re.S)
+    if not nav:
+        return []
+    marked = re.findall(r'<a class="nav-link active" href="([^"]*)" aria-current="page">', nav.group(0))
+    stray = len(re.findall(r'aria-current="page"|class="nav-link active"', nav.group(0))) - 2 * len(marked)
+    if marked != [page] or stray:
+        return [f'{page}: ナビの現在ページの印が {marked or "なし"} に付いています'
+                f'（{page} へのリンクだけに class="nav-link active" と aria-current="page" を付けてください）']
+    return []
 
 
 def check_page_meta(page: str, text: str) -> list[str]:
@@ -111,6 +126,7 @@ def main() -> int:
                 errors.append(f"{page}: 「{name}」が {REFERENCE} と一致しません\n{diff}")
 
     for page in PAGES:
+        errors.extend(check_current_page_mark(page, texts[page]))
         errors.extend(check_page_meta(page, texts[page]))
 
     if errors:
