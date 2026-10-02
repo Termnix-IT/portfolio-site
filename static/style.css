@@ -4546,7 +4546,7 @@ body.cdoc-page .navbar-toggler-icon {
   color: var(--text-primary);
 }
 .cdoc-hero-title .cdoc-hero-title-mark {
-  background: linear-gradient(180deg, transparent 65%, rgba(8, 145, 178, 0.18) 65%);
+  background: linear-gradient(180deg, transparent 65%, rgba(8, 145, 178, 0.18) 65%) no-repeat;
   padding: 0 0.1em;
 }
 .cdoc-hero-lead {
@@ -5491,4 +5491,86 @@ body.cdoc-page .footer-copy {
   font-family: var(--font-mono) !important;
   letter-spacing: 0.04em !important;
   margin-top: 0.25rem !important;
+}
+
+/* --- Motion (view transitions / scroll reveal / pulse / marker) ---
+   動きはすべて prefers-reduced-motion: no-preference のときだけ付け、
+   未対応ブラウザや動き軽減設定では従来どおり静止した表示になる。 */
+@media (prefers-reduced-motion: no-preference) {
+  /* ページ遷移: ナビバーとサイドパネルは残し、本文側だけを切り替える */
+  @view-transition {
+    navigation: auto;
+  }
+  body.cdoc-page .navbar { view-transition-name: cdoc-nav; }
+  ::view-transition-old(root) {
+    animation: cdocPageOut 0.18s ease-in both;
+  }
+  ::view-transition-new(root) {
+    animation: cdocPageIn 0.32s cubic-bezier(0.2, 0.7, 0.2, 1) 0.06s both;
+  }
+
+  /* 見出しマーカーを左から引く */
+  .cdoc-hero-title .cdoc-hero-title-mark {
+    animation: cdocMarkerSweep 0.8s cubic-bezier(0.2, 0.9, 0.2, 1) 0.35s both;
+  }
+
+  /* 進行中の状態（現職・学習中・NOW）に波紋を出す */
+  .cdoc-status-list li.cdoc-status-live i,
+  .cdoc-status-list li.cdoc-status-progress i {
+    position: relative;
+  }
+  .cdoc-status-list li.cdoc-status-live i::after,
+  .cdoc-status-list li.cdoc-status-progress i::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0;
+    animation: cdocPulseDot 2.4s ease-out infinite;
+  }
+  .cdoc-status-list li.cdoc-status-progress i::after { animation-delay: 1.2s; }
+  .cdoc-hero-eyebrow::before,
+  .cdoc-timeline-now {
+    animation: cdocPulseRing 2.4s ease-out infinite;
+  }
+}
+
+/* サイドパネルが固定表示される2カラム幅のときだけ、遷移中もその場に残す */
+@media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+  .cdoc-side-inner { view-transition-name: cdoc-side; }
+}
+
+/* セクションが画面に入るときに浮き上がらせる */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .cdoc-section {
+      animation: cdocSectionReveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+  }
+}
+
+@keyframes cdocPageOut {
+  to { opacity: 0; }
+}
+@keyframes cdocPageIn {
+  from { opacity: 0; transform: translateY(8px); }
+}
+@keyframes cdocMarkerSweep {
+  from { background-size: 0% 100%; }
+  to { background-size: 100% 100%; }
+}
+@keyframes cdocPulseDot {
+  0% { opacity: 0.5; transform: scale(1); }
+  70%, 100% { opacity: 0; transform: scale(2.6); }
+}
+@keyframes cdocPulseRing {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45); }
+  70%, 100% { box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
+}
+@keyframes cdocSectionReveal {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
 }
