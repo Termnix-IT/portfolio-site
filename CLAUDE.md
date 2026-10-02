@@ -10,7 +10,7 @@ Termnix-IT の自己紹介ポートフォリオサイトで、ビルド工程の
 
 ## プレビューと検証
 
-build・lint・テストのコマンドはありません。変更の確認はローカルサーバーでページを開いて行います。
+build・lint の仕組みはなく、変更の確認はローカルサーバーでページを開いて行います。自動で走る検査は、後述する HTML の共通部分の検査スクリプトだけです。
 
 ```powershell
 python -m http.server 8000
@@ -18,15 +18,21 @@ python -m http.server 8000
 
 `.claude/launch.json` に同じ内容の `portfolio` 構成があるため、Claude Code からは `preview_start` の `portfolio` で起動できます。確認では、変更したページのサイドパネル目次のリンクが該当セクションへ飛ぶこと、コンソールエラーがないこと、モバイル幅（375px）で横スクロールが出ないことを見ます。
 
+HTML を変えたら、commit 前に次のコマンドで共通部分を検査します。5ページのナビ・サイドパネルのプロフィールと Current Status・フッター・`<head>` の読み込み・末尾のスクリプトが `index.html` と一致しているか（改行やインデントの違いは無視）と、各ページの `canonical`・`og:url`・`og:title`・`og:description` が URL・`<title>`・`meta description` と合っているかを調べ、問題があれば差分を表示して終了コード 1 で終わります。同じ検査がデプロイの最初に走るので、不一致があると本番に配信されません。
+
+```powershell
+python scripts/check_shared_parts.py
+```
+
 ## ページ構成で知っておくべきこと
 
-`index.html`・`portfolio.html`・`toolbox.html`・`diagram.html`・`contact.html` の5ページは、テンプレートやインクルードの仕組みを使わず、ヘッダーのナビゲーション、左のサイドパネル、フッターをそれぞれのファイルに複製して持っています。そのため共通部分を変えるときは5ファイルすべてを同じように直す必要があります。特にサイドパネルの「Current Status」カード（現職・領域・学習中）は全ページで同一の内容でなければならず、過去に `index.html` だけ更新されて他ページが古いまま残ったことがあります。一方で「Links」カードと「Sections」カード（ページ内目次）はページごとに中身が異なります。
+`index.html`・`portfolio.html`・`toolbox.html`・`diagram.html`・`contact.html` の5ページは、テンプレートやインクルードの仕組みを使わず、ヘッダーのナビゲーション、左のサイドパネル、フッターをそれぞれのファイルに複製して持っています。そのため共通部分を変えるときは5ファイルすべてを同じように直す必要があり、直し漏れは `scripts/check_shared_parts.py` で検出できます。特にサイドパネルの「Current Status」カード（現職・領域・学習中）は全ページで同一の内容でなければならず、過去に `index.html` だけ更新されて他ページが古いまま残ったことがあります。一方で「Links」カードと「Sections」カード（ページ内目次）はページごとに中身が異なります。
 
 各ページの `<head>` には、検索結果と SNS 共有用の `meta description`・`canonical`・OGP（`og:*`）があり、説明文はそのページのヒーローの説明文（`cdoc-hero-lead`）から作っています。ヒーローの文言やページの目的を変えたら説明文も直し、ページを増やしたときは同じ一式を、本番 URL `https://www.termnix-it.jp/` を基点にした絶対 URL で入れてください。フッターの著作権表記の年（`© 2025–2026`）は5ページに直書きしているので、年が変わったら揃えて更新します。
 
 各ページの本文は `.cdoc-section` を並べた構成で、セクション見出しの `cdoc-section-badge` に A, B, C… の連番を振り、サイドパネル目次の `cdoc-toc-mark` と `href="#id"` をそれに一致させています。途中にセクションを挿入したら、後ろのセクションのバッジと目次の文字も繰り下げてください。
 
-スタイルは `static/style.css` 末尾の「Career Document Layout」ブロックにある `.cdoc-*` クラスで組まれ、色や余白は CSS カスタムプロパティ（`--accent`、`--cdoc-green` など）で管理しています。新しいセクションは既存セクションの HTML を複製して中身を差し替える形で作り、インライン style は増やしません。Bootstrap は読み込んでおらず、以前使っていた Reboot・ナビバー・フッターのグリッド・ユーティリティ（`mb-0`、`text-md-end` など）は、同ファイル先頭の「Base」ブロックに必要な分だけ移植してあります。ここにないユーティリティクラスは効かないので、使う前に「Base」に足すか、`.cdoc-*` 側で書いてください。ページ遷移・セクションの表示・状態表示の波紋・見出しマーカーの動きは、同ファイル末尾の「Motion」ブロックに CSS だけでまとめてあり、`prefers-reduced-motion` で動きを減らす設定の閲覧者や未対応ブラウザでは静止表示になります。Current Status カードの波紋は「現職」行の `cdoc-status-live` と「学習中」行の `cdoc-status-progress` に付くので、行を書き換えるときもこのクラスを残してください。`static/main.js` はナビのアクティブ表示と狭い画面でのメニュー開閉（`initNavToggle`）、キーボードでも開ける構成図のライトボックス（`.diagram-zoomable`）、`index.html` の Qiita 最新記事取得、`contact.html` のフォーム送信を扱い、どの処理も対象要素が存在するページでだけ動く作りです。装飾目的のアイコン（`<i class="fas …">`）には `aria-hidden="true"` を付け、アイコンだけのリンクには `aria-label` で名前を付けます。問い合わせフォームは `data-endpoint` の AWS Lambda Function URL へ JSON を POST する前提で、Lambda / SES 側はこのリポジトリの外で管理しています。
+スタイルは `static/style.css` 末尾の「Career Document Layout」ブロックにある `.cdoc-*` クラスで組まれ、色や余白は CSS カスタムプロパティで管理し、サイト全体のトークン（`--primary`、`--accent`、`--font-display` など）は「共通トークンと基本スタイル」見出しの直後の `:root` 1か所に、`.cdoc` 配下だけの上書き（`--cdoc-green` など）は「Career Document Layout」の `.cdoc` にまとめています。過去の世代のスタイルを後から `!important` で打ち消す積み重ねを整理したため、新しく `!important` を足すのは避け、詳細度か記述位置で解決してください。新しいセクションは既存セクションの HTML を複製して中身を差し替える形で作り、インライン style は増やしません。Bootstrap は読み込んでおらず、以前使っていた Reboot・ナビバー・フッターのグリッド・ユーティリティ（`mb-0`、`text-md-end` など）は、同ファイル先頭の「Base」ブロックに必要な分だけ移植してあります。ここにないユーティリティクラスは効かないので、使う前に「Base」に足すか、`.cdoc-*` 側で書いてください。ページ遷移・セクションの表示・状態表示の波紋・見出しマーカーの動きは、同ファイル末尾の「Motion」ブロックに CSS だけでまとめてあり、`prefers-reduced-motion` で動きを減らす設定の閲覧者や未対応ブラウザでは静止表示になります。Current Status カードの波紋は「現職」行の `cdoc-status-live` と「学習中」行の `cdoc-status-progress` に付くので、行を書き換えるときもこのクラスを残してください。`static/main.js` はナビのアクティブ表示と狭い画面でのメニュー開閉（`initNavToggle`）、キーボードでも開ける構成図のライトボックス（`.diagram-zoomable`）、`index.html` の Qiita 最新記事取得、`contact.html` のフォーム送信を扱い、どの処理も対象要素が存在するページでだけ動く作りです。装飾目的のアイコン（`<i class="fas …">`）には `aria-hidden="true"` を付け、アイコンだけのリンクには `aria-label` で名前を付けます。問い合わせフォームは `data-endpoint` の AWS Lambda Function URL へ JSON を POST する前提で、Lambda / SES 側はこのリポジトリの外で管理しています。
 
 ## よくある更新作業
 
@@ -56,9 +62,9 @@ python -m http.server 8000
 
 ## git 管理とデプロイ
 
-`.gitignore` は「すべて無視したうえで必要なものだけ `!` で許可する」方式です。現在許可しているのは直下の `*.html`、`static/` 直下の CSS / JS、`static/img/` の画像、`README.md`、`CLAUDE.md`、デプロイ用ワークフローだけで、それ以外の新しいファイル（新しいディレクトリ、別の拡張子のファイルなど）は `.gitignore` に許可行を追加しないと commit されません。`docs/` には運用メモなどを置いていますが、意図的に追跡対象から外しているローカル専用の置き場です。
+`.gitignore` は「すべて無視したうえで必要なものだけ `!` で許可する」方式です。現在許可しているのは直下の `*.html`、`static/` 直下の CSS / JS、`static/img/` の画像、`README.md`、`CLAUDE.md`、デプロイ用ワークフロー、`scripts/check_shared_parts.py` だけで、それ以外の新しいファイル（新しいディレクトリ、別の拡張子のファイルなど）は `.gitignore` に許可行を追加しないと commit されません。`docs/` には運用メモなどを置いていますが、意図的に追跡対象から外しているローカル専用の置き場です。
 
-`main` への push で `.github/workflows/deploy.yml` が起動し、直下の `*.html` と `static/` だけを束ねて S3 へ `sync --delete` し、CloudFront を `/*` で invalidation します。`README.md` や `CLAUDE.md` は配信されません。push 後の結果は次のコマンドで確認できます。
+`main` への push で `.github/workflows/deploy.yml` が起動し、最初に `scripts/check_shared_parts.py` で共通部分を検査してから、直下の `*.html` と `static/` だけを束ねて S3 へ `sync --delete` し、CloudFront を `/*` で invalidation します。`README.md` や `CLAUDE.md` は配信されません。push 後の結果は次のコマンドで確認できます。
 
 ```powershell
 gh run list -R Termnix-IT/portfolio-site --limit 1

@@ -12,3 +12,5 @@
 !static/*.js
 !static/img/
 !static/img/*
+!scripts/
+!scripts/check_shared_parts.py
