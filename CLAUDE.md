@@ -64,7 +64,7 @@ python scripts/check_shared_parts.py
 
 `.gitignore` は「すべて無視したうえで必要なものだけ `!` で許可する」方式です。現在許可しているのは直下の `*.html`、`static/` 直下の CSS / JS、`static/img/` の画像、`README.md`、`CLAUDE.md`、デプロイ用ワークフロー、`scripts/check_shared_parts.py` だけで、それ以外の新しいファイル（新しいディレクトリ、別の拡張子のファイルなど）は `.gitignore` に許可行を追加しないと commit されません。`docs/` には運用メモなどを置いていますが、意図的に追跡対象から外しているローカル専用の置き場です。
 
-`main` への push で `.github/workflows/deploy.yml` が起動し、最初に `scripts/check_shared_parts.py` で共通部分を検査してから、直下の `*.html` と `static/` だけを束ねて S3 へ `sync --delete` し、CloudFront を `/*` で invalidation します。束ねるときに HTML 内の `static/…` への参照すべてにコミット ID 先頭8文字の `?v=` を付け、S3 には HTML を `Cache-Control: no-cache`、それ以外を1年の `immutable` で置くため、デプロイ直後でも HTML と CSS・JS の組み合わせがずれません。リポジトリの HTML には `?v=` を書かず、`static/` 以外の場所や CSS の `url()` から静的ファイルを参照する場合は、このバージョン付けの対象外になる点に注意してください。`README.md` や `CLAUDE.md` は配信されません。push 後の結果は次のコマンドで確認できます。
+`main` への push で `.github/workflows/deploy.yml` が起動し、最初に `scripts/check_shared_parts.py` で共通部分を検査してから、直下の `*.html` と `static/` だけを束ねて S3 へ `sync --delete` し、CloudFront を `/*` で invalidation します。束ねるときに `static/` をコミット ID 先頭8文字のパス `v/<sha8>/static/` にも複製し、HTML 内の `static/…` への参照をすべてそちらへ書き換えます。S3 には HTML を `Cache-Control: no-cache`、`v/` を1年の `immutable`、版なしの `static/` を1日キャッシュで置きます。CloudFront のキャッシュはクエリ文字列を区別しないので、版はクエリではなくパスに含めています。古い版の `v/` は、CloudFront に古い HTML が残っている間も CSS・JS を返せるよう削除しません（1回あたり約230KB）。リポジトリの HTML は `static/…` のまま書き、CSS の `url()` や JS から静的ファイルを参照する場合はこの書き換えの対象外になる点に注意してください。og:image 専用の `static/img/main-icon.png` は版付きの複製に含めません。`README.md` や `CLAUDE.md` は配信されません。push 後の結果は次のコマンドで確認できます。
 
 ```powershell
 gh run list -R Termnix-IT/portfolio-site --limit 1

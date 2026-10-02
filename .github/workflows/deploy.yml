@@ -26,14 +26,26 @@ jobs:
           mkdir -p _site
           rsync -av ./*.html _site/
           rsync -av ./static/ _site/static/
-          # HTML から参照する static/ のファイルにコミットごとのバージョンを付ける。
-          # static/ は長期キャッシュにするので、デプロイのたびに URL を変えて確実に最新を読ませる。
+          # HTML から参照する static/ を、コミットごとのパス v/<sha8>/static/ に置いた複製へ向け直す。
+          # CloudFront のキャッシュはクエリ文字列を区別しないため、バージョンはパスに含める。
+          # 版付きの複製は長期キャッシュにし、版なしの static/ は og:image など外部からの参照用に残す。
+          # og:image 専用の大きな元画像（main-icon.png）は HTML から参照しないので、版付きの複製には含めない。
           version="${GITHUB_SHA::8}"
-          sed -i -E "s#(href|src)=\"static/([^\"?]+)\"#\1=\"static/\2?v=${version}\"#g" _site/*.html
-          if grep -nE '(href|src)="static/[^"?]+"' _site/*.html; then
-            echo "::error::バージョンが付いていない static/ への参照があります"
+          mkdir -p "_site/v/${version}/static"
+          rsync -a --exclude 'img/main-icon.png' ./static/ "_site/v/${version}/static/"
+          sed -i -E "s#(href|src)=\"static/#\1=\"v/${version}/static/#g" _site/*.html
+          if grep -nE '(href|src)="static/' _site/*.html; then
+            echo "::error::バージョンの付いていない static/ への参照があります"
             exit 1
           fi
+          missing=0
+          for ref in $(grep -ohE '(href|src)="v/[^"]+"' _site/*.html | sed -E 's/^(href|src)="//; s/"$//' | sort -u); do
+            if [ ! -f "_site/${ref}" ]; then
+              echo "::error::HTML が参照する ${ref} が配信物にありません"
+              missing=1
+            fi
+          done
+          [ "$missing" -eq 0 ]
 
       - name: Upload deployment bundle
         uses: actions/upload-artifact@v7
@@ -66,13 +78,18 @@ jobs:
 
       - name: Sync files to S3
         run: |
-          # HTML は毎回更新を確認させ、バージョン付き URL で参照する static/ は 1 年キャッシュさせる
+          # HTML は毎回更新を確認させ、版付きの v/<sha8>/ は 1 年キャッシュ、版なしの static/ は 1 日キャッシュにする。
+          # 版付きのファイルを先に置いてから HTML を更新する。古い版の v/ は消さない
+          # （CloudFront に古い HTML が残っている間も、それが参照する CSS・JS を返せるようにするため）。
+          aws s3 sync ./_site "s3://${S3_BUCKET_NAME}" \
+            --exclude "*" --include "v/*" \
+            --cache-control "public, max-age=31536000, immutable"
+          aws s3 sync ./_site "s3://${S3_BUCKET_NAME}" --delete \
+            --exclude "*" --include "static/*" \
+            --cache-control "public, max-age=86400"
           aws s3 sync ./_site "s3://${S3_BUCKET_NAME}" --delete \
             --exclude "*" --include "*.html" \
             --cache-control "no-cache"
-          aws s3 sync ./_site "s3://${S3_BUCKET_NAME}" --delete \
-            --exclude "*.html" \
-            --cache-control "public, max-age=31536000, immutable"
 
       - name: Invalidate CloudFront cache
         run: aws cloudfront create-invalidation --distribution-id "${CLOUDFRONT_DISTRIBUTION_ID}" --paths "/*"
