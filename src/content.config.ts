@@ -10,7 +10,7 @@ const link = z.object({
 // 作成ツール一覧（toolbox.html）。1ツール1ファイルで、本文は説明の段落
 const tools = defineCollection({
   loader: glob({ base: './src/content/tools', pattern: '*.md' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     order: z.number(),
     // 旧ページの #tool-N へのリンクを保つためのアンカー
@@ -25,6 +25,10 @@ const tools = defineCollection({
     release: z.string().optional(),
     // リリースがない場合などに「Releaseを見る」の代わりに出すリンク
     secondaryLink: link.optional(),
+    // 画面のスクリーンショット。1枚目はホームの「代表作」の画像にも使う
+    screenshots: z
+      .array(z.object({ image: image(), alt: z.string(), caption: z.string().optional() }))
+      .optional(),
     // ホームの「代表作」に載せる場合の並び順
     featured: z.number().optional(),
   }),

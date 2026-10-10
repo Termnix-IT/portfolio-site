@@ -28,9 +28,10 @@ const titleId = `${id}-title`;
     gap: 32px 56px;
   }
 
+  /* 左の列は「オンプレネットワーク構築」のような12文字前後の見出しが1行に収まる幅にする */
   .detail-meta {
     display: flex;
-    flex: 1 1 280px;
+    flex: 1 1 340px;
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
@@ -42,7 +43,8 @@ const titleId = `${id}-title`;
   }
 
   h2 {
-    font-size: clamp(26px, 3vw, 34px);
+    max-width: 100%;
+    font-size: clamp(24px, 2.6vw, 28px);
     line-height: 1.3;
     font-weight: 700;
   }

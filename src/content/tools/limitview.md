@@ -7,6 +7,13 @@ summary: Codex と Claude Code のサブスクリプション利用枠を自動�
 tags: [Tauri v2, Rust, React, TypeScript, Vite]
 repo: https://github.com/Termnix-IT/ai-limit-view
 release: v0.1.10
+screenshots:
+  - image: ../../assets/limitview-dashboard.png
+    alt: LimitView の通常表示。Codex と Claude Code の利用枠の残り割合を二重リングで示し、下に5時間枠・週間枠の残りと回復までの時間を並べている
+    caption: 通常表示
+  - image: ../../assets/limitview-mini.png
+    alt: LimitView のミニマル表示。二重リングと残り割合だけを 200×200 の小さな窓に表示している
+    caption: ミニマル表示（200×200）
 ---
 
 Codex と Claude Code のサブスクリプション利用枠を自動で取得し、5時間枠と週間枠の残り割合をひとつの小さな画面で確認できる Windows 向けデスクトップアプリです。2つの AI コーディングツールを併用していると、どちらの枠があとどれだけ残っているかを確かめるたびに別々の画面を開く必要があったため、常駐させて一目で判断できるダッシュボードとして作りました。

@@ -1,0 +1,60 @@
+---
+// ツールの画面のスクリーンショット。元の画像より大きくは表示せず、狭い画面では幅に合わせて縮める
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
+interface Props {
+  shots: { image: ImageMetadata; alt: string; caption?: string }[];
+}
+
+const { shots } = Astro.props;
+---
+
+<div class="shots">
+  {
+    shots.map((shot) => (
+      <figure class="shot">
+        <Image src={shot.image} alt={shot.alt} width={shot.image.width} />
+        {shot.caption && <figcaption>{shot.caption}</figcaption>}
+      </figure>
+    ))
+  }
+</div>
+
+<style>
+  /* 横に並べ、入りきらないときは元の大きさの比率で縮める。スマホでは縦に並べる */
+  .shots {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+    gap: 24px 32px;
+    padding: clamp(20px, 4vw, 32px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+  }
+
+  .shot {
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  @media (max-width: 560px) {
+    .shots {
+      flex-wrap: wrap;
+    }
+  }
+
+  .shot :global(img) {
+    border-radius: 10px;
+  }
+
+  figcaption {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+</style>

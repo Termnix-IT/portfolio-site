@@ -5,6 +5,7 @@ import PageHero from '../components/PageHero.astro';
 import DetailArticle from '../components/DetailArticle.astro';
 import TagList from '../components/TagList.astro';
 import Badge from '../components/Badge.astro';
+import ScreenshotList from '../components/ScreenshotList.astro';
 
 const tools = (await getCollection('tools')).sort((a, b) => a.data.order - b.data.order);
 const entries = await Promise.all(
@@ -66,6 +67,7 @@ const entries = await Promise.all(
             )}
           </div>
         </Fragment>
+        {tool.screenshots && <ScreenshotList shots={tool.screenshots} />}
         <div class="prose">
           <tool.Content />
         </div>
@@ -87,7 +89,7 @@ const entries = await Promise.all(
 
   .tool-index ul {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
     gap: 12px;
   }
 

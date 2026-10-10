@@ -75,9 +75,12 @@ figure {
   margin: 0;
 }
 
+/* 見出しは文節で折り返す。1つの文節が列の幅より長い場合だけ、はみ出さないよう文節の途中でも折り返す */
+h1,
 h2,
 h3 {
   word-break: auto-phrase;
+  overflow-wrap: anywhere;
 }
 
 ul,
