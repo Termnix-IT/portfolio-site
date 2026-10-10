@@ -1,0 +1,124 @@
+---
+// ホームの「代表作」の1行。行全体が詳細へのリンクになる
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import TagList from './TagList.astro';
+
+interface Props {
+  href: string;
+  meta: string;
+  title: string;
+  body: string;
+  tags: string[];
+  image?: { src: ImageMetadata; alt: string };
+}
+
+const { href, meta, title, body, tags, image } = Astro.props;
+---
+
+<li>
+  <a href={href} class="card work-row">
+    {
+      image ? (
+        <Image src={image.src} alt={image.alt} widths={[320, 640]} sizes="320px" class="work-media" />
+      ) : (
+        <span class="work-media work-media--text mono" aria-hidden="true">{title}</span>
+      )
+    }
+    <div class="work-text">
+      <span class="work-meta mono">{meta}</span>
+      <span class="work-title">{title}</span>
+      <span class="work-body">{body}</span>
+      <TagList tags={tags} />
+    </div>
+    <span class="work-arrow"><Icon name="arrow-right" size={22} /></span>
+  </a>
+</li>
+
+<style>
+  .work-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px 28px;
+    padding: 20px;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .work-row:hover {
+    border-color: var(--line-strong);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .work-row:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  .work-row :global(.work-media) {
+    flex: 1 1 240px;
+    max-width: 320px;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--ground);
+  }
+
+  .work-row .work-media--text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    border-color: var(--dark);
+    background: var(--dark);
+    color: var(--dark-ink);
+    font-size: 15px;
+    text-align: center;
+  }
+
+  .work-text {
+    display: flex;
+    flex: 999 1 360px;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .work-meta {
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+
+  .work-title {
+    font-size: 22px;
+    line-height: 1.45;
+    font-weight: 700;
+  }
+
+  .work-body {
+    margin-bottom: 6px;
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+
+  .work-arrow {
+    flex: 0 0 auto;
+    color: var(--dot-neutral);
+  }
+
+  .work-row:hover .work-arrow {
+    color: var(--accent);
+  }
+
+  @media (max-width: 560px) {
+    .work-row :global(.work-media) {
+      max-width: none;
+    }
+
+    .work-arrow {
+      display: none;
+    }
+  }
+</style>

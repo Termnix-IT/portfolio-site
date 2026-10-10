@@ -1,0 +1,125 @@
+---
+// Qiita の最新記事。閲覧時にブラウザから Qiita API を呼び、読み込み中の帯を取得結果か失敗の表示で置き換える
+---
+
+<ul class="qiita-list" data-qiita-list aria-busy="true">
+  <li class="sr-only">記事を読み込み中</li>
+  <li class="qiita-skeleton" aria-hidden="true"></li>
+  <li class="qiita-skeleton" aria-hidden="true"></li>
+  <li class="qiita-skeleton" aria-hidden="true"></li>
+</ul>
+
+<style>
+  .qiita-list {
+    font-size: 15px;
+  }
+
+  .qiita-list :global(li) {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .qiita-list :global(a) {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+  }
+
+  .qiita-list :global(a:hover) {
+    color: var(--accent);
+  }
+
+  .qiita-list :global(.qiita-arrow) {
+    flex: 0 0 auto;
+    padding-top: 5px;
+    color: var(--dot-neutral);
+  }
+
+  .qiita-list :global(.qiita-status) {
+    padding: 14px 0;
+    color: var(--ink-3);
+  }
+
+  .qiita-skeleton {
+    height: 54px;
+    background: linear-gradient(var(--line), var(--line)) 0 50% / 70% 12px no-repeat;
+    opacity: 0.7;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .qiita-skeleton {
+      animation: qiita-pulse 1.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes qiita-pulse {
+      to {
+        opacity: 0.35;
+      }
+    }
+  }
+</style>
+
+<script>
+  const QIITA_API_URL = 'https://qiita.com/api/v2/users/Termnix-IT/items?page=1&per_page=5';
+  const QIITA_REQUEST_TIMEOUT_MS = 5000;
+
+  type QiitaItem = { title: string; url: string };
+
+  const list = document.querySelector<HTMLUListElement>('[data-qiita-list]');
+  if (list) {
+    loadQiitaArticles(list);
+  }
+
+  async function loadQiitaArticles(target: HTMLUListElement) {
+    try {
+      const response = await fetch(QIITA_API_URL, { signal: AbortSignal.timeout(QIITA_REQUEST_TIMEOUT_MS) });
+      if (!response.ok) {
+        throw new Error('Qiita API request failed');
+      }
+
+      const data: unknown = await response.json();
+      const articles = Array.isArray(data) ? (data as QiitaItem[]) : [];
+      if (articles.length) {
+        renderArticles(target, articles);
+      } else {
+        renderMessage(target, '記事がまだありません');
+      }
+    } catch {
+      renderMessage(target, '記事が取得できませんでした');
+    }
+  }
+
+  function renderArticles(target: HTMLUListElement, articles: QiitaItem[]) {
+    const items = articles.map((article) => {
+      const item = document.createElement('li');
+      const link = document.createElement('a');
+      const arrow = document.createElement('span');
+
+      link.href = article.url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = article.title;
+      arrow.className = 'qiita-arrow';
+      arrow.setAttribute('aria-hidden', 'true');
+      // 外部リンクの矢印。Icon.astro の external と同じ線で描く（固定の文字列なので innerHTML で問題ない）
+      arrow.innerHTML =
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M7 17L17 7M8 7h9v9"></path></svg>';
+
+      link.append(arrow);
+      item.append(link);
+      return item;
+    });
+
+    target.replaceChildren(...items);
+    target.removeAttribute('aria-busy');
+  }
+
+  function renderMessage(target: HTMLUListElement, message: string) {
+    const item = document.createElement('li');
+    item.className = 'qiita-status';
+    item.textContent = message;
+
+    target.replaceChildren(item);
+    target.removeAttribute('aria-busy');
+  }
+</script>

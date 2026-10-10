@@ -1,0 +1,68 @@
+---
+import { Image } from 'astro:assets';
+import avatar from '../assets/main-icon-192.png';
+import { links } from '../data/site';
+---
+
+<footer class="site-footer">
+  <div class="container site-footer-inner">
+    <div class="footer-brand">
+      <Image src={avatar} alt="" width={24} height={24} densities={[1, 2]} class="footer-icon" />
+      <span class="footer-name">Termnix-IT</span>
+      <span>運用経験と個人構築をつなぐ技術プロフィール</span>
+    </div>
+    <div class="footer-meta">
+      <a href={links.qiita} target="_blank" rel="noopener noreferrer">Qiita</a>
+      <a href={links.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+      <!-- 年が変わったら更新する -->
+      <span class="mono">&copy; 2025–2026 Termnix-IT</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+
+  .site-footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding-top: 28px;
+    padding-bottom: 28px;
+  }
+
+  .footer-brand,
+  .footer-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 16px;
+  }
+
+  .footer-brand :global(.footer-icon) {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+  }
+
+  .footer-name {
+    margin-left: -6px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .footer-meta a:hover {
+    color: var(--ink);
+  }
+
+  .footer-meta .mono {
+    font-size: 12px;
+  }
+</style>

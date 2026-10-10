@@ -1,0 +1,81 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import TagList from '../components/TagList.astro';
+import Badge from '../components/Badge.astro';
+import ZoomableImage from '../components/ZoomableImage.astro';
+
+const diagrams = (await getCollection('diagrams')).sort((a, b) => a.data.order - b.data.order);
+const entries = await Promise.all(
+  diagrams.map(async (diagram, index) => ({
+    ...diagram.data,
+    number: String(index + 1).padStart(2, '0'),
+    Content: (await render(diagram)).Content,
+  })),
+);
+---
+
+<BaseLayout page="diagrams">
+  <PageHero
+    eyebrow="Diagram gallery"
+    lead="個人プロジェクトや学習の中で作成したシステム構成図をまとめています。あとから自分でも見返せるよう、構成・経路・制御点を整理しています。"
+    tags={['Network', 'Linux', 'Security']}
+  >
+    構築の<mark>設計</mark>を図で残す
+  </PageHero>
+
+  {
+    entries.map((diagram) => (
+      <section class="section diagram" id={diagram.anchor} aria-labelledby={`${diagram.anchor}-title`}>
+        <SectionHeader
+          label={`${diagram.number} · ${diagram.category}`}
+          title={diagram.title}
+          titleId={`${diagram.anchor}-title`}
+        >
+          <Badge tone="ok">{diagram.status}</Badge>
+        </SectionHeader>
+        <div class="diagram-text">
+          <div class="prose">
+            <diagram.Content />
+          </div>
+          <TagList tags={diagram.tags} />
+        </div>
+        <ZoomableImage src={diagram.image} alt={diagram.alt} caption={diagram.date} />
+      </section>
+    ))
+  }
+
+  <section class="upcoming" aria-labelledby="upcoming-title" id="upcoming">
+    <p class="label">Upcoming</p>
+    <h2 id="upcoming-title">今後の追加予定</h2>
+    <p>AWS 上のサーバレス構成図、ネットワーク検証構成図など、今後作成する構成図をここに追加していきます。</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .diagram-text {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .upcoming {
+    margin-bottom: var(--section-space);
+    padding: 32px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 20px;
+  }
+
+  .upcoming h2 {
+    margin-bottom: 8px;
+    font-size: 22px;
+  }
+
+  .upcoming p:last-child {
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+</style>

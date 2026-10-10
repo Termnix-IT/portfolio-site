@@ -1,0 +1,219 @@
+/* サイト全体のトークンと基本スタイル。部品固有のスタイルは各コンポーネントの <style> に書く */
+
+:root {
+  --ground: #f6f7f9;
+  --surface: #ffffff;
+  --ink: #0b1220;
+  --ink-body: #344054;
+  --ink-2: #475467;
+  --ink-3: #667085;
+  --line: #e4e7ec;
+  --line-strong: #d0d5dd;
+  --accent: #0e7490;
+  --accent-tint: rgb(14 116 144 / 0.1);
+  --dot-live: #12b76a;
+  --dot-neutral: #98a2b3;
+  --dot-progress: #f79009;
+  --ok-bg: #ecfdf3;
+  --ok-ink: #067647;
+  --warn-bg: #fffaeb;
+  --warn-ink: #b54708;
+  --dark: #0b1220;
+  --dark-ink: #d0d5dd;
+  --dark-line: #344054;
+
+  --font-sans: 'IBM Plex Sans JP', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --radius-sm: 6px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --container: 1080px;
+  --gutter: 24px;
+  --section-space: clamp(56px, 8vw, 88px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 24px;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure {
+  margin: 0;
+}
+
+h2,
+h3 {
+  word-break: auto-phrase;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.container {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.section {
+  padding: var(--section-space) 0;
+  border-top: 1px solid var(--line);
+}
+
+.label {
+  margin-bottom: 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.prose {
+  max-width: 40em;
+  color: var(--ink-body);
+}
+
+.prose p + p {
+  margin-top: 1.2em;
+}
+
+.prose h3 {
+  margin: 2em 0 0.6em;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.btn:hover {
+  border-color: var(--ink-3);
+}
+
+.btn--primary {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.btn--primary:hover {
+  border-color: #1d2939;
+  background: #1d2939;
+}
+
+.btn--lg {
+  min-height: 48px;
+  padding: 0 22px;
+  font-size: 15px;
+}
+
+.text-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.text-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ページ遷移はブラウザ標準の View Transitions で、対応ブラウザだけ軽くフェードさせる */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.2s;
+  }
+}

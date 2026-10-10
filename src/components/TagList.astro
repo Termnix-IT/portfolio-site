@@ -1,0 +1,38 @@
+---
+interface Props {
+  tags: string[];
+  label?: string;
+  tone?: 'light' | 'dark';
+}
+
+const { tags, label = '使用技術', tone = 'light' } = Astro.props;
+---
+
+<ul class:list={['tags', `tags--${tone}`]} aria-label={label}>
+  {tags.map((tag) => <li>{tag}</li>)}
+</ul>
+
+<style>
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .tags li {
+    padding: 2px 8px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--ink-2);
+  }
+
+  .tags--dark li {
+    border-color: var(--dark-line);
+    background: transparent;
+    color: var(--dark-ink);
+  }
+</style>

@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import Badge from '../components/Badge.astro';
+import ContactForm from '../components/ContactForm.astro';
+import Icon from '../components/Icon.astro';
+import { links } from '../data/site';
+---
+
+<BaseLayout page="contact">
+  <PageHero
+    eyebrow="Contact"
+    lead="Qiita・GitHub からのコメントや DM、または下記の問い合わせフォームよりご連絡いただけます。技術的な相談や案件のお話など歓迎しています。"
+    tags={['GitHub', 'Qiita', 'External Form']}
+  >
+    お気軽に<mark>ご連絡</mark>ください
+  </PageHero>
+
+  <section class="section" aria-labelledby="channels-title" id="channels">
+    <SectionHeader label="Channels" title="連絡チャンネル" titleId="channels-title" />
+    <div class="channels">
+      <article class="card channel">
+        <h3>Qiita</h3>
+        <p>技術記事を投稿しています。コメントや DM で気軽にお声掛けください。</p>
+        <a href={links.qiita} class="btn btn--primary" target="_blank" rel="noopener noreferrer">Qiitaを見る<Icon name="external" size={16} /></a>
+      </article>
+      <article class="card channel">
+        <h3>GitHub</h3>
+        <p>ソースコードを公開しています。Issue や Pull Request も歓迎しています。</p>
+        <a href={links.github} class="btn btn--primary" target="_blank" rel="noopener noreferrer">GitHubを見る<Icon name="external" size={16} /></a>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="form-title" id="form">
+    <SectionHeader label="Contact form" title="問い合わせフォーム" titleId="form-title">
+      <Badge>Lambda POST</Badge>
+    </SectionHeader>
+    <div class="form-layout">
+      <div class="form-intro">
+        <div class="prose">
+          <p>フォーム送信は AWS Lambda Function URL へ JSON 形式で送信し、AWS SES で問い合わせメールを配信します。このサイト自体は AWS S3 + CloudFront で配信する静的ページのまま、問い合わせ機能をサーバレスで運用しています。</p>
+          <p>返信が必要な場合は、連絡可能なメールアドレスを入力してください。</p>
+        </div>
+        <p class="form-note"><Icon name="shield" size={16} />パスワード、秘密鍵、業務固有の機密情報は送信しないでください。</p>
+      </div>
+      <div class="form-main">
+        <ContactForm />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .channels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .channel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 24px;
+  }
+
+  .channel h3 {
+    font-size: 18px;
+  }
+
+  .channel p {
+    flex: 1;
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+
+  .form-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px 56px;
+  }
+
+  .form-intro {
+    display: flex;
+    flex: 1 1 280px;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+    font-size: 15px;
+  }
+
+  .form-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    background: var(--warn-bg);
+    color: var(--warn-ink);
+    font-size: 14px;
+  }
+
+  .form-note :global(svg) {
+    flex: 0 0 auto;
+    margin-top: 5px;
+  }
+
+  .form-main {
+    flex: 999 1 520px;
+    min-width: 0;
+  }
+</style>

@@ -1,0 +1,66 @@
+# 複数ページで使うプロフィール情報。資格の取得や学習対象の変化は、ここを直せば全ページに反映される
+main:
+  role: インフラエンジニア
+
+  # ホームのヒーローに出す現在の状況（tone: live=現職, neutral=領域, progress=学習中）
+  status:
+    - label: 現職
+      value: 構築・保守
+      tone: live
+    - label: 領域
+      value: Linux / NW / AWS
+      tone: neutral
+    - label: 学習中
+      value: AWS SAA
+      tone: progress
+
+  strengths:
+    - index: 01 / Operations
+      title: 安定運用を前提に考える
+      body: Ciscoスイッチ／Infoblox DNSを中心とした官公庁ネットワークの運用保守で、FW設定変更・障害切り分け・脆弱性対応を継続して担当してきました。
+    - index: 02 / Build
+      title: 自分でも構築して確かめる
+      body: 自宅にDMZとVLANを分けたオンプレ環境を構築し、Zabbixによる監視まで運用しています。並行してAWSやTerraformを使ったIaC環境構築にも取り組み、個人プロジェクトとして継続しています。
+    - index: 03 / Publish
+      title: 学んだことを公開する
+      body: Hash値照合ツールの自作・公開やGitHub Actionsを使ったCI導入など、Python/Shell Scriptによる効率化をQiita・GitHubで発信しています。
+
+  career:
+    - period: 2024.10 - 現在
+      current: true
+      title: 某省 インフラ基盤の構築・保守業務
+      body: Ciscoスイッチ／Infoblox DNSを中心にFWポリシー変更・障害対応・脆弱性影響調査を担当。オンプレ(Linux)からAWSへのクラウドシフトにも詳細設計～リリースまで携わる。
+      tags: [Cisco, Infoblox, Palo Alto・FortiGate, AWS, Splunk]
+    - period: 2023.07 - 2024.09
+      title: 医療系ITシステムの運用保守・監視業務
+      body: サーバ／ネットワークの監視、ログ確認、アラート一次対応、医療用端末のセットアップ・設定対応を担当。
+      tags: [Windows Server, Linux, MySQL, Shell]
+    - period: 2021.04 - 2023.06
+      title: 通信施工管理業務
+      body: 通信設備工事の工程管理と協力会社調整を担当し、配線工事の進捗管理やNW機器の初期設定・設置補助を実施。
+      tags: [Ciscoルータ, NTT装置, Huawei, ONU]
+
+  skills:
+    - title: Infrastructure
+      category: network
+      body: ゾーン分離とセグメント設計を起点に、公開・監視・通信制御までを構成全体として組み立てています。
+      tags: [Linux, Cisco, AWS, VLAN, DMZ, Zabbix, UFW]
+    - title: Automation
+      category: scripting
+      body: 実務でのPowerShellによる自動化に加え、TerraformやGitHub Actionsを使った検証と効率化を個人開発でも進めています。
+      tags: [PowerShell, Python, Terraform, GitHub Actions]
+    - title: Operations
+      category: monitoring
+      body: 現場では監視、ログ確認、障害切り分け、端末や監視端末の初期対応などを担当してきました。
+      tags: [Windows Server, Splunk, ログ監視, 障害切り分け]
+
+  # state: acquired=取得済, learning=学習中
+  certifications:
+    - name: AWS Certified Cloud Practitioner
+      state: acquired
+    - name: 基本情報技術者
+      state: acquired
+    - name: ITパスポート
+      state: acquired
+    - name: AWS SAA Associate
+      state: learning

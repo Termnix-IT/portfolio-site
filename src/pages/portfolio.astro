@@ -1,0 +1,97 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import DetailArticle from '../components/DetailArticle.astro';
+import TagList from '../components/TagList.astro';
+import Badge from '../components/Badge.astro';
+import ZoomableImage from '../components/ZoomableImage.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const entries = await Promise.all(
+  projects.map(async (project, index) => ({
+    ...project.data,
+    number: String(index + 1).padStart(2, '0'),
+    Content: (await render(project)).Content,
+  })),
+);
+---
+
+<BaseLayout page="projects">
+  <PageHero
+    eyebrow="Portfolio"
+    lead="オンプレネットワークの設計や監視基盤の整備など、運用視点を持って手を動かしたプロジェクトをまとめています。構成図と手順を残し、あとから見返せる形で公開しています。"
+    tags={['Linux', 'Network', 'Monitoring', 'Python', 'Security']}
+  >
+    個人で<mark>構築・検証</mark>したプロジェクトの記録
+  </PageHero>
+
+  {
+    entries.map((project) => (
+      <DetailArticle id={project.anchor} label={`${project.number} · ${project.category}`} title={project.title}>
+        <Fragment slot="meta">
+          <p>
+            <Badge tone="ok">{project.status}</Badge>
+          </p>
+          <TagList tags={project.tags} />
+        </Fragment>
+        <div class="prose">
+          <project.Content />
+        </div>
+        <ul class="publications" aria-label="関連する公開物">
+          {project.publications.map((item) => (
+            <li class="card publication">
+              <span class="publication-head">
+                <span class="publication-label">{item.label}</span>
+                <Badge tone="warn">{item.status}</Badge>
+              </span>
+              <span class="publication-text">{item.description}</span>
+            </li>
+          ))}
+        </ul>
+        {project.diagram && (
+          <div>
+            <h3 class="figure-title">構成図</h3>
+            <ZoomableImage src={project.diagram.image} alt={project.diagram.alt} />
+          </div>
+        )}
+      </DetailArticle>
+    ))
+  }
+</BaseLayout>
+
+<style>
+  .publications {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+  }
+
+  .publication {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 18px 20px;
+  }
+
+  .publication-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .publication-label {
+    font-weight: 700;
+  }
+
+  .publication-text {
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+
+  .figure-title {
+    margin-bottom: 12px;
+    font-size: 18px;
+  }
+</style>

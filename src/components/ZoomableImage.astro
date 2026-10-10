@@ -1,0 +1,131 @@
+---
+// クリックかキーボードで拡大表示できる画像。拡大表示はブラウザ標準の <dialog> で開き、
+// フォーカスの閉じ込め・Esc で閉じる・閉じたあとのフォーカス復帰はブラウザに任せる
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+}
+
+const { src, alt, caption } = Astro.props;
+---
+
+<figure class="zoomable">
+  <button type="button" class="zoom-trigger" aria-haspopup="dialog" data-zoom-open>
+    <Image src={src} alt={alt} widths={[480, 960, 1440]} sizes="(max-width: 1080px) 100vw, 1032px" />
+    <span class="sr-only">を拡大表示</span>
+  </button>
+  <figcaption>
+    <Icon name="zoom" size={14} />
+    {caption ? `${caption} · ` : ''}クリックで拡大
+  </figcaption>
+  <dialog class="zoom-dialog" aria-label={`${alt}（拡大表示）`}>
+    <form method="dialog" class="zoom-close-form">
+      <button type="submit" class="zoom-close" aria-label="閉じる"><Icon name="close" size={20} /></button>
+    </form>
+    <Image src={src} alt={alt} widths={[1440, 2000]} sizes="95vw" loading="lazy" class="zoom-full" />
+  </dialog>
+</figure>
+
+<style>
+  .zoomable {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .zoom-trigger {
+    display: block;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    cursor: zoom-in;
+  }
+
+  .zoom-trigger :global(img) {
+    width: 100%;
+  }
+
+  figcaption {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+
+  .zoom-dialog {
+    width: min(96vw, 1600px);
+    max-width: none;
+    max-height: 94vh;
+    padding: 48px 16px 16px;
+    border: none;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+  }
+
+  .zoom-dialog::backdrop {
+    background: rgb(11 18 32 / 0.72);
+  }
+
+  .zoom-close-form {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+
+  .zoom-close {
+    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    cursor: pointer;
+  }
+
+  .zoom-dialog :global(.zoom-full) {
+    width: 100%;
+    max-height: calc(94vh - 72px);
+    object-fit: contain;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .zoom-dialog[open] {
+      animation: zoom-in 0.2s ease-out;
+    }
+
+    @keyframes zoom-in {
+      from {
+        opacity: 0;
+        transform: scale(0.97);
+      }
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-zoom-open]').forEach((button) => {
+    const dialog = button.closest('figure')?.querySelector('dialog');
+    if (!dialog) {
+      return;
+    }
+
+    button.addEventListener('click', () => dialog.showModal());
+    // 画像の外側（背景）をクリックしたら閉じる
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) {
+        dialog.close();
+      }
+    });
+  });
+</script>

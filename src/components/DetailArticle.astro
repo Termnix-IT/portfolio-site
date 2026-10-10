@@ -1,0 +1,57 @@
+---
+// ツールやプロジェクトの詳細。左に名前・状態・技術・リンク、右に説明を置き、狭い画面では縦に並ぶ
+interface Props {
+  id: string;
+  label: string;
+  title: string;
+}
+
+const { id, label, title } = Astro.props;
+const titleId = `${id}-title`;
+---
+
+<article id={id} class="detail section" aria-labelledby={titleId}>
+  <div class="detail-meta">
+    <p class="label">{label}</p>
+    <h2 id={titleId}>{title}</h2>
+    <slot name="meta" />
+  </div>
+  <div class="detail-body">
+    <slot />
+  </div>
+</article>
+
+<style>
+  .detail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px 56px;
+  }
+
+  .detail-meta {
+    display: flex;
+    flex: 1 1 280px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .detail-meta .label {
+    margin-bottom: -8px;
+  }
+
+  h2 {
+    font-size: clamp(26px, 3vw, 34px);
+    line-height: 1.3;
+    font-weight: 700;
+  }
+
+  .detail-body {
+    display: flex;
+    flex: 999 1 520px;
+    flex-direction: column;
+    gap: 32px;
+    min-width: 0;
+  }
+</style>

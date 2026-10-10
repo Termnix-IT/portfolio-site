@@ -1,0 +1,35 @@
+---
+// セクション見出し。英字の短いラベルと日本語の見出しを縦に並べ、右側に任意のリンクを置く
+interface Props {
+  label: string;
+  title: string;
+  titleId: string;
+}
+
+const { label, title, titleId } = Astro.props;
+---
+
+<div class="section-header">
+  <div>
+    <p class="label">{label}</p>
+    <h2 id={titleId}>{title}</h2>
+  </div>
+  <slot />
+</div>
+
+<style>
+  .section-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  h2 {
+    font-size: clamp(24px, 2.6vw, 32px);
+    line-height: 1.4;
+    font-weight: 700;
+  }
+</style>

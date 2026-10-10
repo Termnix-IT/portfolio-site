@@ -1,0 +1,154 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import DetailArticle from '../components/DetailArticle.astro';
+import TagList from '../components/TagList.astro';
+import Badge from '../components/Badge.astro';
+
+const tools = (await getCollection('tools')).sort((a, b) => a.data.order - b.data.order);
+const entries = await Promise.all(
+  tools.map(async (tool, index) => ({
+    ...tool.data,
+    number: String(index + 1).padStart(2, '0'),
+    releaseUrl: tool.data.release ? `${tool.data.repo}/releases/tag/${tool.data.release}` : undefined,
+    Content: (await render(tool)).Content,
+  })),
+);
+---
+
+<BaseLayout page="tools">
+  <PageHero
+    eyebrow={`Toolbox · ${entries.length} tools`}
+    lead="日々の運用や個人プロジェクトで使うために自作したツール、スクリプト、アプリケーションをまとめています。"
+    tags={['Python', 'Shell', 'Go / Rust', 'Automation']}
+  >
+    運用と検証を支える<mark>自作ツール</mark>
+  </PageHero>
+
+  <nav class="tool-index" aria-label="ツール一覧">
+    <ul>
+      {
+        entries.map((tool) => (
+          <li>
+            <a href={`#${tool.anchor}`} class="card tool-card">
+              <span class="tool-card-meta mono">
+                {tool.category}
+                {tool.release && <span>{tool.release}</span>}
+              </span>
+              <span class="tool-card-title">{tool.title}</span>
+              <span class="tool-card-summary">{tool.summary}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  {
+    entries.map((tool) => (
+      <DetailArticle id={tool.anchor} label={`${tool.number} · ${tool.category}`} title={tool.title}>
+        <Fragment slot="meta">
+          <p class="badges">
+            <Badge tone="ok">{tool.status}</Badge>
+            {tool.release && <Badge>{tool.release}</Badge>}
+          </p>
+          <TagList tags={tool.tags} />
+          <div class="btn-row">
+            <a href={tool.repo} class="btn btn--primary" target="_blank" rel="noopener noreferrer">GitHubを見る</a>
+            {tool.releaseUrl && (
+              <a href={tool.releaseUrl} class="btn" target="_blank" rel="noopener noreferrer">Releaseを見る</a>
+            )}
+            {tool.secondaryLink && (
+              <a href={tool.secondaryLink.href} class="btn" target="_blank" rel="noopener noreferrer">
+                {tool.secondaryLink.label}
+              </a>
+            )}
+          </div>
+        </Fragment>
+        <div class="prose">
+          <tool.Content />
+        </div>
+      </DetailArticle>
+    ))
+  }
+
+  <section class="roadmap" aria-labelledby="roadmap-title" id="roadmap">
+    <p class="label">Roadmap</p>
+    <h2 id="roadmap-title">今後の展開</h2>
+    <p>運用効率化スクリプト、構成検証用ツールなど、今後ツールを開発次第、順次掲載していきます。</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .tool-index {
+    padding-bottom: var(--section-space);
+  }
+
+  .tool-index ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 12px;
+  }
+
+  .tool-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    height: 100%;
+    padding: 20px;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .tool-card:hover {
+    border-color: var(--line-strong);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .tool-card:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  .tool-card-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+
+  .tool-card-title {
+    font-size: 19px;
+    font-weight: 700;
+  }
+
+  .tool-card-summary {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink-2);
+  }
+
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .roadmap {
+    margin-bottom: var(--section-space);
+    padding: 32px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 20px;
+  }
+
+  .roadmap h2 {
+    margin-bottom: 8px;
+    font-size: 22px;
+  }
+
+  .roadmap p:last-child {
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+</style>

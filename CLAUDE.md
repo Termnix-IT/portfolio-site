@@ -4,67 +4,68 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## このリポジトリの性質
 
-Termnix-IT の自己紹介ポートフォリオサイトで、ビルド工程のない静的サイト（HTML / CSS / バニラ JS）です。作成ツールの追加、資格や経歴の更新など、本人のプロフィールの変化に合わせて掲載内容を継続的に書き足していくことが主な作業になります。
+Termnix-IT の自己紹介ポートフォリオサイトで、Astro で静的 HTML を生成しています。作成ツールの追加、資格や経歴の更新など、本人のプロフィールの変化に合わせて掲載内容を継続的に書き足していくことが主な作業になります。
 
 公開リポジトリであり、`main` への push がそのまま本番サイトに反映されます。社名・顧客名・案件固有の情報は掲載せず、実務経歴は公開できる粒度に要約して書きます。プロフィール更新の元になる情報（取得した資格、担当業務の変化など）はユーザーがその都度チャットで伝えるので、推測で経歴やスキルを書き足さないでください。
 
 ## プレビューと検証
 
-build・lint の仕組みはなく、変更の確認はローカルサーバーでページを開いて行います。自動で走る検査は、後述する HTML の共通部分の検査スクリプトだけです。
+Node.js 22.12 以上（`.nvmrc` は 24）が必要です。初回は `npm ci` で依存関係を入れます。
 
 ```powershell
-python -m http.server 8000
+npm run dev      # 開発サーバー（http://localhost:4321）
+npm run check    # 型とテンプレートの検査
+npm run build    # dist/ に本番と同じ静的ファイルを出力
+npm run preview  # dist/ を http://localhost:4322 などで配信（--port で指定）
 ```
 
-`.claude/launch.json` に同じ内容の `portfolio` 構成があるため、Claude Code からは `preview_start` の `portfolio` で起動できます。確認では、変更したページのサイドパネル目次のリンクが該当セクションへ飛ぶこと、コンソールエラーがないこと、モバイル幅（375px）で横スクロールが出ないことを見ます。
-
-HTML を変えたら、commit 前に次のコマンドで共通部分を検査します。5ページのナビ・サイドパネルのプロフィールと Current Status・フッター・`<head>` の読み込み・末尾のスクリプトが `index.html` と一致しているか（改行やインデントの違いと、ナビの現在ページの印は無視）、ナビで自分自身へのリンクだけに現在ページの印が付いているか、パス表示の `data-chars` が文字数と一致しているか、各ページの `canonical`・`og:url`・`og:title`・`og:description` が URL・`<title>`・`meta description` と合っているかを調べ、問題があれば差分を表示して終了コード 1 で終わります。同じ検査がデプロイの最初に走るので、不一致があると本番に配信されません。
-
-```powershell
-python scripts/check_shared_parts.py
-```
+`.claude/launch.json` に、開発サーバーの `portfolio`（4321）と、ビルド結果を配信する `portfolio-build`（4322、先に `npm run build` が必要）があり、Claude Code からは `preview_start` で起動できます。確認では、変更したページのリンクが正しい場所へ飛ぶこと、コンソールエラーがないこと、モバイル幅（375px）で横スクロールが出ないことを見ます。commit 前には `npm run check` と `npm run build` が通ることを確かめます。コンテンツの項目漏れや型の誤りは、`src/content.config.ts` の zod スキーマによって build 時にエラーになります。
 
 ## ページ構成で知っておくべきこと
 
-`index.html`・`portfolio.html`・`toolbox.html`・`diagram.html`・`contact.html` の5ページは、テンプレートやインクルードの仕組みを使わず、ヘッダーのナビゲーション、左のサイドパネル、フッターをそれぞれのファイルに複製して持っています。そのため共通部分を変えるときは5ファイルすべてを同じように直す必要があり、直し漏れは `scripts/check_shared_parts.py` で検出できます。特にサイドパネルの「Current Status」カード（現職・領域・学習中）は全ページで同一の内容でなければならず、過去に `index.html` だけ更新されて他ページが古いまま残ったことがあります。一方で「Links」カードと「Sections」カード（ページ内目次）はページごとに中身が異なります。ページ上部のパス表示（`~/ termnix-it / …`）は、タイプ入力の演出が文字数を CSS で読むため `<div class="cdoc-pathbar-inner" data-chars="文字数">` に文字数を書いており、文言を変えたら `data-chars` も直します。ナビもほぼ共通ですが、各ページの自分自身へのリンクにだけ `class="nav-link active"` と `aria-current="page"` を直接書いています。JS で後から付けると、ページ遷移で下線を滑らせる演出が遷移先の最初の描画に間に合わないためです。
+ページは `src/pages/` の5ファイルで、`astro.config.mjs` の `build.format: 'file'` により `index.html`・`portfolio.html`・`toolbox.html`・`diagram.html`・`contact.html` として出力されます。外部から張られているリンクを壊さないよう、この URL とページ内アンカー（`#tool-1`、`#project-1` など。各コンテンツの `anchor` で指定）は変えないでください。
 
-各ページの `<head>` には、検索結果と SNS 共有用の `meta description`・`canonical`・OGP（`og:*`）があり、説明文はそのページのヒーローの説明文（`cdoc-hero-lead`）から作っています。ヒーローの文言やページの目的を変えたら説明文も直し、ページを増やしたときは同じ一式を、本番 URL `https://www.termnix-it.jp/` を基点にした絶対 URL で入れてください。フッターの著作権表記の年（`© 2025–2026`）は5ページに直書きしているので、年が変わったら揃えて更新します。
+共通部分はコンポーネントにまとめてあり、`src/layouts/BaseLayout.astro` が `<head>`（title・description・canonical・OGP）、`SiteHeader.astro`（ナビゲーション）、`SiteFooter.astro` をすべてのページに入れます。ナビの項目と各ページの title・description は `src/data/site.ts` に1か所で書き、description は各ページのヒーローの説明文（`PageHero` の `lead`）と揃えます。canonical と og:url は `astro.config.mjs` の `site` から自動で作られます。フッターの著作権表記の年（`© 2025–2026`）は `SiteFooter.astro` に書いてあるので、年が変わったら更新します。
 
-各ページの本文は `.cdoc-section` を並べた構成で、セクション見出しの `cdoc-section-badge` に A, B, C… の連番を振り、サイドパネル目次の `cdoc-toc-mark` と `href="#id"` をそれに一致させています。途中にセクションを挿入したら、後ろのセクションのバッジと目次の文字も繰り下げてください。
+掲載内容はテンプレートから分け、次のファイルに置いています。
 
-スタイルは `static/style.css` 末尾の「Career Document Layout」ブロックにある `.cdoc-*` クラスで組まれ、色や余白は CSS カスタムプロパティで管理し、サイト全体のトークン（`--primary`、`--accent`、`--font-display` など）は「共通トークンと基本スタイル」見出しの直後の `:root` 1か所に、`.cdoc` 配下だけの上書き（`--cdoc-green` など）は「Career Document Layout」の `.cdoc` にまとめています。過去の世代のスタイルを後から `!important` で打ち消す積み重ねを整理したため、新しく `!important` を足すのは避け、詳細度か記述位置で解決してください。新しいセクションは既存セクションの HTML を複製して中身を差し替える形で作り、インライン style は増やしません。Bootstrap は読み込んでおらず、以前使っていた Reboot・ナビバー・フッターのグリッド・ユーティリティ（`mb-0`、`text-md-end` など）は、同ファイル先頭の「Base」ブロックに必要な分だけ移植してあります。ここにないユーティリティクラスは効かないので、使う前に「Base」に足すか、`.cdoc-*` 側で書いてください。ページ遷移・セクションの表示・状態表示の波紋・見出しマーカーの動きは同ファイル末尾の「Motion」ブロックに、狭い画面のメニュー開閉・ページ遷移時のナビ下線の移動・目次の現在地・ナビバー下端の読了プログレスバーは続く「Motion: navigation」ブロックに、経歴タイムラインの線と点・セクション内の部品の時間差表示・構成図の拡大表示の開閉・押せる要素のホバー時の浮き上がり・Qiita 記事一覧の読み込み中表示はその次の「Motion: content」ブロックに、パス表示のタイプ入力・問い合わせフォームの送信成功のチェックマークと入力誤りの揺れ・資格の「学習中」の行に流れる光は「Motion: details」ブロックにまとめてあり、`prefers-reduced-motion` で動きを減らす設定の閲覧者や未対応ブラウザでは静止表示になります。Current Status カードの波紋は「現職」行の `cdoc-status-live` と「学習中」行の `cdoc-status-progress` に付くので、行を書き換えるときもこのクラスを残してください。`static/main.js` は狭い画面でのメニュー開閉（`initNavToggle`）、スクロール位置に応じた目次の現在地表示（`updateScrollSpy` が `.is-current` と `aria-current` を付ける）、キーボードでも開ける構成図のライトボックス（`.diagram-zoomable`）、`index.html` の Qiita 最新記事取得（HTML に置いた読み込み中の帯 `qiita-skeleton` と `aria-busy` を、取得結果か失敗の表示で置き換える）、`contact.html` のフォーム送信を扱い、どの処理も対象要素が存在するページでだけ動く作りです。各ページの `<body>` 直後には、キーボード操作で本文（`.cdoc-main` の `id="content"`）へ移る「本文へスキップ」リンクがあり、共通部分の検査の対象です。装飾目的のアイコン（`<i class="fas …">`）には `aria-hidden="true"` を付け、アイコンだけのリンクには `aria-label` で名前を付けます。問い合わせフォームは `data-endpoint` の AWS Lambda Function URL へ JSON を POST する前提で、Lambda / SES 側はこのリポジトリの外で管理しています。
+- `src/data/profile.yaml`：現職・領域・学習中（ホームのヒーローの状態表示）、今の強み、経歴、スキル、資格。配列の順がそのまま表示順です。
+- `src/content/tools/*.md`：作成ツール。frontmatter に名前・分類・一覧用の短い説明・タグ・リポジトリ・リリースのタグを書き、本文に説明の段落を書きます。`order` で並び順、`anchor` でページ内アンカーを決めます。
+- `src/content/projects/*.md`：構築プロジェクト（`portfolio.html`）。関連する記事やリポジトリの公開状況は `publications`、構成図は `diagram` に書きます。
+- `src/content/diagrams/*.md`：構成図ギャラリー（`diagram.html`）。
+
+ホームの「代表作」には、プロジェクトとツールのうち frontmatter に `featured`（並び順の番号）を持つものが並びます。
+
+見た目は「案B」のデザインで、サイト全体の色・書体・余白のトークン（`--accent`、`--ink`、`--font-sans` など）とボタン・カードなどの共通クラスは `src/styles/global.css` に、部品ごとのスタイルは各 `.astro` ファイルの `<style>`（Astro がそのファイル内だけに効くよう自動で範囲を絞る）に書きます。書体は IBM Plex Sans JP と JetBrains Mono の2種類で、アクセント色は1色だけにしています。`!important` やインライン style は使わず、詳細度か記述位置で解決してください。アイコンは `src/components/Icon.astro` の線画 SVG を使い、装飾目的のものは `aria-hidden` にし、アイコンだけのボタンやリンクには `aria-label` で名前を付けます。動き（ページ遷移のフェード、カードのホバー、状態表示の波紋、拡大表示）はすべて `prefers-reduced-motion` で動きを減らす設定の閲覧者には出ません。
+
+ブラウザで動く処理は、それぞれ使うコンポーネントの `<script>` に書いています。狭い画面のメニュー開閉は `SiteHeader.astro`、構成図の拡大表示はブラウザ標準の `<dialog>` を使う `ZoomableImage.astro`、ホームの Qiita 最新記事の取得（閲覧時に Qiita API を呼ぶ）は `QiitaList.astro`、問い合わせフォームの送信は `ContactForm.astro` です。問い合わせフォームは `data-endpoint` の AWS Lambda Function URL へ JSON を POST する前提で、Lambda / SES 側はこのリポジトリの外で管理しています。フォームの動作をローカルで確かめるときは、本番の Lambda に送信しないよう `fetch` を差し替えてから試してください。
 
 ## よくある更新作業
 
 ### 作成ツールを追加する（`toolbox.html`）
 
 1. 掲載するツールの GitHub リポジトリの README と最新リリースノートを `gh` で読み、機能・技術スタック・配布形態・最新のタグを確認する。
-2. 直前のツールの `<section id="tool-N">` を複製し、`id="tool-(N+1)"`、kicker の `tool-0N / 分類`、バッジの文字、タイトル、本文、タグ、ボタンを差し替える。「今後の展開」（`id="roadmap"`）は常に最後に置き、バッジを1文字繰り下げる。
-3. サイドパネルの Sections 目次に項目を追加する。
-4. 本文は3段落程度で、何をするツールか、なぜ作ったか・どこを工夫したか、配布形態と最新バージョンの順に書く。機能の羅列だけで終わらせず、安全面や設計上の判断を読み手に伝える。リリースノートに「動作確認は Windows のみ」などの断り書きがあれば本文にも残す。
-5. ボタンは「GitHubを見る」（リポジトリ）と「Releaseを見る」（`/releases/tag/<最新タグ>`）の2つにする。リリースがなく仕様書などを見せたい場合は HashChecker の節のように別のリンクにする。
+2. `src/content/tools/` に既存のファイルを複製して新しいファイルを作り、frontmatter の `title`・`order`・`anchor`（`tool-N`）・`category`・`summary`・`tags`・`repo`・`release` を書き換える。一覧のカード、ページ内の番号、「Releaseを見る」のリンクは自動で作られ、「今後の展開」は常に最後に表示される。
+3. 本文は3段落程度で、何をするツールか、なぜ作ったか・どこを工夫したか、配布形態と最新バージョンの順に書く。機能の羅列だけで終わらせず、安全面や設計上の判断を読み手に伝える。リリースノートに「動作確認は Windows のみ」などの断り書きがあれば本文にも残す。
+4. リリースがなく仕様書などを見せたい場合は、`release` の代わりに `secondaryLink` を書く（HashChecker と同じ形）。ホームの「代表作」にも載せる場合は `featured` を付ける。
 
-既に掲載しているツールの新バージョンが出たときは、バージョンに言及した段落を新しい内容に書き換え、「Releaseを見る」のリンク先のタグを更新します。
+既に掲載しているツールの新バージョンが出たときは、`release` のタグと、本文のバージョンに言及した段落を新しい内容に書き換えます。
 
 ### プロフィールを更新する
 
-資格の取得、学習対象や担当業務の変化は、複数の箇所に同じ情報が散らばっているため、関連する箇所をまとめて更新します。
-
-- `index.html` の Certifications：取得済みは `fa-check-circle` と「取得済」、学習中は `cdoc-cert--progress` クラスと `fa-spinner fa-spin`、「学習中」で表す。
-- 5ページすべての Current Status カード：資格を取得して学習対象が変わったら「学習中」の行も直す。
-- `index.html` のヒーロー、Overview、Career Timeline、Skills：経歴やスキルの変化に合わせて文言を揃える。
+資格の取得、学習対象や担当業務の変化は `src/data/profile.yaml` を直せば全ページに反映されます。資格は `state: acquired`（取得済）か `learning`（学習中）で表し、学習対象が変わったら `status` の「学習中」の行も直します。経歴やスキルの変化に合わせて、ホームのヒーローの文言（`src/pages/index.astro`）と、`src/data/site.ts` のホームの description も揃えます。
 
 ### 画像を追加する
 
-`static/img/` に内容が分かる英語のファイル名で置き、HTML から相対パスで参照して、`alt` には内容が分かる日本語を書きます。構成図としてクリック拡大させたい画像には `diagram-zoomable` クラスを付けます。
+ページに載せる画像は `src/assets/` に内容が分かる英語のファイル名で置き、コンテンツの frontmatter から相対パスで指定します（例: `image: ../../assets/xxx.png`）。build 時に WebP へ変換され、幅違いの複数サイズが作られます。`alt` には内容が分かる日本語を書きます。構成図としてクリック拡大させたい画像は `ZoomableImage` コンポーネントで表示します。
 
-プロフィールのアイコンは、画面表示とファビコンには192px に縮小した `main-icon-192.png` を使い、元の1024px の `main-icon.png` は `og:image` 専用に残しています。元画像は約770KB あり、小さな表示に使うとページが重くなるため、アイコンを差し替えるときは縮小版も作り直してください。
+プロフィールのアイコンは、画面表示とファビコンに `src/assets/main-icon-192.png` を使い、元の1024px の `public/static/img/main-icon.png` は `og:image` 専用です。og:image は SNS などから長く参照されるため、ファイル名にハッシュが付かない `public/static/img/` に置いています。
 
 ## git 管理とデプロイ
 
-`.gitignore` は「すべて無視したうえで必要なものだけ `!` で許可する」方式です。現在許可しているのは直下の `*.html`、`static/` 直下の CSS / JS、`static/img/` の画像、`README.md`、`CLAUDE.md`、デプロイ用ワークフロー、`scripts/check_shared_parts.py` だけで、それ以外の新しいファイル（新しいディレクトリ、別の拡張子のファイルなど）は `.gitignore` に許可行を追加しないと commit されません。`docs/` には運用メモなどを置いていますが、意図的に追跡対象から外しているローカル専用の置き場です。
+`.gitignore` は「すべて無視したうえで必要なものだけ `!` で許可する」方式です。現在許可しているのは `src/` と `public/` の全体、`package.json`・`package-lock.json`・`astro.config.mjs`・`tsconfig.json`・`.nvmrc`、`README.md`、`CLAUDE.md`、デプロイ用ワークフローだけで、直下に新しい設定ファイルなどを足す場合は `.gitignore` に許可行を追加しないと commit されません。`dist/`・`node_modules/`・`.astro/` は追跡しません。`docs/` には運用メモなどを置いていますが、意図的に追跡対象から外しているローカル専用の置き場です。
 
-`main` への push で `.github/workflows/deploy.yml` が起動し、最初に `scripts/check_shared_parts.py` で共通部分を検査してから、直下の `*.html` と `static/` だけを束ねて S3 へ `sync --delete` し、CloudFront を `/*` で invalidation します。束ねるときに `static/` をコミット ID 先頭8文字のパス `v/<sha8>/static/` にも複製し、HTML 内の `static/…` への参照をすべてそちらへ書き換えます。S3 には HTML を `Cache-Control: no-cache`、`v/` を1年の `immutable`、版なしの `static/` を1日キャッシュで置きます。CloudFront のキャッシュはクエリ文字列を区別しないので、版はクエリではなくパスに含めています。古い版の `v/` は、CloudFront に古い HTML が残っている間も CSS・JS を返せるよう削除しません（1回あたり約230KB）。リポジトリの HTML は `static/…` のまま書き、CSS の `url()` や JS から静的ファイルを参照する場合はこの書き換えの対象外になる点に注意してください。og:image 専用の `static/img/main-icon.png` は版付きの複製に含めません。`README.md` や `CLAUDE.md` は配信されません。push 後の結果は次のコマンドで確認できます。
+`main` への push で `.github/workflows/deploy.yml` が起動し、`npm ci`・`npm run check`・`npm run build` が通った場合だけ、`dist/` を S3 へ同期して CloudFront を `/*` で invalidation します。S3 には、ファイル名に内容のハッシュが入る `_astro/` を1年の `immutable`、og:image などの `static/` を1日キャッシュ、HTML を `Cache-Control: no-cache` で置きます。古い `_astro/` のファイルは、CloudFront に古い HTML が残っている間も参照先を返せるよう削除しません。Astro 移行前のデプロイが置いた `v/<sha8>/` も同じ理由で残っていますが、どの HTML からも参照されなくなっているので、必要なら S3 から手動で消せます。`README.md` や `CLAUDE.md` は配信されません。push 後の結果は次のコマンドで確認できます。
 
 ```powershell
 gh run list -R Termnix-IT/portfolio-site --limit 1

@@ -1,0 +1,232 @@
+---
+// 問い合わせフォーム。AWS Lambda Function URL へ JSON を POST し、Lambda / SES 側はこのリポジトリの外で管理している
+const endpoint = 'https://74lhuwdzmjjv6rfhk6auutx5gq0okeyl.lambda-url.ap-northeast-1.on.aws/';
+---
+
+<form class="contact-form card" data-contact-form data-endpoint={endpoint} novalidate>
+  <!-- ボット対策のおとり欄。人には見えず、値が入っていたら送信しない -->
+  <input type="text" name="_gotcha" class="form-hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+  <div class="form-grid">
+    <label class="form-field">
+      <span>お名前</span>
+      <input type="text" name="name" autocomplete="name" maxlength="80" required />
+    </label>
+    <label class="form-field">
+      <span>返信先メールアドレス<span class="optional">（任意）</span></span>
+      <input type="email" name="email" autocomplete="email" maxlength="120" />
+    </label>
+  </div>
+
+  <label class="form-field">
+    <span>用件</span>
+    <select name="topic" required>
+      <option value="">選択してください</option>
+      <option value="technical-question">技術的な相談</option>
+      <option value="project-inquiry">案件・協業の相談</option>
+      <option value="portfolio-feedback">ポートフォリオへのフィードバック</option>
+      <option value="other">その他</option>
+    </select>
+  </label>
+
+  <label class="form-field">
+    <span>メッセージ</span>
+    <textarea name="message" rows="7" minlength="10" maxlength="2000" required></textarea>
+  </label>
+
+  <div class="form-actions">
+    <button class="btn btn--primary btn--lg" type="submit" data-contact-submit>送信する</button>
+    <p>送信内容は確認後、必要に応じて返信します。</p>
+  </div>
+  <p class="form-status" data-contact-status role="status" aria-live="polite"></p>
+</form>
+
+<style>
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: clamp(20px, 4vw, 32px);
+  }
+
+  .form-hidden {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .optional {
+    font-weight: 400;
+    color: var(--ink-3);
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    background: var(--surface);
+    font-size: 16px;
+    font-weight: 400;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  textarea {
+    resize: vertical;
+    line-height: 1.7;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--accent-tint);
+  }
+
+  .contact-form.was-validated :invalid {
+    border-color: var(--warn-ink);
+  }
+
+  .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    font-size: 14px;
+    color: var(--ink-3);
+  }
+
+  .form-actions button:disabled {
+    cursor: progress;
+    opacity: 0.7;
+  }
+
+  .form-status {
+    font-size: 14px;
+  }
+
+  .form-status:empty {
+    display: none;
+  }
+
+  .form-status[data-state='success'] {
+    color: var(--ok-ink);
+  }
+
+  .form-status[data-state='error'] {
+    color: var(--warn-ink);
+  }
+
+  .form-status[data-state='pending'] {
+    color: var(--ink-3);
+  }
+</style>
+
+<script>
+  const CONTACT_REQUEST_TIMEOUT_MS = 10000;
+
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  if (form) {
+    initContactForm(form);
+  }
+
+  function initContactForm(contactForm: HTMLFormElement) {
+    const status = contactForm.querySelector<HTMLElement>('[data-contact-status]');
+    const submitButton = contactForm.querySelector<HTMLButtonElement>('[data-contact-submit]');
+    const endpoint = contactForm.dataset.endpoint;
+
+    if (!endpoint) {
+      renderStatus(status, '問い合わせフォームの送信先が設定されていません。', 'error');
+      return;
+    }
+
+    contactForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      // 入力に誤りがある欄だけ枠の色を変えるため、送信を試みてから検証済みの印を付ける
+      contactForm.classList.add('was-validated');
+      if (!contactForm.checkValidity()) {
+        contactForm.reportValidity();
+        return;
+      }
+
+      const formData = new FormData(contactForm);
+      const field = (name: string) => String(formData.get(name) ?? '').trim();
+      const payload = {
+        name: field('name'),
+        email: field('email'),
+        topic: field('topic'),
+        message: field('message'),
+        _gotcha: field('_gotcha'),
+      };
+
+      if (payload._gotcha) {
+        renderStatus(status, '送信を受け付けました。', 'success');
+        contactForm.reset();
+        return;
+      }
+
+      setSubmitting(submitButton, true);
+      renderStatus(status, '送信しています...', 'pending');
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: AbortSignal.timeout(CONTACT_REQUEST_TIMEOUT_MS),
+        });
+
+        if (!response.ok) {
+          throw new Error('Contact form request failed');
+        }
+
+        contactForm.reset();
+        contactForm.classList.remove('was-validated');
+        renderStatus(status, '送信しました。内容を確認後、必要に応じて返信します。', 'success');
+      } catch {
+        renderStatus(status, '送信できませんでした。時間をおいて再度お試しください。', 'error');
+      } finally {
+        setSubmitting(submitButton, false);
+      }
+    });
+  }
+
+  function setSubmitting(button: HTMLButtonElement | null, isSubmitting: boolean) {
+    if (!button) {
+      return;
+    }
+
+    button.disabled = isSubmitting;
+    button.textContent = isSubmitting ? '送信中…' : '送信する';
+  }
+
+  function renderStatus(status: HTMLElement | null, message: string, state: 'success' | 'error' | 'pending') {
+    if (!status) {
+      return;
+    }
+
+    status.textContent = message;
+    status.dataset.state = state;
+  }
+</script>
