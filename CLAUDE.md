@@ -65,7 +65,7 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 
 `.gitignore` は「すべて無視したうえで必要なものだけ `!` で許可する」方式です。現在許可しているのは `src/` と `public/` の全体、`package.json`・`package-lock.json`・`astro.config.mjs`・`tsconfig.json`・`.nvmrc`、`README.md`、`CLAUDE.md`、デプロイ用ワークフローだけで、直下に新しい設定ファイルなどを足す場合は `.gitignore` に許可行を追加しないと commit されません。`dist/`・`node_modules/`・`.astro/` は追跡しません。`docs/` には運用メモなどを置いていますが、意図的に追跡対象から外しているローカル専用の置き場です。
 
-`main` への push で `.github/workflows/deploy.yml` が起動し、`npm ci`・`npm run check`・`npm run build` が通った場合だけ、`dist/` を S3 へ同期して CloudFront を `/*` で invalidation します。S3 には、ファイル名に内容のハッシュが入る `_astro/` を1年の `immutable`、og:image などの `static/` を1日キャッシュ、HTML を `Cache-Control: no-cache` で置きます。古い `_astro/` のファイルは、CloudFront に古い HTML が残っている間も参照先を返せるよう削除しません。Astro 移行前のデプロイが置いた `v/<sha8>/` も同じ理由で残っていますが、どの HTML からも参照されなくなっているので、必要なら S3 から手動で消せます。`README.md` や `CLAUDE.md` は配信されません。push 後の結果は次のコマンドで確認できます。
+`main` への push で `.github/workflows/deploy.yml` が起動し、`npm ci`・`npm run check`・`npm run build` が通った場合だけ、`dist/` を S3 へ同期して CloudFront を `/*` で invalidation します。S3 には、ファイル名に内容のハッシュが入る `_astro/` を1年の `immutable`、og:image などの `static/` を1日キャッシュ、HTML を `Cache-Control: no-cache` で置きます。古い `_astro/` のファイルは、CloudFront に古い HTML が残っている間も参照先を返せるよう削除しません。`README.md` や `CLAUDE.md` は配信されません。push 後の結果は次のコマンドで確認できます。
 
 ```powershell
 gh run list -R Termnix-IT/portfolio-site --limit 1
