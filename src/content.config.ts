@@ -34,6 +34,23 @@ const tools = defineCollection({
   }),
 });
 
+// 趣味の制作（hobby.html）。仕事の実績とは分け、フッターからだけリンクする
+const hobbies = defineCollection({
+  loader: glob({ base: './src/content/hobbies', pattern: '*.md' }),
+  schema: z.object({
+    title: z.string(),
+    order: z.number(),
+    anchor: z.string(),
+    category: z.string(),
+    status: z.string().default('公開中'),
+    tags: z.array(z.string()),
+    site: z.url().optional(),
+    repo: z.url(),
+    // 題材の権利表記など、本文の下に注記として出す文
+    notice: z.string().optional(),
+  }),
+});
+
 const publication = z.object({
   label: z.string(),
   description: z.string(),
@@ -114,4 +131,4 @@ const profile = defineCollection({
   }),
 });
 
-export const collections = { tools, projects, diagrams, profile };
+export const collections = { tools, projects, diagrams, hobbies, profile };

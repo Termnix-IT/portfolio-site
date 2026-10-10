@@ -1,0 +1,69 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import DetailArticle from '../components/DetailArticle.astro';
+import TagList from '../components/TagList.astro';
+import Badge from '../components/Badge.astro';
+import Icon from '../components/Icon.astro';
+import { pages } from '../data/site';
+
+const hobbies = (await getCollection('hobbies')).sort((a, b) => a.data.order - b.data.order);
+const entries = await Promise.all(
+  hobbies.map(async (hobby, index) => ({
+    ...hobby.data,
+    number: String(index + 1).padStart(2, '0'),
+    Content: (await render(hobby)).Content,
+  })),
+);
+---
+
+<BaseLayout page="hobby">
+  <PageHero eyebrow="Side projects" lead={pages.hobby.description}>
+    趣味で作っている<mark>制作物</mark>
+  </PageHero>
+
+  {
+    entries.map((hobby) => (
+      <DetailArticle id={hobby.anchor} label={`${hobby.number} · ${hobby.category}`} title={hobby.title}>
+        <Fragment slot="meta">
+          <p class="badges">
+            <Badge tone="ok">{hobby.status}</Badge>
+            <Badge>趣味</Badge>
+          </p>
+          <TagList tags={hobby.tags} />
+          <div class="btn-row">
+            {hobby.site && (
+              <a href={hobby.site} class="btn btn--primary" target="_blank" rel="noopener noreferrer">
+                サイトを開く<Icon name="external" size={16} />
+              </a>
+            )}
+            <a href={hobby.repo} class="btn" target="_blank" rel="noopener noreferrer">GitHubを見る</a>
+          </div>
+        </Fragment>
+        <div class="prose">
+          <hobby.Content />
+        </div>
+        {hobby.notice && <p class="notice">{hobby.notice}</p>}
+      </DetailArticle>
+    ))
+  }
+</BaseLayout>
+
+<style>
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .notice {
+    max-width: 40em;
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+</style>

@@ -22,6 +22,7 @@ https://www.termnix-it.jp/
 | `toolbox.html` | 自作ツールの一覧と詳細 |
 | `diagram.html` | システム構成図ギャラリー |
 | `contact.html` | 連絡チャンネルと問い合わせフォーム |
+| `hobby.html` | 趣味の制作（フッターからのみリンク） |
 
 ## Tech Stack
 
@@ -34,10 +35,10 @@ https://www.termnix-it.jp/
 ```text
 Portfolio_Web/
 ├─ src/
-│  ├─ pages/          # 5ページ（build で *.html になる）
+│  ├─ pages/          # 6ページ（build で *.html になる）
 │  ├─ layouts/        # <head> とヘッダー・フッターを入れる共通レイアウト
 │  ├─ components/     # ヘッダー、見出し、カード、フォームなどの部品
-│  ├─ content/        # tools / projects / diagrams の Markdown
+│  ├─ content/        # tools / projects / diagrams / hobbies の Markdown
 │  ├─ data/           # profile.yaml（経歴・スキル・資格）、site.ts（ナビとページ情報）
 │  ├─ assets/         # 最適化して載せる画像
 │  ├─ styles/         # 色・書体などのトークンと共通スタイル

@@ -1,6 +1,7 @@
 // サイト全体で共通の設定値（ナビゲーション、外部リンク、各ページのメタ情報）
 
-export type PageKey = 'home' | 'projects' | 'tools' | 'diagrams' | 'contact';
+// hobby はヘッダーのナビには出さず、フッターからだけリンクする
+export type PageKey = 'home' | 'projects' | 'tools' | 'diagrams' | 'contact' | 'hobby';
 
 export const siteName = 'Termnix-ITのページ';
 
@@ -46,5 +47,10 @@ export const pages: Record<PageKey, { title: string; description: string; path: 
     description:
       'Qiita・GitHub からのコメントや DM、または問い合わせフォームよりご連絡いただけます。技術的な相談や案件のお話など歓迎しています。',
     path: '/contact.html',
+  },
+  hobby: {
+    title: '趣味の制作',
+    description: '仕事とは別に、趣味で作っているものを紹介しています。好きな題材を、普段の業務では使わない技術も試しながら形にしています。',
+    path: '/hobby.html',
   },
 };

@@ -23,7 +23,7 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 
 ## ページ構成で知っておくべきこと
 
-ページは `src/pages/` の5ファイルで、`astro.config.mjs` の `build.format: 'file'` により `index.html`・`portfolio.html`・`toolbox.html`・`diagram.html`・`contact.html` として出力されます。外部から張られているリンクを壊さないよう、この URL とページ内アンカー（`#tool-1`、`#project-1` など。各コンテンツの `anchor` で指定）は変えないでください。
+ページは `src/pages/` の6ファイルで、`astro.config.mjs` の `build.format: 'file'` により `index.html`・`portfolio.html`・`toolbox.html`・`diagram.html`・`contact.html`・`hobby.html` として出力されます。外部から張られているリンクを壊さないよう、この URL とページ内アンカー（`#tool-1`、`#project-1` など。各コンテンツの `anchor` で指定）は変えないでください。`hobby.html`（趣味の制作）は仕事の実績と分けるため、ヘッダーのナビには載せず、フッターからだけリンクしています。
 
 共通部分はコンポーネントにまとめてあり、`src/layouts/BaseLayout.astro` が `<head>`（title・description・canonical・OGP）、`SiteHeader.astro`（ナビゲーション）、`SiteFooter.astro` をすべてのページに入れます。ナビの項目と各ページの title・description は `src/data/site.ts` に1か所で書き、description は各ページのヒーローの説明文（`PageHero` の `lead`）と揃えます。canonical と og:url は `astro.config.mjs` の `site` から自動で作られます。フッターの著作権表記の年（`© 2025–2026`）は `SiteFooter.astro` に書いてあるので、年が変わったら更新します。
 
@@ -33,6 +33,7 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 - `src/content/tools/*.md`：作成ツール。frontmatter に名前・分類・一覧用の短い説明・タグ・リポジトリ・リリースのタグを書き、本文に説明の段落を書きます。`order` で並び順、`anchor` でページ内アンカーを決めます。
 - `src/content/projects/*.md`：構築プロジェクト（`portfolio.html`）。関連する記事やリポジトリの公開状況は `publications`、構成図は `diagram` に書きます。
 - `src/content/diagrams/*.md`：構成図ギャラリー（`diagram.html`）。
+- `src/content/hobbies/*.md`：趣味の制作（`hobby.html`）。サイトとリポジトリのリンク、題材の権利表記（`notice`）を frontmatter に書きます。ゲームなど他者の作品を題材にしたものは、キャラクター画像やロゴが写るスクリーンショットを載せず、非公式のファン制作物であることと権利の帰属を `notice` に明記します。
 
 ホームの「代表作」には、プロジェクトとツールのうち frontmatter に `featured`（並び順の番号）を持つものが並びます。
 
