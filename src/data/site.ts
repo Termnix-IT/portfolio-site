@@ -1,7 +1,8 @@
 // サイト全体で共通の設定値（ナビゲーション、外部リンク、各ページのメタ情報）
 
-// hobby はヘッダーのナビには出さず、フッターからだけリンクする
-export type PageKey = 'home' | 'projects' | 'tools' | 'diagrams' | 'contact' | 'hobby';
+// hobby はヘッダーのナビには出さず、フッターからだけリンクする。
+// notFound は存在しない URL で CloudFront が返す 404 ページで、検索結果と sitemap には出さない
+export type PageKey = 'home' | 'projects' | 'tools' | 'diagrams' | 'contact' | 'hobby' | 'notFound';
 
 export const siteName = 'Termnix-ITのページ';
 
@@ -17,8 +18,9 @@ export const navItems: { key: PageKey; label: string; href: string }[] = [
   { key: 'contact', label: 'Contact', href: '/contact.html' },
 ];
 
-// <title> と meta description。description は各ページのヒーローの説明文に合わせる
-export const pages: Record<PageKey, { title: string; description: string; path: string }> = {
+// <title> と meta description。description は各ページのヒーローの説明文に合わせる。
+// noindex のページは検索エンジンに載せず、sitemap.xml からも外す
+export const pages: Record<PageKey, { title: string; description: string; path: string; noindex?: boolean }> = {
   home: {
     title: 'ホーム',
     description:
@@ -52,5 +54,11 @@ export const pages: Record<PageKey, { title: string; description: string; path: 
     title: '趣味の制作',
     description: '仕事とは別に、趣味で作っているものを紹介しています。好きな題材を、普段の業務では使わない技術も試しながら形にしています。',
     path: '/hobby.html',
+  },
+  notFound: {
+    title: 'ページが見つかりません',
+    description: 'URL が変わったか、ページが削除された可能性があります。下の一覧から目的のページを開いてください。',
+    path: '/404.html',
+    noindex: true,
   },
 };

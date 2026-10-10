@@ -73,6 +73,10 @@ jobs:
           aws s3 sync ./dist "s3://${S3_BUCKET_NAME}" --delete \
             --exclude "*" --include "static/*" \
             --cache-control "public, max-age=86400"
+          # sitemap.xml・robots.txt など直下のその他のファイルは 1 時間キャッシュにする
+          aws s3 sync ./dist "s3://${S3_BUCKET_NAME}" \
+            --exclude "*" --include "*.xml" --include "*.txt" \
+            --cache-control "public, max-age=3600"
           # HTML は毎回更新を確認させる
           aws s3 sync ./dist "s3://${S3_BUCKET_NAME}" --delete \
             --exclude "*" --include "*.html" \

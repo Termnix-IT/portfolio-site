@@ -23,7 +23,7 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 
 ## ページ構成で知っておくべきこと
 
-ページは `src/pages/` の6ファイルで、`astro.config.mjs` の `build.format: 'file'` により `index.html`・`portfolio.html`・`toolbox.html`・`diagram.html`・`contact.html`・`hobby.html` として出力されます。外部から張られているリンクを壊さないよう、この URL とページ内アンカー（`#tool-1`、`#project-1` など。各コンテンツの `anchor` で指定）は変えないでください。`hobby.html`（趣味の制作）は仕事の実績と分けるため、ヘッダーのナビには載せず、フッターからだけリンクしています。
+ページは `src/pages/` の6ファイル（ほかに 404 ページと sitemap）で、`astro.config.mjs` の `build.format: 'file'` により `index.html`・`portfolio.html`・`toolbox.html`・`diagram.html`・`contact.html`・`hobby.html` として出力されます。外部から張られているリンクを壊さないよう、この URL とページ内アンカー（`#tool-1`、`#project-1` など。各コンテンツの `anchor` で指定）は変えないでください。`hobby.html`（趣味の制作）は仕事の実績と分けるため、ヘッダーのナビには載せず、フッターからだけリンクしています。
 
 共通部分はコンポーネントにまとめてあり、`src/layouts/BaseLayout.astro` が `<head>`（title・description・canonical・OGP）、`SiteHeader.astro`（ナビゲーション）、`SiteFooter.astro` をすべてのページに入れます。ナビの項目と各ページの title・description は `src/data/site.ts` に1か所で書き、description は各ページのヒーローの説明文（`PageHero` の `lead`）と揃えます。canonical と og:url は `astro.config.mjs` の `site` から自動で作られます。フッターの著作権表記の年（`© 2025–2026`）は `SiteFooter.astro` に書いてあるので、年が変わったら更新します。
 
@@ -46,6 +46,10 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 - そのほか、ページ遷移のフェード、状態表示の波紋、構成図の拡大表示がある。
 
 ブラウザで動く処理は、それぞれ使うコンポーネントの `<script>` に書いています。狭い画面のメニュー開閉は `SiteHeader.astro`、構成図の拡大表示はブラウザ標準の `<dialog>` を使う `ZoomableImage.astro`、ホームの Qiita 最新記事の取得（閲覧時に Qiita API を呼ぶ）は `QiitaList.astro`、問い合わせフォームの送信は `ContactForm.astro` です。問い合わせフォームは `data-endpoint` の AWS Lambda Function URL へ JSON を POST する前提で、Lambda / SES 側はこのリポジトリの外で管理しています。フォームの動作をローカルで確かめるときは、本番の Lambda に送信しないよう `fetch` を差し替えてから試してください。
+
+各ページの `<head>` には、Astro の `security.csp`（`astro.config.mjs`）が Content-Security-Policy の meta を出し、読み込める先をこのサイト自身、Google Fonts、Qiita API、問い合わせの Lambda Function URL に絞っています。ページ内の `<script>` と `<style>` は build 時にハッシュで許可されるので普段は意識しなくてよいですが、外部の画像・スクリプト・API を新しく使う場合や Lambda の URL を変えた場合は `astro.config.mjs` の許可先も直さないと、ブラウザに遮断されます。変更後はブラウザのコンソールに CSP 違反が出ていないかを確認してください。Markdown のコードの色付けはインライン style を使うため無効にしています。
+
+存在しない URL に対しては `src/pages/404.astro`（端末で存在しない場所へ `cd` した画面に見立て、`ls` の結果として各ページへのリンクを並べる）を返します。S3 は存在しないキーに 403 を返すため、CloudFront のカスタムエラーレスポンスで 403 と 404 を `/404.html`（ステータス 404）に置き換える設定にしています（リポジトリ外の設定）。検索エンジン向けには、`src/data/site.ts` のページ一覧から `noindex` 以外を並べた `sitemap.xml`（`src/pages/sitemap.xml.ts`）と、`public/robots.txt` を出しています。ページを増やしたら `site.ts` に足せば sitemap にも載ります。
 
 ## よくある更新作業
 
@@ -73,7 +77,7 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 
 `.gitignore` は「すべて無視したうえで必要なものだけ `!` で許可する」方式です。現在許可しているのは `src/` と `public/` の全体、`package.json`・`package-lock.json`・`astro.config.mjs`・`tsconfig.json`・`.nvmrc`、`README.md`、`CLAUDE.md`、デプロイ用ワークフローだけで、直下に新しい設定ファイルなどを足す場合は `.gitignore` に許可行を追加しないと commit されません。`dist/`・`node_modules/`・`.astro/` は追跡しません。`docs/` には運用メモなどを置いていますが、意図的に追跡対象から外しているローカル専用の置き場です。
 
-`main` への push で `.github/workflows/deploy.yml` が起動し、`npm ci`・`npm run check`・`npm run build` が通った場合だけ、`dist/` を S3 へ同期して CloudFront を `/*` で invalidation します。S3 には、ファイル名に内容のハッシュが入る `_astro/` を1年の `immutable`、og:image などの `static/` を1日キャッシュ、HTML を `Cache-Control: no-cache` で置きます。古い `_astro/` のファイルは、CloudFront に古い HTML が残っている間も参照先を返せるよう削除しません。`README.md` や `CLAUDE.md` は配信されません。push 後の結果は次のコマンドで確認できます。
+`main` への push で `.github/workflows/deploy.yml` が起動し、`npm ci`・`npm run check`・`npm run build` が通った場合だけ、`dist/` を S3 へ同期して CloudFront を `/*` で invalidation します。S3 には、ファイル名に内容のハッシュが入る `_astro/` を1年の `immutable`、og:image などの `static/` を1日キャッシュ、`sitemap.xml`・`robots.txt` を1時間キャッシュ、HTML を `Cache-Control: no-cache` で置きます。古い `_astro/` のファイルは、CloudFront に古い HTML が残っている間も参照先を返せるよう削除しません。`README.md` や `CLAUDE.md` は配信されません。push 後の結果は次のコマンドで確認できます。
 
 ```powershell
 gh run list -R Termnix-IT/portfolio-site --limit 1

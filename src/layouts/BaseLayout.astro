@@ -10,7 +10,7 @@ interface Props {
 }
 
 const { page } = Astro.props;
-const { title, description, path } = pages[page];
+const { title, description, path, noindex } = pages[page];
 const fullTitle = `${title} | ${siteName}`;
 const url = new URL(path, Astro.site).href;
 // og:image は外部から長く参照されるため、版の付かない固定パス（public/static/img）に置いている
@@ -26,17 +26,25 @@ const ogImage = new URL('/static/img/main-icon.png', Astro.site).href;
     <script is:inline>document.documentElement.classList.add('js');</script>
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={url} />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content={siteName} />
-    <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={url} />
-    <meta property="og:image" content={ogImage} />
-    <meta property="og:image:width" content="1024" />
-    <meta property="og:image:height" content="1024" />
-    <meta property="og:locale" content="ja_JP" />
-    <meta name="twitter:card" content="summary" />
+    {
+      noindex ? (
+        <meta name="robots" content="noindex" />
+      ) : (
+        <>
+          <link rel="canonical" href={url} />
+          <meta property="og:type" content="website" />
+          <meta property="og:site_name" content={siteName} />
+          <meta property="og:title" content={fullTitle} />
+          <meta property="og:description" content={description} />
+          <meta property="og:url" content={url} />
+          <meta property="og:image" content={ogImage} />
+          <meta property="og:image:width" content="1024" />
+          <meta property="og:image:height" content="1024" />
+          <meta property="og:locale" content="ja_JP" />
+          <meta name="twitter:card" content="summary" />
+        </>
+      )
+    }
     <link rel="icon" type="image/png" href={icon.src} />
     <link rel="apple-touch-icon" href={icon.src} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
