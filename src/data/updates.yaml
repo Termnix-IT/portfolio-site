@@ -1,0 +1,43 @@
+# サイトの更新履歴。閲覧者から見える変更をしたら、いちばん上に1件足す（ホームの「更新履歴」とフッターの最終更新日に出る）。
+# 同じ日付の項目は書いた順に並ぶ。href は関連するページへのリンク（任意）
+main:
+  items:
+    - date: 2026-10-11
+      text: ホームに更新履歴を追加し、フッターに最終更新日を表示
+    - date: 2026-10-11
+      text: 構成図ギャラリーに「このサイトの構成図」を追加
+      href: /diagram.html#diagram-2
+    - date: 2026-10-10
+      text: 趣味の制作ページを追加し、Blue Archive DB を紹介
+      href: /hobby.html
+    - date: 2026-10-10
+      text: 作成ツールの LimitView に画面のスクリーンショットを追加
+      href: /toolbox.html#tool-4
+    - date: 2026-10-10
+      text: サイトを Astro で作り直し、デザインを一新
+    - date: 2026-09-30
+      text: 作成ツールに LimitView と oterm を追加
+      href: /toolbox.html#tool-4
+    - date: 2026-09-16
+      text: 作成ツールに Port Manager Tool を追加し、CIPHER VAULT の紹介を更新
+      href: /toolbox.html#tool-3
+    - date: 2026-09-06
+      text: 作成ツールに HashChecker を追加
+      href: /toolbox.html#tool-2
+    - date: 2026-09-06
+      text: オンプレネットワークの構成図と、経歴・スキルを更新
+      href: /portfolio.html#project-1
+    - date: 2026-05-27
+      text: このサイトのサーバレス構成（Web 運用構成）の説明を追加
+    - date: 2026-05-26
+      text: 作成ツールに CIPHER VAULT を追加
+      href: /toolbox.html#tool-1
+    - date: 2026-05-24
+      text: 問い合わせフォームを AWS Lambda で受け付ける形に変更
+      href: /contact.html
+    - date: 2026-05-09
+      text: 全ページのデザインを刷新
+    - date: 2026-04-06
+      text: GitHub Actions による自動デプロイを導入
+    - date: 2026-02-15
+      text: サイトの制作を開始

@@ -2,6 +2,10 @@
 import { Image } from 'astro:assets';
 import avatar from '../assets/main-icon-192.png';
 import { links } from '../data/site';
+import { formatDate, getUpdates, isoDate } from '../data/updates';
+
+// 最終更新日は更新履歴（src/data/updates.yaml）のいちばん新しい日付
+const [latest] = await getUpdates();
 ---
 
 <footer class="site-footer">
@@ -16,6 +20,13 @@ import { links } from '../data/site';
       <a href="/hobby.html">趣味の制作</a>
       <a href={links.qiita} target="_blank" rel="noopener noreferrer">Qiita</a>
       <a href={links.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+      {
+        latest && (
+          <a href="/#updates" class="mono">
+            最終更新 <time datetime={isoDate(latest.date)}>{formatDate(latest.date)}</time>
+          </a>
+        )
+      }
       <!-- 年が変わったら更新する -->
       <span class="mono">&copy; 2025–2026 Termnix-IT</span>
     </div>

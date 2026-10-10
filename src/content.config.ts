@@ -131,4 +131,18 @@ const profile = defineCollection({
   }),
 });
 
-export const collections = { tools, projects, diagrams, hobbies, profile };
+// サイトの更新履歴。ホームの一覧とフッターの最終更新日に使う。配列の順（新しい順）がそのまま表示順になる
+const updates = defineCollection({
+  loader: file('./src/data/updates.yaml'),
+  schema: z.object({
+    items: z.array(
+      z.object({
+        date: z.coerce.date(),
+        text: z.string(),
+        href: z.string().optional(),
+      }),
+    ),
+  }),
+});
+
+export const collections = { tools, projects, diagrams, hobbies, profile, updates };

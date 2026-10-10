@@ -8,6 +8,7 @@ import Badge from '../components/Badge.astro';
 import WorkRow from '../components/WorkRow.astro';
 import QiitaList from '../components/QiitaList.astro';
 import Icon from '../components/Icon.astro';
+import UpdateList from '../components/UpdateList.astro';
 import { links } from '../data/site';
 
 const profileEntry = await getEntry('profile', 'main');
@@ -179,6 +180,11 @@ const works = [
         </article>
       </div>
     </div>
+  </section>
+
+  <section class="section" aria-labelledby="updates-title" id="updates">
+    <SectionHeader label="Updates" title="更新履歴" titleId="updates-title" />
+    <UpdateList />
   </section>
 
   <section class="card contact-cta" aria-labelledby="contact-title">

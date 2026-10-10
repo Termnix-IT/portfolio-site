@@ -35,6 +35,8 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 - `src/content/diagrams/*.md`：構成図ギャラリー（`diagram.html`）。
 - `src/content/hobbies/*.md`：趣味の制作（`hobby.html`）。サイトとリポジトリのリンク、題材の権利表記（`notice`）を frontmatter に書きます。ゲームなど他者の作品を題材にしたものは、キャラクター画像やロゴが写るスクリーンショットを載せず、非公式のファン制作物であることと権利の帰属を `notice` に明記します。
 
+- `src/data/updates.yaml`：サイトの更新履歴。ホームの「更新履歴」（新しい5件と、残りの折りたたみ）と、全ページのフッターの最終更新日に使います。
+
 ホームの「代表作」には、プロジェクトとツールのうち frontmatter に `featured`（並び順の番号）を持つものが並びます。
 
 見た目は「案B」のデザインで、サイト全体の色・書体・余白のトークン（`--accent`、`--ink`、`--font-sans` など）とボタン・カードなどの共通クラスは `src/styles/global.css` に、部品ごとのスタイルは各 `.astro` ファイルの `<style>`（Astro がそのファイル内だけに効くよう自動で範囲を絞る）に書きます。書体は IBM Plex Sans JP と JetBrains Mono の2種類で、アクセント色は1色だけにしています。`!important` やインライン style は使わず、詳細度か記述位置で解決してください。アイコンは `src/components/Icon.astro` の線画 SVG を使い、装飾目的のものは `aria-hidden` にし、アイコンだけのボタンやリンクには `aria-label` で名前を付けます。動きは控えめにそろえ、すべて `prefers-reduced-motion` で動きを減らす設定の閲覧者には出さず、最初から完成した状態で表示します。主な動きと置き場所は次のとおりです。
@@ -52,6 +54,8 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 存在しない URL に対しては `src/pages/404.astro`（端末で存在しない場所へ `cd` した画面に見立て、`ls` の結果として各ページへのリンクを並べる）を返します。S3 は存在しないキーに 403 を返すため、CloudFront のカスタムエラーレスポンスで 403 と 404 を `/404.html`（ステータス 404）に置き換える設定にしています（リポジトリ外の設定）。検索エンジン向けには、`src/data/site.ts` のページ一覧から `noindex` 以外を並べた `sitemap.xml`（`src/pages/sitemap.xml.ts`）と、`public/robots.txt` を出しています。ページを増やしたら `site.ts` に足せば sitemap にも載ります。
 
 ## よくある更新作業
+
+閲覧者から見える変更（ツールやプロジェクトの追加・更新、ページの追加、プロフィールの更新、デザインの大きな変更）をしたら、同じ commit で `src/data/updates.yaml` の `items` のいちばん上に、日付・何を変えたかの1文・関連ページへのリンク（任意）を1件足します。文言の手直しや、閲覧者から見えない内部の変更（ビルド設定、ドキュメント）は載せません。
 
 ### 作成ツールを追加する（`toolbox.html`）
 
