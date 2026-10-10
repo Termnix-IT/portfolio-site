@@ -1,5 +1,6 @@
 ---
-// 各ページ冒頭の見出し。見出しの文言は slot で渡し、強調したい語を <mark> で囲む
+// 各ページ冒頭の見出し。見出しの文言は slot で渡し、強調したい語を <mark> で囲む。
+// intro を付けたページ（ホーム）では、小見出しを端末のように1文字ずつ打ち、<mark> に蛍光ペンを引く演出を毎回再生する
 import TagList from './TagList.astro';
 
 interface Props {
@@ -7,13 +8,18 @@ interface Props {
   lead: string;
   tags?: string[];
   size?: 'xl' | 'lg';
+  intro?: boolean;
 }
 
-const { eyebrow, lead, tags, size = 'lg' } = Astro.props;
+const { eyebrow, lead, tags, size = 'lg', intro = false } = Astro.props;
+// 打つ演出は等幅の文字数（ch）で幅を広げるため、英数字だけの小見出しで使う
+const typingStyle = intro ? `--chars: ${eyebrow.length}` : undefined;
 ---
 
-<section class:list={['hero', `hero--${size}`]} aria-labelledby="hero-title">
-  <p class="label hero-eyebrow">{eyebrow}</p>
+<section class:list={['hero', `hero--${size}`, { 'hero--intro': intro }]} aria-labelledby="hero-title">
+  <p class="label hero-eyebrow">
+    {intro ? <span class="typing" style={typingStyle}>{eyebrow}</span> : eyebrow}
+  </p>
   <h1 id="hero-title"><slot /></h1>
   <p class="hero-lead">{lead}</p>
   {tags && <div class="hero-tags"><TagList tags={tags} label="主な領域" /></div>}
@@ -55,6 +61,19 @@ const { eyebrow, lead, tags, size = 'lg' } = Astro.props;
     color: var(--accent);
   }
 
+  /* ホームでは強調語を蛍光ペンで示す。文字は本文と同じ色にして、引いた線のほうを目立たせる */
+  .hero--intro h1 :global(mark) {
+    padding: 0 0.04em;
+    background: linear-gradient(var(--accent-mark), var(--accent-mark)) 0 90% / 100% 48% no-repeat;
+    color: inherit;
+  }
+
+  .typing {
+    display: inline-block;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
   .hero-lead {
     max-width: 40em;
     margin-top: 24px;
@@ -65,5 +84,60 @@ const { eyebrow, lead, tags, size = 'lg' } = Astro.props;
 
   .hero-tags {
     margin-top: 24px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero--intro .typing {
+      overflow: hidden;
+      width: 0;
+      padding-right: 2px;
+      border-right: 2px solid var(--accent);
+      vertical-align: bottom;
+      animation:
+        hero-type 1.3s steps(var(--chars)) 0.2s forwards,
+        hero-caret 0.7s step-end 6,
+        hero-caret-out 0.3s ease 4.2s forwards;
+    }
+
+    .hero--intro h1 {
+      animation: hero-up 0.6s ease-out both;
+    }
+
+    .hero--intro h1 :global(mark) {
+      background-size: 0% 48%;
+      animation: hero-mark 0.6s ease-out 1.5s forwards;
+    }
+
+    @keyframes hero-type {
+      to {
+        /* 最後の文字が欠けないよう、文字数分の幅に半文字の余裕を足す */
+        width: calc((var(--chars) + 0.5) * 1ch);
+      }
+    }
+
+    @keyframes hero-caret {
+      50% {
+        border-color: transparent;
+      }
+    }
+
+    @keyframes hero-caret-out {
+      to {
+        border-color: transparent;
+      }
+    }
+
+    @keyframes hero-up {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+    }
+
+    @keyframes hero-mark {
+      to {
+        background-size: 100% 48%;
+      }
+    }
   }
 </style>

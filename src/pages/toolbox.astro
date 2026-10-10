@@ -102,13 +102,16 @@ const entries = await Promise.all(
     transition: border-color 0.15s ease, transform 0.15s ease;
   }
 
-  .tool-card:hover {
-    border-color: var(--line-strong);
+  /* 乗せる・フォーカスすると、枠がアクセント色になり、題名に下線が走る（ホームの代表作と同じ動き） */
+  .tool-card:hover,
+  .tool-card:focus-visible {
+    border-color: var(--accent);
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .tool-card:hover {
-      transform: translateY(-2px);
+    .tool-card:hover,
+    .tool-card:focus-visible {
+      transform: translateY(-3px);
     }
   }
 
@@ -121,8 +124,16 @@ const entries = await Promise.all(
   }
 
   .tool-card-title {
+    align-self: flex-start;
     font-size: 19px;
     font-weight: 700;
+    background: linear-gradient(var(--accent), var(--accent)) 0 100% / 0% 2px no-repeat;
+    transition: background-size 0.3s ease;
+  }
+
+  .tool-card:hover .tool-card-title,
+  .tool-card:focus-visible .tool-card-title {
+    background-size: 100% 2px;
   }
 
   .tool-card-summary {

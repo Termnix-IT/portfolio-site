@@ -36,7 +36,13 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 
 ホームの「代表作」には、プロジェクトとツールのうち frontmatter に `featured`（並び順の番号）を持つものが並びます。
 
-見た目は「案B」のデザインで、サイト全体の色・書体・余白のトークン（`--accent`、`--ink`、`--font-sans` など）とボタン・カードなどの共通クラスは `src/styles/global.css` に、部品ごとのスタイルは各 `.astro` ファイルの `<style>`（Astro がそのファイル内だけに効くよう自動で範囲を絞る）に書きます。書体は IBM Plex Sans JP と JetBrains Mono の2種類で、アクセント色は1色だけにしています。`!important` やインライン style は使わず、詳細度か記述位置で解決してください。アイコンは `src/components/Icon.astro` の線画 SVG を使い、装飾目的のものは `aria-hidden` にし、アイコンだけのボタンやリンクには `aria-label` で名前を付けます。動き（ページ遷移のフェード、カードのホバー、状態表示の波紋、拡大表示）はすべて `prefers-reduced-motion` で動きを減らす設定の閲覧者には出ません。
+見た目は「案B」のデザインで、サイト全体の色・書体・余白のトークン（`--accent`、`--ink`、`--font-sans` など）とボタン・カードなどの共通クラスは `src/styles/global.css` に、部品ごとのスタイルは各 `.astro` ファイルの `<style>`（Astro がそのファイル内だけに効くよう自動で範囲を絞る）に書きます。書体は IBM Plex Sans JP と JetBrains Mono の2種類で、アクセント色は1色だけにしています。`!important` やインライン style は使わず、詳細度か記述位置で解決してください。アイコンは `src/components/Icon.astro` の線画 SVG を使い、装飾目的のものは `aria-hidden` にし、アイコンだけのボタンやリンクには `aria-label` で名前を付けます。動きは控えめにそろえ、すべて `prefers-reduced-motion` で動きを減らす設定の閲覧者には出さず、最初から完成した状態で表示します。主な動きと置き場所は次のとおりです。
+
+- ホーム冒頭：小見出し `$ whoami -> infra engineer` を1文字ずつ打ち、見出しの「土台」（`<mark>`）に蛍光ペンを引く。ページを開くたびに再生する（`PageHero.astro` の `intro`。打つ演出は文字数を `ch` で数えるため、英数字だけの小見出しで使う）。
+- ホームの経歴：左の線が上から伸び、点が弾み、項目が順に浮かぶ。画面に初めて入ったときだけ再生する（`index.astro` の `data-reveal-once` と IntersectionObserver。JS が動かない環境で隠れたままにならないよう、隠す指定は `BaseLayout.astro` が `<html>` に付ける `js` クラスがあるときだけ効かせている）。
+- 代表作とツール一覧のカード：乗せる・フォーカスすると、枠がアクセント色になって少し浮き、題名に下線が走り、矢印が進む。
+- 隠しコマンド：ホームでヘッダーのロゴを2秒以内の間隔で5回続けてクリックすると、右下に端末風の表示で `ping` の応答と一言が出る（`SiteHeader.astro`）。ホームでのロゴのクリックはページを読み直さず先頭へ戻すだけにしている。
+- そのほか、ページ遷移のフェード、状態表示の波紋、構成図の拡大表示がある。
 
 ブラウザで動く処理は、それぞれ使うコンポーネントの `<script>` に書いています。狭い画面のメニュー開閉は `SiteHeader.astro`、構成図の拡大表示はブラウザ標準の `<dialog>` を使う `ZoomableImage.astro`、ホームの Qiita 最新記事の取得（閲覧時に Qiita API を呼ぶ）は `QiitaList.astro`、問い合わせフォームの送信は `ContactForm.astro` です。問い合わせフォームは `data-endpoint` の AWS Lambda Function URL へ JSON を POST する前提で、Lambda / SES 側はこのリポジトリの外で管理しています。フォームの動作をローカルで確かめるときは、本番の Lambda に送信しないよう `fetch` を差し替えてから試してください。
 

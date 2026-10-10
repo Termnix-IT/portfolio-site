@@ -46,13 +46,16 @@ const { href, meta, title, body, tags, image } = Astro.props;
     transition: border-color 0.15s ease, transform 0.15s ease;
   }
 
-  .work-row:hover {
-    border-color: var(--line-strong);
+  /* 乗せる・フォーカスすると、枠がアクセント色になり、題名に下線が走り、矢印が進む */
+  .work-row:hover,
+  .work-row:focus-visible {
+    border-color: var(--accent);
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .work-row:hover {
-      transform: translateY(-2px);
+    .work-row:hover,
+    .work-row:focus-visible {
+      transform: translateY(-3px);
     }
   }
 
@@ -93,9 +96,17 @@ const { href, meta, title, body, tags, image } = Astro.props;
   }
 
   .work-title {
+    align-self: flex-start;
     font-size: 22px;
     line-height: 1.45;
     font-weight: 700;
+    background: linear-gradient(var(--accent), var(--accent)) 0 100% / 0% 2px no-repeat;
+    transition: background-size 0.3s ease;
+  }
+
+  .work-row:hover .work-title,
+  .work-row:focus-visible .work-title {
+    background-size: 100% 2px;
   }
 
   .work-body {
@@ -107,10 +118,19 @@ const { href, meta, title, body, tags, image } = Astro.props;
   .work-arrow {
     flex: 0 0 auto;
     color: var(--dot-neutral);
+    transition: color 0.2s ease, transform 0.2s ease;
   }
 
-  .work-row:hover .work-arrow {
+  .work-row:hover .work-arrow,
+  .work-row:focus-visible .work-arrow {
     color: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .work-row:hover .work-arrow,
+    .work-row:focus-visible .work-arrow {
+      transform: translateX(5px);
+    }
   }
 
   @media (max-width: 560px) {
