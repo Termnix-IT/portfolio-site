@@ -61,8 +61,9 @@ npm run dev
 
 ## Deployment
 
-- `main` ブランチへの push を契機に GitHub Actions が起動
-- `npm run check` と `npm run build` が通った場合だけ、`dist/` を AWS S3 へ同期し、CloudFront のキャッシュを無効化
+- 変更は `develop` ブランチにまとめ、公開するときに `main` へ反映する
+- `develop` への push では GitHub Actions が検査（`npm run check`）とビルドだけを行い、本番には出さない
+- `main` への push では、検査とビルドが通った場合だけ `dist/` を AWS S3 へ同期し、CloudFront のキャッシュを無効化する
 
 ## Contact Form
 

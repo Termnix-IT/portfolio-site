@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Termnix-IT の自己紹介ポートフォリオサイトで、Astro で静的 HTML を生成しています。作成ツールの追加、資格や経歴の更新など、本人のプロフィールの変化に合わせて掲載内容を継続的に書き足していくことが主な作業になります。
 
-公開リポジトリであり、`main` への push がそのまま本番サイトに反映されます。社名・顧客名・案件固有の情報は掲載せず、実務経歴は公開できる粒度に要約して書きます。プロフィール更新の元になる情報（取得した資格、担当業務の変化など）はユーザーがその都度チャットで伝えるので、推測で経歴やスキルを書き足さないでください。
+公開リポジトリであり、`main` への push がそのまま本番サイトに反映されます。普段の変更は `develop` にまとめ、ユーザーの指示があったときだけ `main` へ反映します（「公開までの流れ」を参照）。社名・顧客名・案件固有の情報は掲載せず、実務経歴は公開できる粒度に要約して書きます。プロフィール更新の元になる情報（取得した資格、担当業務の変化など）はユーザーがその都度チャットで伝えるので、推測で経歴やスキルを書き足さないでください。
 
 ## プレビューと検証
 
@@ -81,7 +81,20 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 
 `.gitignore` は「すべて無視したうえで必要なものだけ `!` で許可する」方式です。現在許可しているのは `src/` と `public/` の全体、`package.json`・`package-lock.json`・`astro.config.mjs`・`tsconfig.json`・`.nvmrc`、`README.md`、`CLAUDE.md`、デプロイ用ワークフローだけで、直下に新しい設定ファイルなどを足す場合は `.gitignore` に許可行を追加しないと commit されません。`dist/`・`node_modules/`・`.astro/` は追跡しません。`docs/` には運用メモなどを置いていますが、意図的に追跡対象から外しているローカル専用の置き場です。
 
-`main` への push で `.github/workflows/deploy.yml` が起動し、`npm ci`・`npm run check`・`npm run build` が通った場合だけ、`dist/` を S3 へ同期して CloudFront を `/*` で invalidation します。S3 には、ファイル名に内容のハッシュが入る `_astro/` を1年の `immutable`、og:image などの `static/` を1日キャッシュ、`sitemap.xml`・`robots.txt` を1時間キャッシュ、HTML を `Cache-Control: no-cache` で置きます。古い `_astro/` のファイルは、CloudFront に古い HTML が残っている間も参照先を返せるよう削除しません。`README.md` や `CLAUDE.md` は配信されません。push 後の結果は次のコマンドで確認できます。
+### 公開までの流れ（develop にまとめてから main へ）
+
+細かい修正を1つずつ本番に出さず、まとめて公開するため、ブランチを2段にしています。グローバル指示の「個人リポジトリでは作業用ブランチをデフォルトブランチへ自動で merge・push する」は、このリポジトリでは次のように読み替えます。
+
+1. 作業は `claude/` で始まる作業用ブランチで行い、`npm run check` と `npm run build` を通し、変更したページを `npm run preview`（`preview_start` の `portfolio-build`）で確認してから commit する。
+2. 作業用ブランチを `develop` へ fast-forward で取り込み、`develop` を push する。ここまでは確認なしで自動で進めてよい。`develop` への push では GitHub Actions が検査とビルドだけを行い、本番には出ない。
+3. `main` への反映（本番公開）は、ユーザーがチャットで公開を指示したときだけ行う。`develop` の最新を取り込んだ状態で検査とビルドが通ることを確かめ、`git push origin develop:main` で `main` を fast-forward する。push 後はデプロイの成否と本番の表示を確認する。
+4. 公開の指示がないまま作業を終えるときは、`develop` に未公開の変更が何件あるか（`git log --oneline origin/main..origin/develop`）を完了報告に書く。
+
+更新履歴（`src/data/updates.yaml`）の日付は、作業した日ではなく公開した日にそろえるため、公開のときに未公開分の日付を公開日に直す。
+
+### デプロイの仕組み
+
+`main` への push で `.github/workflows/deploy.yml` が起動し、`npm ci`・`npm run check`・`npm run build` が通った場合だけ、`dist/` を S3 へ同期して CloudFront を `/*` で invalidation します。`develop` への push でも同じワークフローが動きますが、検査とビルドまでで止まります。S3 には、ファイル名に内容のハッシュが入る `_astro/` を1年の `immutable`、og:image などの `static/` を1日キャッシュ、`sitemap.xml`・`robots.txt` を1時間キャッシュ、HTML を `Cache-Control: no-cache` で置きます。古い `_astro/` のファイルは、CloudFront に古い HTML が残っている間も参照先を返せるよう削除しません。`README.md` や `CLAUDE.md` は配信されません。push 後の結果は次のコマンドで確認できます。
 
 ```powershell
 gh run list -R Termnix-IT/portfolio-site --limit 1
