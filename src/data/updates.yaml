@@ -3,6 +3,9 @@
 main:
   items:
     - date: 2026-10-11
+      text: CIPHER VAULT を v0.2.5、LimitView を v0.1.12 の内容に更新
+      href: /toolbox.html
+    - date: 2026-10-11
       text: ホームに更新履歴を追加し、フッターに最終更新日を表示
     - date: 2026-10-11
       text: 構成図ギャラリーに「このサイトの構成図」を追加
