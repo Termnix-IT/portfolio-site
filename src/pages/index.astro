@@ -175,6 +175,7 @@ const works = [
           <p>このWebページは AWS S3 + CloudFront で配信し、問い合わせフォームは AWS Lambda Function URL と Amazon SES によるメール配信機能としてサーバレスで実装しています。</p>
           <p>GitHub Actions を使ったCI/CDも構築しており、main ブランチへの push をトリガーに S3 への自動デプロイと CloudFront のキャッシュ無効化までを自動化しています。</p>
           <TagList tags={['S3', 'CloudFront', 'Lambda', 'SES', 'GitHub Actions']} tone="dark" />
+          <a href="/diagram.html#diagram-2" class="publish-dark-link">構成図を見る →</a>
         </article>
       </div>
     </div>
@@ -526,6 +527,20 @@ const works = [
   .publish-card--dark p {
     margin-bottom: 12px;
     font-size: 14px;
+  }
+
+  .publish-dark-link {
+    display: inline-block;
+    margin-top: 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #85b7eb;
+  }
+
+  .publish-dark-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 4px;
   }
 
   .publish-kicker {

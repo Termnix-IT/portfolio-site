@@ -69,7 +69,7 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 
 ### 画像を追加する
 
-ページに載せる画像は `src/assets/` に内容が分かる英語のファイル名で置き、コンテンツの frontmatter から相対パスで指定します（例: `image: ../../assets/xxx.png`）。build 時に WebP へ変換され、幅違いの複数サイズが作られます。`alt` には内容が分かる日本語を書きます。構成図としてクリック拡大させたい画像は `ZoomableImage` コンポーネントで表示します。
+ページに載せる画像は `src/assets/` に内容が分かる英語のファイル名で置き、コンテンツの frontmatter から相対パスで指定します（例: `image: ../../assets/xxx.png`）。build 時に WebP へ変換され、幅違いの複数サイズが作られます。`alt` には内容が分かる日本語を書きます。構成図としてクリック拡大させたい画像は `ZoomableImage` コンポーネントで表示します。「このサイトの構成図」（`src/assets/site-architecture.svg`）のように手で描いた図は SVG のまま置けます（変換されずにそのまま配信され、拡大しても文字がにじまない）。`<img>` として読み込まれるためページの Web フォントは効かず、文字は閲覧者の端末の日本語フォントで表示されます。サイトの構成（配信・問い合わせ・デプロイの流れ）を変えたら、この図と `src/content/diagrams/site-architecture.md` の説明も直してください。
 
 プロフィールのアイコンは、画面表示とファビコンに `src/assets/main-icon-192.png` を使い、元の1024px の `public/static/img/main-icon.png` は `og:image` 専用です。og:image は SNS などから長く参照されるため、ファイル名にハッシュが付かない `public/static/img/` に置いています。
 

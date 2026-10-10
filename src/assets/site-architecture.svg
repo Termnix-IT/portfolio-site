@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 710" width="1160" height="710" role="img" aria-labelledby="title desc">
+  <title id="title">このサイトの構成図</title>
+  <desc id="desc">閲覧者のブラウザは CloudFront 経由で S3 の静的ファイルを受け取り、問い合わせは Lambda から SES でメール送信する。GitHub の main への push で GitHub Actions が検査とビルドを行い、成功したときだけ S3 へ同期して CloudFront のキャッシュを無効化する。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#0E7490"/>
+    </marker>
+    <style>
+      text { font-family: system-ui, "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif; }
+      .region { fill: #F6F7F9; stroke: #98A2B3; stroke-width: 1.2; stroke-dasharray: 6 5; }
+      .region-label { font-family: ui-monospace, Consolas, monospace; font-size: 14px; fill: #0E7490; }
+      .node { fill: #FFFFFF; stroke: #D0D5DD; stroke-width: 1.2; }
+      .node-dark { fill: #0B1220; stroke: #0B1220; }
+      .title { font-size: 16px; font-weight: 700; fill: #0B1220; }
+      .sub { font-size: 12.5px; fill: #475467; }
+      .title-light { font-size: 16px; font-weight: 700; fill: #FFFFFF; }
+      .sub-light { font-size: 12.5px; fill: #D0D5DD; }
+      .flow { fill: none; stroke: #0E7490; stroke-width: 1.8; }
+      .flow-label { font-size: 12.5px; fill: #0E7490; }
+      .note { font-size: 13px; fill: #475467; }
+    </style>
+  </defs>
+
+  <rect class="region" x="330" y="40" width="790" height="340" rx="16"/>
+  <text class="region-label" x="352" y="70">AWS</text>
+
+  <rect class="region" x="330" y="440" width="790" height="220" rx="16"/>
+  <text class="region-label" x="352" y="470">GitHub</text>
+
+  <rect class="node-dark" x="40" y="90" width="220" height="96" rx="12"/>
+  <text class="title-light" x="58" y="128">閲覧者のブラウザ</text>
+  <text class="sub-light" x="58" y="154">www.termnix-it.jp</text>
+
+  <rect class="node" x="40" y="250" width="220" height="80" rx="12"/>
+  <text class="title" x="58" y="282">外部サービス</text>
+  <text class="sub" x="58" y="306">Qiita API・Google Fonts</text>
+
+  <rect class="node" x="370" y="90" width="240" height="96" rx="12"/>
+  <text class="title" x="388" y="128">Amazon CloudFront</text>
+  <text class="sub" x="388" y="154">HTTPS で配信・キャッシュ</text>
+
+  <rect class="node" x="840" y="90" width="240" height="96" rx="12"/>
+  <text class="title" x="858" y="128">Amazon S3</text>
+  <text class="sub" x="858" y="154">HTML・CSS・JS・画像</text>
+
+  <rect class="node" x="370" y="250" width="240" height="96" rx="12"/>
+  <text class="title" x="388" y="288">AWS Lambda</text>
+  <text class="sub" x="388" y="314">Function URL で問い合わせを受付</text>
+
+  <rect class="node" x="840" y="250" width="240" height="96" rx="12"/>
+  <text class="title" x="858" y="288">Amazon SES</text>
+  <text class="sub" x="858" y="314">問い合わせメールを送信</text>
+
+  <rect class="node" x="40" y="500" width="220" height="96" rx="12"/>
+  <text class="title" x="58" y="538">開発者</text>
+  <text class="sub" x="58" y="564">ローカルで確認して push</text>
+
+  <rect class="node" x="370" y="500" width="240" height="120" rx="12"/>
+  <text class="title" x="388" y="536">Actions：build</text>
+  <text class="sub" x="388" y="562">npm ci</text>
+  <text class="sub" x="388" y="582">astro check（型の検査）</text>
+  <text class="sub" x="388" y="602">astro build（静的 HTML を生成）</text>
+
+  <rect class="node" x="840" y="500" width="240" height="120" rx="12"/>
+  <text class="title" x="858" y="536">Actions：deploy</text>
+  <text class="sub" x="858" y="562">OIDC で一時的な認証情報を取得</text>
+  <text class="sub" x="858" y="582">S3 へファイルを同期</text>
+  <text class="sub" x="858" y="602">CloudFront のキャッシュを無効化</text>
+
+  <path class="flow" d="M260 138H366" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="313" y="128" text-anchor="middle">HTTPS</text>
+
+  <path class="flow" d="M610 138H836" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="725" y="128" text-anchor="middle">オリジンから取得</text>
+
+  <path class="flow" d="M150 186V246" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="160" y="222">記事・フォント</text>
+
+  <path class="flow" d="M260 170H300V298H366" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="306" y="240">問い合わせ</text>
+
+  <path class="flow" d="M610 298H836" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="725" y="288" text-anchor="middle">送信を依頼</text>
+
+  <path class="flow" d="M260 548H366" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="313" y="538" text-anchor="middle">main へ push</text>
+
+  <path class="flow" d="M610 560H836" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="725" y="550" text-anchor="middle">成功したときだけ</text>
+
+  <path class="flow" d="M1080 540H1108V138H1084" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="1094" y="418" text-anchor="end">S3 へ同期</text>
+
+  <path class="flow" d="M1080 584H1096V218H490V190" marker-end="url(#arrow)"/>
+  <text class="flow-label" x="795" y="210" text-anchor="middle">キャッシュを無効化</text>
+
+  <text class="note" x="40" y="694">キャッシュ：HTML は毎回更新を確認し、ファイル名に内容のハッシュが入る CSS・JS・画像は1年間キャッシュする</text>
+</svg>
