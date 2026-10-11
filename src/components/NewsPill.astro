@@ -1,0 +1,86 @@
+---
+// ホーム冒頭のお知らせ。News の記録のいちばん新しい1件だけを出し、押すと News ページへ移る
+import Icon from './Icon.astro';
+import { formatDate, getUpdates, isoDate } from '../data/updates';
+
+const [latest] = await getUpdates();
+---
+
+{
+  latest && (
+    <a href="/news.html#log" class="news-pill">
+      <span class="news-label mono">News</span>
+      <time class="news-date mono" datetime={isoDate(latest.date)}>
+        {formatDate(latest.date)}
+      </time>
+      <span class="news-text">{latest.text}</span>
+      <Icon name="arrow-right" size={16} />
+    </a>
+  )
+}
+
+<style>
+  .news-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 100%;
+    margin-bottom: 28px;
+    padding: 6px 14px 6px 6px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: 13px;
+    color: var(--ink-2);
+    transition: border-color 0.2s ease;
+  }
+
+  .news-pill:hover,
+  .news-pill:focus-visible {
+    border-color: var(--accent);
+    color: var(--ink);
+  }
+
+  .news-label {
+    flex: 0 0 auto;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .news-date {
+    flex: 0 0 auto;
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+
+  .news-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .news-pill :global(svg) {
+    flex: 0 0 auto;
+    color: var(--ink-3);
+    transition: transform 0.2s ease;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .news-pill:hover :global(svg),
+    .news-pill:focus-visible :global(svg) {
+      transform: translateX(3px);
+      color: var(--accent);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .news-date {
+      display: none;
+    }
+  }
+</style>

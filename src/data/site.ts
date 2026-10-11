@@ -2,7 +2,7 @@
 
 // hobby はヘッダーのナビには出さず、フッターからだけリンクする。
 // notFound は存在しない URL で CloudFront が返す 404 ページで、検索結果と sitemap には出さない
-export type PageKey = 'home' | 'projects' | 'tools' | 'diagrams' | 'contact' | 'hobby' | 'notFound';
+export type PageKey = 'home' | 'projects' | 'tools' | 'diagrams' | 'news' | 'contact' | 'hobby' | 'notFound';
 
 export const siteName = 'Termnix-ITのページ';
 
@@ -15,6 +15,7 @@ export const navItems: { key: PageKey; label: string; href: string }[] = [
   { key: 'projects', label: 'Projects', href: '/portfolio.html' },
   { key: 'tools', label: 'Tools', href: '/toolbox.html' },
   { key: 'diagrams', label: 'Diagrams', href: '/diagram.html' },
+  { key: 'news', label: 'News', href: '/news.html' },
   { key: 'contact', label: 'Contact', href: '/contact.html' },
 ];
 
@@ -43,6 +44,12 @@ export const pages: Record<PageKey, { title: string; description: string; path: 
     description:
       '個人プロジェクトや学習の中で作成したシステム構成図をまとめています。あとから自分でも見返せるよう、構成・経路・制御点を整理しています。',
     path: '/diagram.html',
+  },
+  news: {
+    title: 'News',
+    description:
+      '今取り組んでいることと、このサイトの更新、作成ツールのリリース、制作や学習の活動を新しい順にまとめています。',
+    path: '/news.html',
   },
   contact: {
     title: '問い合わせ',

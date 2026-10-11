@@ -1,0 +1,188 @@
+---
+// News：上に「Now（今取り組んでいること）」、下にサイト更新・リリース・活動・学習の記録を月ごとに並べる
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import Badge from '../components/Badge.astro';
+import Icon from '../components/Icon.astro';
+import { pages } from '../data/site';
+import {
+  formatDate,
+  formatMonth,
+  getNow,
+  getUpdates,
+  isExternal,
+  isoDate,
+  newsTypeLabels,
+  nowStatusLabels,
+  type NewsType,
+} from '../data/updates';
+
+const now = await getNow();
+const updates = await getUpdates();
+
+const typeTone: Record<NewsType, 'accent' | 'ok' | 'warn' | 'neutral'> = {
+  release: 'accent',
+  activity: 'ok',
+  learning: 'warn',
+  site: 'neutral',
+};
+
+// 月ごとにまとめる（新しい月から）
+const months: { label: string; items: typeof updates }[] = [];
+for (const update of updates) {
+  const label = formatMonth(update.date);
+  const last = months.at(-1);
+  if (last && last.label === label) {
+    last.items.push(update);
+  } else {
+    months.push({ label, items: [update] });
+  }
+}
+---
+
+<BaseLayout page="news">
+  <PageHero eyebrow="News" lead={pages.news.description}>
+    最近の<mark>活動</mark>と更新
+  </PageHero>
+
+  <section class="section" aria-labelledby="now-title" id="now">
+    <SectionHeader label="Now" title="今取り組んでいること" titleId="now-title">
+      <p class="as-of mono">
+        <time datetime={isoDate(now.asOf)}>{formatDate(now.asOf)}</time> 時点
+      </p>
+    </SectionHeader>
+    <ul class="now">
+      {
+        now.items.map((item) => (
+          <li class="card now-item">
+            <Badge tone={item.status === 'making' ? 'ok' : 'warn'}>{nowStatusLabels[item.status]}</Badge>
+            <h3>{item.href ? <a href={item.href}>{item.title}</a> : item.title}</h3>
+            <p>{item.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="log-title" id="log">
+    <SectionHeader label="Log" title="更新と活動の記録" titleId="log-title" />
+    {
+      months.map((month) => (
+        <section class="month" aria-label={month.label}>
+          <h3 class="month-title mono">{month.label}</h3>
+          <ol class="log">
+            {month.items.map((update) => (
+              <li>
+                <time class="mono" datetime={isoDate(update.date)}>
+                  {formatDate(update.date)}
+                </time>
+                <Badge tone={typeTone[update.type]}>{newsTypeLabels[update.type]}</Badge>
+                {update.href ? (
+                  isExternal(update.href) ? (
+                    <a href={update.href} target="_blank" rel="noopener noreferrer">
+                      {update.text}
+                      <Icon name="external" size={14} />
+                    </a>
+                  ) : (
+                    <a href={update.href}>{update.text}</a>
+                  )
+                ) : (
+                  <span>{update.text}</span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .as-of {
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+
+  .now {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: 16px;
+  }
+
+  .now-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 24px;
+  }
+
+  .now-item h3 {
+    font-size: 19px;
+    line-height: 1.5;
+  }
+
+  .now-item p {
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+
+  .month + .month {
+    margin-top: 40px;
+  }
+
+  .month-title {
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .log li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 15px;
+  }
+
+  .log time {
+    flex: 0 0 96px;
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+
+  .log li > :global(.badge) {
+    flex: 0 0 auto;
+    min-width: 76px;
+    justify-content: center;
+  }
+
+  .log a,
+  .log span:last-child {
+    flex: 1 1 260px;
+    min-width: 0;
+  }
+
+  .log a {
+    text-decoration: underline;
+    text-decoration-color: var(--line-strong);
+    text-underline-offset: 4px;
+  }
+
+  .log a:hover {
+    color: var(--accent);
+    text-decoration-color: currentColor;
+  }
+
+  .log a :global(svg) {
+    display: inline;
+    margin-left: 4px;
+    vertical-align: -2px;
+    color: var(--ink-3);
+  }
+</style>

@@ -1,0 +1,12 @@
+# News ページの「Now」（今取り組んでいること）。本人から聞いた内容だけを書き、変わったら asOf の日付も直す。
+# 終わったもの（公開した、資格を取ったなど）はここから消し、updates.yaml に記録として残す。
+# status: making=制作中 / learning=学習中
+main:
+  asOf: 2026-10-11
+  items:
+    - status: making
+      title: ローグライクゲーム
+      text: ローグライクゲームを制作中です。
+    - status: learning
+      title: AWS SAA Associate
+      text: AWS 認定資格 Solutions Architect – Associate の取得に向けて学習中です。

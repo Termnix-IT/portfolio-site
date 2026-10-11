@@ -23,19 +23,20 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 
 ## ページ構成で知っておくべきこと
 
-ページは `src/pages/` の6ファイル（ほかに 404 ページと sitemap）で、`astro.config.mjs` の `build.format: 'file'` により `index.html`・`portfolio.html`・`toolbox.html`・`diagram.html`・`contact.html`・`hobby.html` として出力されます。外部から張られているリンクを壊さないよう、この URL とページ内アンカー（`#tool-1`、`#project-1` など。各コンテンツの `anchor` で指定）は変えないでください。`hobby.html`（趣味の制作）は仕事の実績と分けるため、ヘッダーのナビには載せず、フッターからだけリンクしています。
+ページは `src/pages/` の7ファイル（ほかに 404 ページと sitemap）で、`astro.config.mjs` の `build.format: 'file'` により `index.html`・`portfolio.html`・`toolbox.html`・`diagram.html`・`news.html`・`contact.html`・`hobby.html` として出力されます。外部から張られているリンクを壊さないよう、この URL とページ内アンカー（`#tool-1`、`#project-1` など。各コンテンツの `anchor` で指定）は変えないでください。`hobby.html`（趣味の制作）は仕事の実績と分けるため、ヘッダーのナビには載せず、フッターからだけリンクしています。
 
 共通部分はコンポーネントにまとめてあり、`src/layouts/BaseLayout.astro` が `<head>`（title・description・canonical・OGP）、`SiteHeader.astro`（ナビゲーション）、`SiteFooter.astro` をすべてのページに入れます。ナビの項目と各ページの title・description は `src/data/site.ts` に1か所で書き、description は各ページのヒーローの説明文（`PageHero` の `lead`）と揃えます。canonical と og:url は `astro.config.mjs` の `site` から自動で作られます。フッターの著作権表記の年（`© 2025–2026`）は `SiteFooter.astro` に書いてあるので、年が変わったら更新します。
 
 掲載内容はテンプレートから分け、次のファイルに置いています。
 
-- `src/data/profile.yaml`：現職・領域・学習中（ホームのヒーローの状態表示）、今の強み、経歴、スキル、資格。配列の順がそのまま表示順です。
+- `src/data/profile.yaml`：現職・領域（ホームのヒーローの状態表示。変わりにくいものだけ）、今の強み、経歴、スキル、資格。配列の順がそのまま表示順です。
 - `src/content/tools/*.md`：作成ツール。frontmatter に名前・分類・一覧用の短い説明・タグ・リポジトリ・リリースのタグを書き、本文に説明の段落を書きます。`order` で並び順、`anchor` でページ内アンカーを決めます。
 - `src/content/projects/*.md`：構築プロジェクト（`portfolio.html`）。関連する記事やリポジトリの公開状況は `publications`、構成図は `diagram` に書きます。
 - `src/content/diagrams/*.md`：構成図ギャラリー（`diagram.html`）。
 - `src/content/hobbies/*.md`：趣味の制作（`hobby.html`）。サイトとリポジトリのリンク、題材の権利表記（`notice`）を frontmatter に書きます。ゲームなど他者の作品を題材にしたものは、キャラクター画像やロゴが写るスクリーンショットを載せず、非公式のファン制作物であることと権利の帰属を `notice` に明記します。
 
-- `src/data/updates.yaml`：サイトの更新履歴。ホームの「更新履歴」（新しい5件と、残りの折りたたみ）と、全ページのフッターの最終更新日に使います。
+- `src/data/updates.yaml`：News の記録。`type` でサイト更新（`site`）・作成ツールのリリース（`release`）・活動（`activity`）・学習（`learning`）を分け、News ページ（`news.html`）の「更新と活動の記録」に月ごとに並びます。いちばん上の1件はホームの冒頭にお知らせの札（`NewsPill.astro`）として出て、全ページのフッターの最終更新日にもなります。日付は日本時間で、リリースは GitHub のリリース日を日本時間に直して書きます。
+- `src/data/now.yaml`：News ページの「Now（今取り組んでいること）」と、その内容がいつ時点のものか（`asOf`）。制作中や学習中など変わりやすい活動はここに書き、終わったもの（公開した、資格を取ったなど）は消して `updates.yaml` に記録として残します。中身は本人から聞いた内容だけにし、推測で足しません。
 
 ホームの「代表作」には、プロジェクトとツールのうち frontmatter に `featured`（並び順の番号）を持つものが並びます。
 
@@ -55,7 +56,9 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 
 ## よくある更新作業
 
-閲覧者から見える変更（ツールやプロジェクトの追加・更新、ページの追加、プロフィールの更新、デザインの大きな変更）をしたら、同じ commit で `src/data/updates.yaml` の `items` のいちばん上に、日付・何を変えたかの1文・関連ページへのリンク（任意）を1件足します。文言の手直しや、閲覧者から見えない内部の変更（ビルド設定、ドキュメント）は載せません。
+閲覧者から見える変更（ツールやプロジェクトの追加・更新、ページの追加、プロフィールの更新、デザインの大きな変更）をしたら、同じ commit で `src/data/updates.yaml` の `items` のいちばん上に、日付・種類（`type`）・何を変えたかの1文・関連ページへのリンク（任意）を1件足します。文言の手直しや、閲覧者から見えない内部の変更（ビルド設定、ドキュメント）は載せません。作成ツールの新しいリリースを紹介に反映したときは、`release` の記録（リリース日、GitHub のリリースページへのリンク）も足します。
+
+`src/data/now.yaml` の `asOf` が1か月以上前になっていたら、作業のついでにユーザーへ Now の見直しを提案してください。古い「制作中」が出たままだと、かえって活動が止まって見えるためです。
 
 ### 作成ツールを追加する（`toolbox.html`）
 
@@ -69,7 +72,7 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 
 ### プロフィールを更新する
 
-資格の取得、学習対象や担当業務の変化は `src/data/profile.yaml` を直せば全ページに反映されます。資格は `state: acquired`（取得済）か `learning`（学習中）で表し、学習対象が変わったら `status` の「学習中」の行も直します。経歴やスキルの変化に合わせて、ホームのヒーローの文言（`src/pages/index.astro`）と、`src/data/site.ts` のホームの description も揃えます。
+資格の取得や担当業務の変化は `src/data/profile.yaml` を直せば全ページに反映されます。資格は `state: acquired`（取得済）か `learning`（学習中）で表します。学習対象が変わったり資格を取得したりしたら、`src/data/now.yaml` の学習中の項目と `asOf` も直し、取得は `updates.yaml` に `learning` の記録として残します。経歴やスキルの変化に合わせて、ホームのヒーローの文言（`src/pages/index.astro`）と、`src/data/site.ts` のホームの description も揃えます。
 
 ### 画像を追加する
 
@@ -90,7 +93,7 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 3. `main` への反映（本番公開）は、ユーザーがチャットで公開を指示したときだけ行う。`develop` の最新を取り込んだ状態で検査とビルドが通ることを確かめ、`git push origin develop:main` で `main` を fast-forward する。push 後はデプロイの成否と本番の表示を確認する。
 4. 公開の指示がないまま作業を終えるときは、`develop` に未公開の変更が何件あるか（`git log --oneline origin/main..origin/develop`）を完了報告に書く。
 
-更新履歴（`src/data/updates.yaml`）の日付は、作業した日ではなく公開した日にそろえるため、公開のときに未公開分の日付を公開日に直す。
+News の記録（`src/data/updates.yaml`）のうちサイト更新（`type: site`）の日付は、作業した日ではなく公開した日にそろえるため、公開のときに未公開分の日付を公開日に直す。リリースや活動・学習の記録は、それが起きた日のままにする。
 
 ### デプロイの仕組み
 

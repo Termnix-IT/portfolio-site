@@ -8,7 +8,7 @@ import Badge from '../components/Badge.astro';
 import WorkRow from '../components/WorkRow.astro';
 import QiitaList from '../components/QiitaList.astro';
 import Icon from '../components/Icon.astro';
-import UpdateList from '../components/UpdateList.astro';
+import NewsPill from '../components/NewsPill.astro';
 import { links } from '../data/site';
 
 const profileEntry = await getEntry('profile', 'main');
@@ -54,6 +54,7 @@ const works = [
     lead="Linux・ネットワーク・Python を中心に、公開／監視／自動化を実務と個人プロジェクトの両面で積み重ねています。手順の再現性と、あとから見返せる構成整理を意識して、経歴をドキュメントとしてまとめました。"
   >
     保守運用を<mark>土台</mark>に、構築・監視・自動化へ広げるインフラエンジニア
+    <NewsPill slot="notice" />
     <Fragment slot="after">
       <ul class="status" aria-label="現在の状況">
         {
@@ -182,11 +183,6 @@ const works = [
     </div>
   </section>
 
-  <section class="section" aria-labelledby="updates-title" id="updates">
-    <SectionHeader label="Updates" title="更新履歴" titleId="updates-title" />
-    <UpdateList />
-  </section>
-
   <section class="card contact-cta" aria-labelledby="contact-title">
     <div>
       <p class="label">Contact</p>
@@ -235,10 +231,6 @@ const works = [
     --dot: var(--dot-live);
   }
 
-  .status-item--progress {
-    --dot: var(--dot-progress);
-  }
-
   .status-dot {
     width: 8px;
     height: 8px;
@@ -255,16 +247,11 @@ const works = [
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .status-item--live .status-dot,
-    .status-item--progress .status-dot {
+    .status-item--live .status-dot {
       animation: status-ring 2.4s ease-out infinite;
     }
 
-    .status-item--progress .status-dot {
-      animation-delay: 1.2s;
-    }
-
-    /* 現職と学習中の点から波紋を広げ、今動いている状態であることを示す */
+    /* 現職の点から波紋を広げ、今動いている状態であることを示す */
     @keyframes status-ring {
       from {
         box-shadow: 0 0 0 0 color-mix(in srgb, var(--dot) 45%, transparent);

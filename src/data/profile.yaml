@@ -2,7 +2,8 @@
 main:
   role: インフラエンジニア
 
-  # ホームのヒーローに出す現在の状況（tone: live=現職, neutral=領域, progress=学習中）
+  # ホームのヒーローに出す、変わりにくい現在の状況（tone: live=現職, neutral=領域）。
+  # 学習中や制作中など変わりやすい活動は、News ページの Now（src/data/now.yaml）に書く
   status:
     - label: 現職
       value: 構築・保守
@@ -10,9 +11,6 @@ main:
     - label: 領域
       value: Linux / NW / AWS
       tone: neutral
-    - label: 学習中
-      value: AWS SAA
-      tone: progress
 
   strengths:
     - index: 01 / Operations

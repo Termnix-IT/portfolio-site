@@ -1,46 +1,112 @@
-# サイトの更新履歴。閲覧者から見える変更をしたら、いちばん上に1件足す（ホームの「更新履歴」とフッターの最終更新日に出る）。
-# 同じ日付の項目は書いた順に並ぶ。href は関連するページへのリンク（任意）
+# News（サイトの更新・作成ツールのリリース・活動・学習）の記録。新しいものをいちばん上に足す。
+# News ページの一覧、ホーム冒頭のお知らせ（いちばん上の1件）、フッターの最終更新日に使う。
+# type: site=サイト更新 / release=リリース / activity=活動 / learning=学習
+# 同じ日付の項目は書いた順に並ぶ。日付は日本時間。href は関連するページへのリンク（任意。外部の URL も可）
 main:
   items:
     - date: 2026-10-11
-      text: CIPHER VAULT を v0.2.5、LimitView を v0.1.12 の内容に更新
+      type: site
+      text: News ページを追加し、ホームの冒頭に最新のお知らせを表示
+      href: /news.html
+    - date: 2026-10-11
+      type: site
+      text: 作成ツール一覧の CIPHER VAULT を v0.2.5、LimitView を v0.1.12 の内容に更新
       href: /toolbox.html
     - date: 2026-10-11
-      text: ホームに更新履歴を追加し、フッターに最終更新日を表示
+      type: site
+      text: 更新履歴とフッターの最終更新日の表示を追加
     - date: 2026-10-11
+      type: site
       text: 構成図ギャラリーに「このサイトの構成図」を追加
       href: /diagram.html#diagram-2
     - date: 2026-10-10
+      type: release
+      text: CIPHER VAULT v0.2.3・v0.2.4・v0.2.5 を公開
+      href: https://github.com/Termnix-IT/CIPHER-VAULT/releases/tag/v0.2.5
+    - date: 2026-10-10
+      type: site
       text: 趣味の制作ページを追加し、Blue Archive DB を紹介
       href: /hobby.html
     - date: 2026-10-10
+      type: site
       text: 作成ツールの LimitView に画面のスクリーンショットを追加
       href: /toolbox.html#tool-4
     - date: 2026-10-10
+      type: site
       text: サイトを Astro で作り直し、デザインを一新
+    - date: 2026-10-01
+      type: release
+      text: LimitView v0.1.11・v0.1.12 を公開
+      href: https://github.com/Termnix-IT/ai-limit-view/releases/tag/v0.1.12
     - date: 2026-09-30
+      type: site
       text: 作成ツールに LimitView と oterm を追加
       href: /toolbox.html#tool-4
+    - date: 2026-09-29
+      type: release
+      text: LimitView v0.1.10 を公開
+      href: https://github.com/Termnix-IT/ai-limit-view/releases/tag/v0.1.10
     - date: 2026-09-16
+      type: site
       text: 作成ツールに Port Manager Tool を追加し、CIPHER VAULT の紹介を更新
       href: /toolbox.html#tool-3
+    - date: 2026-09-16
+      type: release
+      text: CIPHER VAULT v0.2.2 を公開
+      href: https://github.com/Termnix-IT/CIPHER-VAULT/releases/tag/v0.2.2
+    - date: 2026-09-16
+      type: release
+      text: Port Manager Tool v1.0.0 を公開
+      href: https://github.com/Termnix-IT/PortManagerTool/releases/tag/v1.0.0
+    - date: 2026-09-16
+      type: release
+      text: CIPHER VAULT v0.2.1 を公開
+      href: https://github.com/Termnix-IT/CIPHER-VAULT/releases/tag/v0.2.1
+    - date: 2026-09-15
+      type: release
+      text: CIPHER VAULT v0.2.0 を公開
+      href: https://github.com/Termnix-IT/CIPHER-VAULT/releases/tag/v0.2.0
+    - date: 2026-09-13
+      type: release
+      text: oterm v0.5.0 を公開
+      href: https://github.com/Termnix-IT/oterm/releases/tag/v0.5.0
+    - date: 2026-09-12
+      type: release
+      text: oterm v0.4.0 を公開
+      href: https://github.com/Termnix-IT/oterm/releases/tag/v0.4.0
     - date: 2026-09-06
+      type: site
       text: 作成ツールに HashChecker を追加
       href: /toolbox.html#tool-2
     - date: 2026-09-06
+      type: site
       text: オンプレネットワークの構成図と、経歴・スキルを更新
       href: /portfolio.html#project-1
+    - date: 2026-06-04
+      type: release
+      text: HashChecker v0.1.0-pre.1 をプレリリースとして公開
+      href: https://github.com/Termnix-IT/HashChecker/releases/tag/v0.1.0-pre.1
     - date: 2026-05-27
+      type: site
       text: このサイトのサーバレス構成（Web 運用構成）の説明を追加
     - date: 2026-05-26
+      type: site
       text: 作成ツールに CIPHER VAULT を追加
       href: /toolbox.html#tool-1
     - date: 2026-05-24
+      type: site
       text: 問い合わせフォームを AWS Lambda で受け付ける形に変更
       href: /contact.html
     - date: 2026-05-09
+      type: site
       text: 全ページのデザインを刷新
+    - date: 2026-04-21
+      type: release
+      text: CIPHER VAULT v0.1.0 を公開
+      href: https://github.com/Termnix-IT/CIPHER-VAULT/releases/tag/v0.1.0
     - date: 2026-04-06
+      type: site
       text: GitHub Actions による自動デプロイを導入
     - date: 2026-02-15
+      type: site
       text: サイトの制作を開始

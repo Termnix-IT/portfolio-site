@@ -4,7 +4,7 @@ import avatar from '../assets/main-icon-192.png';
 import { links } from '../data/site';
 import { formatDate, getUpdates, isoDate } from '../data/updates';
 
-// 最終更新日は更新履歴（src/data/updates.yaml）のいちばん新しい日付
+// 最終更新日は News の記録（src/data/updates.yaml）のいちばん新しい日付
 const [latest] = await getUpdates();
 ---
 
@@ -22,7 +22,7 @@ const [latest] = await getUpdates();
       <a href={links.github} target="_blank" rel="noopener noreferrer">GitHub</a>
       {
         latest && (
-          <a href="/#updates" class="mono">
+          <a href="/news.html#log" class="mono">
             最終更新 <time datetime={isoDate(latest.date)}>{formatDate(latest.date)}</time>
           </a>
         )

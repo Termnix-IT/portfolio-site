@@ -102,7 +102,7 @@ const profile = defineCollection({
       z.object({
         label: z.string(),
         value: z.string(),
-        tone: z.enum(['live', 'neutral', 'progress']),
+        tone: z.enum(['live', 'neutral']),
       }),
     ),
     strengths: z.array(
@@ -131,13 +131,15 @@ const profile = defineCollection({
   }),
 });
 
-// サイトの更新履歴。ホームの一覧とフッターの最終更新日に使う。配列の順（新しい順）がそのまま表示順になる
+// News の記録（サイト更新・リリース・活動・学習）。News ページ、ホーム冒頭のお知らせ、フッターの最終更新日に使う。
+// 配列の順（新しい順）がそのまま表示順になる
 const updates = defineCollection({
   loader: file('./src/data/updates.yaml'),
   schema: z.object({
     items: z.array(
       z.object({
         date: z.coerce.date(),
+        type: z.enum(['site', 'release', 'activity', 'learning']),
         text: z.string(),
         href: z.string().optional(),
       }),
@@ -145,4 +147,20 @@ const updates = defineCollection({
   }),
 });
 
-export const collections = { tools, projects, diagrams, hobbies, profile, updates };
+// News ページの「Now」。本人が今取り組んでいることと、その内容がいつ時点のものか
+const now = defineCollection({
+  loader: file('./src/data/now.yaml'),
+  schema: z.object({
+    asOf: z.coerce.date(),
+    items: z.array(
+      z.object({
+        status: z.enum(['making', 'learning']),
+        title: z.string(),
+        text: z.string(),
+        href: z.string().optional(),
+      }),
+    ),
+  }),
+});
+
+export const collections = { tools, projects, diagrams, hobbies, profile, updates, now };

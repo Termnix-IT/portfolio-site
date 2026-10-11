@@ -17,6 +17,7 @@ const typingStyle = intro ? `--chars: ${eyebrow.length}` : undefined;
 ---
 
 <section class:list={['hero', `hero--${size}`, { 'hero--intro': intro }]} aria-labelledby="hero-title">
+  <slot name="notice" />
   <p class="label hero-eyebrow">
     {intro ? <span class="typing" style={typingStyle}>{eyebrow}</span> : eyebrow}
   </p>
