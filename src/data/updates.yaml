@@ -4,6 +4,14 @@
 # 同じ日付の項目は書いた順に並ぶ。日付は日本時間。href は関連するページへのリンク（任意。外部の URL も可）
 main:
   items:
+    - date: 2026-10-14
+      type: site
+      text: Zabbix 監視基盤に監視画面と Qiita 記事へのリンクを追加し、ホームの代表作に掲載
+      href: /portfolio.html#project-2
+    - date: 2026-10-14
+      type: activity
+      text: Qiita に「Raspberry PiにZabbixを導入して、監視・Discord通知・APIでのデータ取得を試した」を投稿
+      href: https://qiita.com/Termnix-IT/items/4d704e19f2aa79e0de6c
     - date: 2026-10-11
       type: site
       text: News ページを追加し、ホームの冒頭に最新のお知らせを表示

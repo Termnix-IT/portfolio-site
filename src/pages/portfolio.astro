@@ -6,6 +6,7 @@ import DetailArticle from '../components/DetailArticle.astro';
 import TagList from '../components/TagList.astro';
 import Badge from '../components/Badge.astro';
 import ZoomableImage from '../components/ZoomableImage.astro';
+import Icon from '../components/Icon.astro';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 const entries = await Promise.all(
@@ -42,13 +43,28 @@ const entries = await Promise.all(
           {project.publications.map((item) => (
             <li class="card publication">
               <span class="publication-head">
-                <span class="publication-label">{item.label}</span>
-                <Badge tone="warn">{item.status}</Badge>
+                {item.href ? (
+                  <a class="publication-label publication-link" href={item.href} target="_blank" rel="noopener noreferrer">
+                    {item.label}
+                    <Icon name="external" size={14} />
+                  </a>
+                ) : (
+                  <span class="publication-label">{item.label}</span>
+                )}
+                <Badge tone={item.href ? 'ok' : 'warn'}>{item.status}</Badge>
               </span>
               <span class="publication-text">{item.description}</span>
             </li>
           ))}
         </ul>
+        {project.screenshots && (
+          <div class="figures">
+            <h3 class="figure-title">画面</h3>
+            {project.screenshots.map((shot) => (
+              <ZoomableImage src={shot.image} alt={shot.alt} caption={shot.caption} />
+            ))}
+          </div>
+        )}
         {project.diagram && (
           <div>
             <h3 class="figure-title">構成図</h3>
@@ -85,9 +101,32 @@ const entries = await Promise.all(
     font-weight: 700;
   }
 
+  .publication-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--accent);
+  }
+
+  .publication-link:hover,
+  .publication-link:focus-visible {
+    text-decoration: underline;
+  }
+
   .publication-text {
     font-size: 14px;
     color: var(--ink-2);
+  }
+
+  /* 画像どうしの間を、題名と1枚目の間より広くあける */
+  .figures {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .figures .figure-title {
+    margin-bottom: -12px;
   }
 
   .figure-title {

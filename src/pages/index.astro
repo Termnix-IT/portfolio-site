@@ -23,15 +23,18 @@ const tools = await getCollection('tools');
 const works = [
   ...projects
     .filter((entry) => entry.data.featured !== undefined)
-    .map(({ data }) => ({
-      order: data.featured ?? 0,
-      href: `/portfolio.html#${data.anchor}`,
-      meta: `Project · ${data.category}`,
-      title: data.title,
-      body: data.summary ?? '',
-      tags: data.tags,
-      image: data.diagram ? { src: data.diagram.image, alt: data.diagram.alt } : undefined,
-    })),
+    .map(({ data }) => {
+      const media = data.thumbnail ?? data.diagram;
+      return {
+        order: data.featured ?? 0,
+        href: `/portfolio.html#${data.anchor}`,
+        meta: `Project · ${data.category}`,
+        title: data.title,
+        body: data.summary ?? '',
+        tags: data.tags,
+        image: media ? { src: media.image, alt: media.alt } : undefined,
+      };
+    }),
   ...tools
     .filter((entry) => entry.data.featured !== undefined)
     .map(({ data }) => ({

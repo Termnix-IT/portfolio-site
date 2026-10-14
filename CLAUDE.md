@@ -31,7 +31,7 @@ npm run preview  # dist/ を http://localhost:4322 などで配信（--port で�
 
 - `src/data/profile.yaml`：現職・領域（ホームのヒーローの状態表示。変わりにくいものだけ）、今の強み、経歴、スキル、資格。配列の順がそのまま表示順です。
 - `src/content/tools/*.md`：作成ツール。frontmatter に名前・分類・一覧用の短い説明・タグ・リポジトリ・リリースのタグを書き、本文に説明の段落を書きます。`order` で並び順、`anchor` でページ内アンカーを決めます。
-- `src/content/projects/*.md`：構築プロジェクト（`portfolio.html`）。関連する記事やリポジトリの公開状況は `publications`、構成図は `diagram` に書きます。
+- `src/content/projects/*.md`：構築プロジェクト（`portfolio.html`）。関連する記事やリポジトリの公開状況は `publications` に書き、公開したら `href` を足すとリンクになり札が「公開済み」の色に変わります。構成図は `diagram`、画面のスクリーンショットは `screenshots`（どちらもクリックで拡大）に書きます。ホームの「代表作」の画像は 16:10 に切り抜かれるため、横長の画像しかない場合は切り出した画像を `thumbnail` に指定します（なければ構成図を使う）。
 - `src/content/diagrams/*.md`：構成図ギャラリー（`diagram.html`）。
 - `src/content/hobbies/*.md`：趣味の制作（`hobby.html`）。サイトとリポジトリのリンク、題材の権利表記（`notice`）を frontmatter に書きます。ゲームなど他者の作品を題材にしたものは、キャラクター画像やロゴが写るスクリーンショットを載せず、非公式のファン制作物であることと権利の帰属を `notice` に明記します。
 

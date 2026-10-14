@@ -1,12 +1,16 @@
 # News ページの「Now」（今取り組んでいること）。本人から聞いた内容だけを書き、変わったら asOf の日付も直す。
 # 終わったもの（公開した、資格を取ったなど）はここから消し、updates.yaml に記録として残す。
-# status: making=制作中 / learning=学習中
+# status: making=制作中 / working=取り組み中（既存の環境の改善など） / learning=学習中
 main:
-  asOf: 2026-10-11
+  asOf: 2026-10-14
   items:
     - status: making
       title: ローグライクゲーム
       text: ローグライクゲームを制作中です。
+    - status: working
+      title: Zabbix 監視基盤の HTTPS 化
+      text: 自宅の Zabbix の管理画面と API は、自宅内だけで使い、公開サーバとはセグメントを分けていますが、接続がまだ HTTP のため HTTPS 化に取り組んでいます。
+      href: /portfolio.html#project-2
     - status: learning
       title: AWS SAA Associate
       text: AWS 認定資格 Solutions Architect – Associate の取得に向けて学習中です。

@@ -55,6 +55,8 @@ const publication = z.object({
   label: z.string(),
   description: z.string(),
   status: z.string(),
+  // 公開済みの記事やリポジトリの URL。あるときはリンクにし、状態の札を「公開済み」の色にする
+  href: z.url().optional(),
 });
 
 // 構築プロジェクト（portfolio.html）
@@ -72,7 +74,13 @@ const projects = defineCollection({
       tags: z.array(z.string()),
       publications: z.array(publication),
       diagram: z.object({ image: image(), alt: z.string() }).optional(),
+      // 監視画面などのスクリーンショット。説明の下にクリックで拡大できる形で並べる
+      screenshots: z
+        .array(z.object({ image: image(), alt: z.string(), caption: z.string().optional() }))
+        .optional(),
       featured: z.number().optional(),
+      // ホームの「代表作」の画像（16:10 に切り抜いて表示）。なければ構成図を使う
+      thumbnail: z.object({ image: image(), alt: z.string() }).optional(),
     }),
 });
 
@@ -154,7 +162,7 @@ const now = defineCollection({
     asOf: z.coerce.date(),
     items: z.array(
       z.object({
-        status: z.enum(['making', 'learning']),
+        status: z.enum(['making', 'working', 'learning']),
         title: z.string(),
         text: z.string(),
         href: z.string().optional(),

@@ -7,7 +7,7 @@ summary: ローカル動作を前提にしたパスワード管理アプリで�
 tags: [Electron, React, Node.js, SQLite, TypeScript]
 repo: https://github.com/Termnix-IT/CIPHER-VAULT
 release: v0.2.5
-featured: 2
+featured: 3
 ---
 
 ローカル動作を前提にしたパスワード管理アプリです。データは自端末の SQLite に保存し、外部サーバーへ送信しない構成で、保管庫のロック・解錠、エントリ管理、パスワード生成、クリップボードコピー、自動ロックに対応しています。専用パスフレーズで保護する暗号化バックアップ（.cvault 形式）と空の保管庫への復元、弱い・重複・古いパスワードを端末内で点検するセキュリティ監査と SECURITY SCORE も備えています。

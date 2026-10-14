@@ -56,7 +56,7 @@ for (const update of updates) {
       {
         now.items.map((item) => (
           <li class="card now-item">
-            <Badge tone={item.status === 'making' ? 'ok' : 'warn'}>{nowStatusLabels[item.status]}</Badge>
+            <Badge tone={item.status === 'learning' ? 'warn' : 'ok'}>{nowStatusLabels[item.status]}</Badge>
             <h3>{item.href ? <a href={item.href}>{item.title}</a> : item.title}</h3>
             <p>{item.text}</p>
           </li>

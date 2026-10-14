@@ -12,6 +12,7 @@ export const newsTypeLabels: Record<NewsType, string> = {
 
 export const nowStatusLabels = {
   making: '制作中',
+  working: '取り組み中',
   learning: '学習中',
 } as const;
 

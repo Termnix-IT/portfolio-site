@@ -9,7 +9,7 @@ repo: https://github.com/Termnix-IT/HashChecker
 secondaryLink:
   label: 共通仕様を見る
   href: https://github.com/Termnix-IT/HashChecker/blob/main/%E5%85%B1%E9%80%9A%E4%BB%95%E6%A7%98.md
-featured: 3
+featured: 4
 ---
 
 ベンダーから提供されたハッシュ値と、確認対象ファイルから算出したハッシュ値を比較するためのツールです。MD5 と SHA256 に対応し、ハッシュ値を記載したテキストファイルと対象ファイルを指定するだけで照合できます。空行の無視、複数行検出、16進数形式と文字数の検証、大文字・小文字を区別しない比較まで仕様として定めています。
