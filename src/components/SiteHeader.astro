@@ -202,6 +202,16 @@ const { current } = Astro.props;
     color: #5dcaa5;
   }
 
+  .egg-body :global(a) {
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .egg-body :global(a:hover) {
+    color: #5dcaa5;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     .egg:not([hidden]) {
       animation: egg-in 0.25s ease-out;
@@ -279,13 +289,16 @@ const { current } = Astro.props;
   });
 
   // 隠しコマンド。ホームにいるときだけロゴのクリックを数え（移動はせず先頭へ戻す）、
-  // 2秒以内の間隔で5回続いたら端末風の表示に1行ずつ出す
+  // 2秒以内の間隔で5回続いたら端末風の表示に1行ずつ出す。
+  // 遊び心つながりで、最後に趣味の作品置き場（Pirafu2411 Playground）へのリンクを添える
   const EGG_CLICKS = 5;
   const EGG_GAP_MS = 2000;
-  const EGG_LINES: { text: string; ok?: boolean }[] = [
+  const EGG_LINES: { text: string; ok?: boolean; link?: { href: string; label: string } }[] = [
     { text: '$ ping termnix-it.jp' },
     { text: '64 bytes from termnix-it.jp: icmp_seq=1 ttl=64 time=0.42 ms' },
     { text: '見つけてくれてありがとうございます', ok: true },
+    { text: '$ cd ~/playground' },
+    { text: '遊び心のある制作物は趣味の置き場にもあります → ', link: { href: 'https://pirafu2411.pages.dev/', label: 'Pirafu2411 Playground' } },
   ];
 
   const eggTrigger = document.querySelector<HTMLAnchorElement>('[data-egg-trigger][aria-current="page"]');
@@ -323,6 +336,14 @@ const { current } = Astro.props;
         () => {
           const row = document.createElement('div');
           row.textContent = line.text;
+          if (line.link) {
+            const link = document.createElement('a');
+            link.href = line.link.href;
+            link.textContent = line.link.label;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            row.append(link);
+          }
           if (line.ok) {
             row.className = 'egg-ok';
           }

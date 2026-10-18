@@ -6,6 +6,10 @@ main:
   items:
     - date: 2026-10-18
       type: site
+      text: 趣味の制作ページの Pirafu2411 Playground の紹介に、掲載した Blue Archive DB を追記
+      href: /hobby.html
+    - date: 2026-10-18
+      type: site
       text: 趣味の制作ページを、作品をまとめて公開する Pirafu2411 Playground の紹介に変更
       href: /hobby.html
     - date: 2026-10-14
