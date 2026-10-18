@@ -4,6 +4,10 @@
 # 同じ日付の項目は書いた順に並ぶ。日付は日本時間。href は関連するページへのリンク（任意。外部の URL も可）
 main:
   items:
+    - date: 2026-10-18
+      type: site
+      text: 趣味の制作ページを、作品をまとめて公開する Pirafu2411 Playground の紹介に変更
+      href: /hobby.html
     - date: 2026-10-14
       type: site
       text: Zabbix 監視基盤に監視画面と Qiita 記事へのリンクを追加し、ホームの代表作に掲載
