@@ -6,7 +6,7 @@ main:
   # 学習中や制作中など変わりやすい活動は、News ページの Now（src/data/now.yaml）に書く
   status:
     - label: 現職
-      value: 構築・保守
+      value: AWS運用保守
       tone: live
     - label: 領域
       value: Linux / NW / AWS
@@ -15,7 +15,7 @@ main:
   strengths:
     - index: 01 / Operations
       title: 安定運用を前提に考える
-      body: Ciscoスイッチ／Infoblox DNSを中心とした官公庁ネットワークの運用保守で、FW設定変更・障害切り分け・脆弱性対応を継続して担当してきました。
+      body: Ciscoスイッチ／Infoblox DNSを中心とした行政機関のインフラ基盤の構築・保守業務で、FW設定変更・障害切り分け・脆弱性対応を継続して担当してきました。
     - index: 02 / Build
       title: 自分でも構築して確かめる
       body: 自宅にDMZとVLANを分けたオンプレ環境を構築し、Zabbixによる監視まで運用しています。並行してAWSやTerraformを使ったIaC環境構築にも取り組み、個人プロジェクトとして継続しています。
@@ -24,9 +24,13 @@ main:
       body: Hash値照合ツールの自作・公開やGitHub Actionsを使ったCI導入など、Python/Shell Scriptによる効率化をQiita・GitHubで発信しています。
 
   career:
-    - period: 2024.10 - 現在
+    - period: 2026.11 - 現在
       current: true
-      title: 某省 インフラ基盤の構築・保守業務
+      title: AWSクラウド基盤の運用保守（L2）
+      body: 基盤システムのL1監視担当の対応範囲を超えるチケットを、L2として担当。参画後に扱ったAWSサービスは CloudWatch・CloudWatch Logs Insights・DynamoDB・Redshift。
+      tags: [AWS, New Relic, Backlog, GitHub]
+    - period: 2024.10 - 2026.10
+      title: 行政機関のインフラ基盤の構築・保守業務
       body: Ciscoスイッチ／Infoblox DNSを中心にFWポリシー変更・障害対応・脆弱性影響調査を担当。オンプレ(Linux)からAWSへのクラウドシフトにも詳細設計～リリースまで携わる。
       tags: [Cisco, Infoblox, Palo Alto・FortiGate, AWS, Splunk]
     - period: 2023.07 - 2024.09
