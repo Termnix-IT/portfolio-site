@@ -1,17 +1,18 @@
 # Portfolio_Web
 
-Termnix-IT の個人ポートフォリオサイトです。Linux・Network・Python を軸にした実務経験と個人プロジェクトを、
-大きな見出しと1列のレイアウトで読みやすく整理して公開しています。
+Termnix-IT の個人ポートフォリオサイトです。実務での運用保守・ネットワーク対応の経験と、個人で進めている Linux / Network / Python の検証を、Qiita・GitHub での発信とあわせて公開しています。
 
 https://www.termnix-it.jp/
 
+公開リポジトリのため、機密情報や業務固有の情報は含めません。実務経歴は公開できる粒度に要約しています。
+
 ## Overview
 
-- Astro で生成する静的サイト（実行時のサーバーなし）
-- 掲載内容は Markdown / YAML で管理し、ページの共通部分はコンポーネントで1か所にまとめている
-- 画像は build 時に WebP へ変換し、CSS・JS・画像はファイル名にハッシュを付けて長期キャッシュ
-- レスポンシブ対応（PC / タブレット / モバイル）、`prefers-reduced-motion` に対応
-- AWS S3 + CloudFront へ GitHub Actions で自動デプロイ
+- Astro で生成する静的サイトで、実行時のサーバーはありません。
+- 掲載内容は Markdown / YAML に書き、ページの共通部分はコンポーネントにまとめています。
+- 画像は build 時に WebP へ変換します。CSS・JS・画像はファイル名にハッシュを付けて長期キャッシュします。
+- PC・タブレット・モバイルの画面幅と、`prefers-reduced-motion` に対応しています。
+- GitHub Actions で AWS S3 + CloudFront へ自動デプロイします。
 
 ## Pages
 
@@ -58,31 +59,16 @@ npm ci
 npm run dev
 ```
 
-起動後、ブラウザで `http://localhost:4321` を開いて確認してください。本番と同じ出力は `npm run build` で `dist/` に作られ、`npm run preview` で確認できます。
+`http://localhost:4321` で確認できます。本番と同じ出力は `npm run build` で `dist/` に作られ、`npm run preview` で確認できます。
 
 ## Deployment
 
-- 変更は `develop` ブランチにまとめ、公開するときに `main` へ反映する
-- `develop` への push では GitHub Actions が検査（`npm run check`）とビルドだけを行い、本番には出さない
-- `main` への push では、検査とビルドが通った場合だけ `dist/` を AWS S3 へ同期し、CloudFront のキャッシュを無効化する
+- 変更は `develop` ブランチにまとめ、公開するときに `main` へ反映します。
+- `develop` への push では、GitHub Actions が検査（`npm run check`）とビルドだけを行います。本番には出ません。
+- `main` への push では、検査とビルドが通った場合だけ `dist/` を AWS S3 へ同期し、CloudFront のキャッシュを無効化します。
 
 ## Contact Form
 
-`contact.html` の問い合わせフォームは、静的サイト運用を維持するため AWS Lambda Function URL への JSON POST を前提にしています。
-送信処理は `src/components/ContactForm.astro` で行い、`name`, `email`, `topic`, `message`, `_gotcha` を JSON として送信します。
+`contact.html` の問い合わせフォームは、AWS Lambda Function URL へ JSON を POST します。サイトを静的なまま運用するためです。
 
-Lambda / SES 側の設定と運用方針は、このリポジトリ外でローカルに管理しています。
-
-## Purpose
-
-このリポジトリは、以下を一つの公開成果物として整理することを目的にしています。
-
-- 実務での運用保守・ネットワーク対応経験
-- 個人での Linux / Network / Python 検証
-- Qiita / GitHub と連動した継続的なアウトプット
-
-## Notes
-
-- 公開用リポジトリのため、機密情報・業務固有情報は含めない方針
-- 実務経歴は公開可能な粒度に要約
-- デザイン・掲載内容は継続的に更新
+送信処理は `src/components/ContactForm.astro` にあり、`name`, `email`, `topic`, `message`, `_gotcha` を送ります。Lambda / SES 側の設定と運用方針は、このリポジトリの外でローカルに管理しています。

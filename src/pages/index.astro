@@ -54,7 +54,7 @@ const works = [
     size="xl"
     intro
     eyebrow="$ whoami -> infra engineer"
-    lead="Linux・ネットワーク・Python を中心に、公開／監視／自動化を実務と個人プロジェクトの両面で積み重ねています。手順の再現性と、あとから見返せる構成整理を意識して、経歴をドキュメントとしてまとめました。"
+    lead="Linux・ネットワーク・Python を中心に、公開・監視・自動化の経験を実務と個人プロジェクトで積み重ねています。このページでは、その経歴と制作物をまとめています。"
   >
     保守運用を<mark>土台</mark>に、構築・監視・自動化へ広げるインフラエンジニア
     <NewsPill slot="notice" />
@@ -162,13 +162,13 @@ const works = [
     <div class="publishing">
       <article class="publish-main">
         <h3>Qiita 最新記事</h3>
-        <p class="publish-text">構築手順や学習内容を短く整理して、あとから見返せる形で継続的に発信しています。</p>
+        <p class="publish-text">構築手順や学んだことを短くまとめ、継続して発信しています。</p>
         <QiitaList />
       </article>
       <div class="publish-side">
         <article class="card publish-card">
           <h3>GitHub</h3>
-          <p class="publish-text">個人プロジェクトの構成や手順を、コードと合わせて確認できるように整理しています。</p>
+          <p class="publish-text">個人プロジェクトの構成や手順を、コードと一緒に公開しています。</p>
           <div class="btn-row">
             <a href={links.github} class="btn btn--primary" target="_blank" rel="noopener noreferrer">GitHubを見る</a>
             <a href="/portfolio.html" class="btn">実績一覧</a>
@@ -177,8 +177,8 @@ const works = [
         <article class="publish-card publish-card--dark">
           <p class="mono publish-kicker">How this site runs</p>
           <h3>Web 運用構成</h3>
-          <p>このWebページは AWS S3 + CloudFront で配信し、問い合わせフォームは AWS Lambda Function URL と Amazon SES によるメール配信機能としてサーバレスで実装しています。</p>
-          <p>GitHub Actions を使ったCI/CDも構築しており、main ブランチへの push をトリガーに S3 への自動デプロイと CloudFront のキャッシュ無効化までを自動化しています。</p>
+          <p>このサイトは AWS S3 + CloudFront で配信しています。問い合わせフォームは、AWS Lambda Function URL と Amazon SES でメールを送るサーバーレスの仕組みです。</p>
+          <p>CI/CD は GitHub Actions で組んでいます。main ブランチへ push すると、S3 へのデプロイと CloudFront のキャッシュ無効化まで自動で行います。</p>
           <TagList tags={['S3', 'CloudFront', 'Lambda', 'SES', 'GitHub Actions']} tone="dark" />
           <a href="/diagram.html#diagram-2" class="publish-dark-link">構成図を見る →</a>
         </article>

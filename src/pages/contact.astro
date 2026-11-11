@@ -11,7 +11,7 @@ import { links } from '../data/site';
 <BaseLayout page="contact">
   <PageHero
     eyebrow="Contact"
-    lead="Qiita・GitHub からのコメントや DM、または下記の問い合わせフォームよりご連絡いただけます。技術的な相談や案件のお話など歓迎しています。"
+    lead="Qiita・GitHub のコメントや DM、または下の問い合わせフォームからご連絡ください。技術的な相談や案件のお話も歓迎します。"
     tags={['GitHub', 'Qiita', 'External Form']}
   >
     お気軽に<mark>ご連絡</mark>ください
@@ -22,12 +22,12 @@ import { links } from '../data/site';
     <div class="channels">
       <article class="card channel">
         <h3>Qiita</h3>
-        <p>技術記事を投稿しています。コメントや DM で気軽にお声掛けください。</p>
+        <p>技術記事を投稿しています。コメントや DM でお気軽にどうぞ。</p>
         <a href={links.qiita} class="btn btn--primary" target="_blank" rel="noopener noreferrer">Qiitaを見る<Icon name="external" size={16} /></a>
       </article>
       <article class="card channel">
         <h3>GitHub</h3>
-        <p>ソースコードを公開しています。Issue や Pull Request も歓迎しています。</p>
+        <p>ソースコードを公開しています。Issue や Pull Request も歓迎します。</p>
         <a href={links.github} class="btn btn--primary" target="_blank" rel="noopener noreferrer">GitHubを見る<Icon name="external" size={16} /></a>
       </article>
     </div>
@@ -40,7 +40,7 @@ import { links } from '../data/site';
     <div class="form-layout">
       <div class="form-intro">
         <div class="prose">
-          <p>フォーム送信は AWS Lambda Function URL へ JSON 形式で送信し、AWS SES で問い合わせメールを配信します。このサイト自体は AWS S3 + CloudFront で配信する静的ページのまま、問い合わせ機能をサーバレスで運用しています。</p>
+          <p>フォームの内容は AWS Lambda Function URL へ JSON で送られ、AWS SES から問い合わせメールとして届きます。サイトは AWS S3 + CloudFront で配信する静的ページのまま、問い合わせだけをサーバーレスで処理しています。</p>
           <p>返信が必要な場合は、連絡可能なメールアドレスを入力してください。</p>
         </div>
         <p class="form-note"><Icon name="shield" size={16} />パスワード、秘密鍵、業務固有の機密情報は送信しないでください。</p>
