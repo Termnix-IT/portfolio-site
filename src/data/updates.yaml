@@ -4,6 +4,26 @@
 # 同じ日付の項目は書いた順に並ぶ。日付は日本時間。href は関連するページへのリンク（任意。外部の URL も可）
 main:
   items:
+    - date: 2026-11-11
+      type: site
+      text: 作成ツール一覧の CIPHER VAULT を v1.0.1、LimitView を v1.0.0 の内容に更新し、Port Manager Tool に Rust（Tauri）版への移行を追記
+      href: /toolbox.html
+    - date: 2026-11-11
+      type: site
+      text: 趣味の制作ページの Pirafu2411 Playground の紹介を、作り直した画面と掲載作品の PoseRef に合わせて更新
+      href: /hobby.html
+    - date: 2026-11-11
+      type: release
+      text: LimitView v1.0.0 を公開（最初の正式版）
+      href: https://github.com/Termnix-IT/ai-limit-view/releases/tag/v1.0.0
+    - date: 2026-11-10
+      type: release
+      text: LimitView v0.1.17・v0.1.18 を公開
+      href: https://github.com/Termnix-IT/ai-limit-view/releases/tag/v0.1.18
+    - date: 2026-11-10
+      type: release
+      text: CIPHER VAULT v1.0.1 を公開
+      href: https://github.com/Termnix-IT/CIPHER-VAULT/releases/tag/v1.0.1
     - date: 2026-11-07
       type: site
       text: 経歴に「AWSクラウド基盤の運用保守（L2）」を追加し、前職の名称を「行政機関のインフラ基盤の構築・保守業務」に変更
@@ -12,6 +32,10 @@ main:
       type: site
       text: 作成ツール一覧の CIPHER VAULT を v0.9.0、LimitView を v0.1.16 の内容に更新
       href: /toolbox.html
+    - date: 2026-11-07
+      type: release
+      text: CIPHER VAULT v1.0.0 を公開（最初の正式版）
+      href: https://github.com/Termnix-IT/CIPHER-VAULT/releases/tag/v1.0.0
     - date: 2026-11-07
       type: release
       text: CIPHER VAULT v0.8.0・v0.9.0 を公開（v0.9.0 から Rust（Tauri）版に移行）
