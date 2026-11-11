@@ -6,7 +6,7 @@ main:
   items:
     - date: 2026-11-11
       type: site
-      text: 作成ツール一覧の CIPHER VAULT を v1.0.1、LimitView を v1.0.0 の内容に更新し、Port Manager Tool に Rust（Tauri）版への移行を追記
+      text: 作成ツール一覧の紹介文を、最新版でできることが分かる短い形に書き直し、CIPHER VAULT を v1.0.1、LimitView を v1.0.0 の内容に更新
       href: /toolbox.html
     - date: 2026-11-11
       type: site
